@@ -1307,6 +1307,326 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     SECOND SECTION: HEAT SHIELDS & BRAKING (HTML + INLINE CSS + JS)
+     ============================================================ -->
+<section id="slReentrySecondSection" aria-labelledby="slReentrySecondHeading">
+  <style>
+    #slReentrySecondSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 15% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 48%),
+        radial-gradient(circle at 85% 78%, rgba(120, 165, 255, 0.06) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentrySecondSection .sl-re2-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentrySecondSection .sl-re2-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+      gap: 56px;
+      align-items: start;
+    }
+
+    /* Left Column: Editorial Summary & Interactive Stage Selector */
+    #slReentrySecondSection .sl-re2-left {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentrySecondSection.is-revealed .sl-re2-left {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySecondSection .sl-re2-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentrySecondSection .sl-re2-title {
+      font-size: clamp(36px, 4.5vw, 58px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentrySecondSection .sl-re2-lead {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.78);
+      margin-bottom: 28px;
+    }
+
+    #slReentrySecondSection .sl-re2-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #slReentrySecondSection .sl-re2-pill {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(245, 247, 251, 0.82);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #slReentrySecondSection .sl-re2-pill:hover {
+      border-color: rgba(255, 255, 255, 0.32);
+      color: #ffffff;
+    }
+
+    #slReentrySecondSection .sl-re2-pill.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    /* Right Column: Focus Box + Clean Breakdown Rows */
+    #slReentrySecondSection .sl-re2-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    #slReentrySecondSection.is-revealed .sl-re2-right {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySecondSection .sl-re2-spotlight {
+      padding: 30px 28px;
+      border-radius: 26px;
+      background: rgba(12, 17, 28, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    #slReentrySecondSection .sl-re2-spot-label {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.62);
+      margin-bottom: 10px;
+    }
+
+    #slReentrySecondSection .sl-re2-spot-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.015em;
+    }
+
+    #slReentrySecondSection .sl-re2-spot-copy {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    #slReentrySecondSection .sl-re2-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    #slReentrySecondSection .sl-re2-mini {
+      padding: 22px 22px;
+      border-radius: 20px;
+      background: rgba(11, 15, 24, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slReentrySecondSection .sl-re2-mini-title {
+      font-size: 18.5px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    #slReentrySecondSection .sl-re2-mini-desc {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.74);
+    }
+
+    @media (max-width: 960px) {
+      #slReentrySecondSection {
+        padding: 92px 22px;
+      }
+      #slReentrySecondSection .sl-re2-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      #slReentrySecondSection .sl-re2-spotlight {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slReentrySecondSection .sl-re2-steps {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+  </style>
+
+  <div class="sl-re2-wrap">
+    <div class="sl-re2-grid">
+      <div class="sl-re2-left">
+        <span class="sl-re2-tag">02 · Heat Shields &amp; Braking</span>
+        <h2 class="sl-re2-title" id="slReentrySecondHeading">How heat shields protect the craft</h2>
+        <p class="sl-re2-lead">
+          Most of a spacecraft's energy is turned into heat in the upper atmosphere. A heat shield keeps that heat away from the cabin while air drag does the heavy braking.
+        </p>
+
+        <div class="sl-re2-pills" role="tablist" aria-label="Heat shield and braking topics">
+          <button type="button" class="sl-re2-pill is-active" data-shield="0" role="tab" aria-selected="true">Blunt Shape</button>
+          <button type="button" class="sl-re2-pill" data-shield="1" role="tab" aria-selected="false">Thermal Shield</button>
+          <button type="button" class="sl-re2-pill" data-shield="2" role="tab" aria-selected="false">Air Braking</button>
+        </div>
+      </div>
+
+      <div class="sl-re2-right">
+        <div class="sl-re2-spotlight">
+          <span class="sl-re2-spot-label" id="slRe2SpotLabel">Focused Concept · 01</span>
+          <h3 class="sl-re2-spot-title" id="slRe2SpotTitle">A wide, blunt face pushes hot air ahead</h3>
+          <p class="sl-re2-spot-copy" id="slRe2SpotCopy">
+            Instead of slicing sharply like a dart, a rounded heat shield creates a shock layer in front of the craft so much of the heat stays in the air rather than pouring straight into the hull.
+          </p>
+        </div>
+
+        <div class="sl-re2-steps">
+          <div class="sl-re2-mini">
+            <h3 class="sl-re2-mini-title">Energy trade-off</h3>
+            <p class="sl-re2-mini-desc">
+              Speed drops step by step as air resistance converts motion into heat and sound.
+            </p>
+          </div>
+          <div class="sl-re2-mini">
+            <h3 class="sl-re2-mini-title">Safe inner cabin</h3>
+            <p class="sl-re2-mini-desc">
+              Insulation and ablative layers protect the structure until speeds are low enough for final descent.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentrySecondSection');
+      if (!section) return;
+
+      const pills = section.querySelectorAll('.sl-re2-pill');
+      const labelEl = document.getElementById('slRe2SpotLabel');
+      const titleEl = document.getElementById('slRe2SpotTitle');
+      const copyEl = document.getElementById('slRe2SpotCopy');
+
+      const topics = [
+        {
+          label: 'Focused Concept · 01',
+          title: 'A wide, blunt face pushes hot air ahead',
+          copy: 'Instead of slicing sharply like a dart, a rounded heat shield creates a shock layer in front of the craft so much of the heat stays in the air rather than pouring straight into the hull.'
+        },
+        {
+          label: 'Focused Concept · 02',
+          title: 'Heat-resistant layers block extreme temperatures',
+          copy: 'Thermal tiles or ablative coatings absorb and shed heat gradually so the inside of the capsule stays cool and stable.'
+        },
+        {
+          label: 'Focused Concept · 03',
+          title: 'Atmosphere does the main slowing down',
+          copy: 'Using air drag saves huge amounts of propellant compared to firing rocket engines backward all the way down.'
+        }
+      ];
+
+      pills.forEach((pill, idx) => {
+        pill.addEventListener('click', () => {
+          const item = topics[idx];
+          if (!item) return;
+
+          pills.forEach((p, pIdx) => {
+            const active = pIdx === idx;
+            p.classList.toggle('is-active', active);
+            p.setAttribute('aria-selected', String(active));
+          });
+
+          if (labelEl) labelEl.textContent = item.label;
+          if (titleEl) titleEl.textContent = item.title;
+          if (copyEl) copyEl.textContent = item.copy;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
