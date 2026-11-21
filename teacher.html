@@ -1847,7 +1847,11 @@
     }
     body.dark .bubble .msg-voice { background: rgba(255,255,255,.06); }
     .bubble .msg-voice .material-symbols-outlined { color: var(--blue); font-size: 22px; }
-    .bubble .msg-voice audio { flex: 1; height: 32px; max-width: 100%; }
+    .bubble .msg-voice audio { flex: 1; width: 100%; min-width: 240px; height: 38px; max-width: 100%; }
+    /* Bubbles holding voice or images use the full available width */
+    .bubble:has(.msg-voice), .bubble:has(.msg-img), .bubble:has(audio), .bubble:has(img) {
+      width: min(560px, 96%);
+    }
 
   
     .msg-top {
@@ -2949,6 +2953,14 @@ function hash(str) {
 
 function ogFor(id) { return OG[hash(id || "x") % OG.length]; }
 function maskId(sid) { return "Student #" + (hash(sid) % 900 + 100); }
+// Graceful handling if a voice note still arrives damaged (e.g. very old message)
+document.addEventListener("error", function (e) {
+  const t = e.target;
+  if (t && t.tagName === "AUDIO") {
+    t.style.opacity = ".55";
+    t.title = "This voice note could not load — ask your teacher to resend it.";
+  }
+}, true);
 
 function setWsChip(text, live) {
   let label = String(text || "WS");
@@ -5156,6 +5168,7 @@ function setVoiceCard(show, title, sub, recording) {
 
 $("btnRec").onclick = async () => {
   if (recorder && recorder.state === "recording") {
+    clearTimeout(window._recMaxTimer);
     recorder.stop();
     $("btnRec").classList.remove("on");
     $("btnRec").innerHTML = "<span class='material-symbols-outlined'>mic</span>Record voice";
