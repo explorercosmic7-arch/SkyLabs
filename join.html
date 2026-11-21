@@ -1110,6 +1110,14 @@
       background: rgba(138,180,248,.22);
       color: #aecbfa;
     }
+    /* Voice notes & images: full-width, always big enough to play */
+    .bubble:has(audio), .bubble:has(img) { width: min(560px, 96%); }
+    #msgList audio {
+      width: 100%;
+      min-width: 240px;
+      height: 38px;
+      display: block;
+    }
     .msg-top {
       display: flex;
       align-items: flex-start;
@@ -1562,6 +1570,8 @@ let maskOn = true;
 let inbox = [];
 let chatClearedAt = 0;
 let seenInbox = 0;
+let lastTeacherMsgKeys = null;
+const notifiedTeacherKeys = new Set();
 let currentLab = "";
 let quizKey = "";
 let timerLeft = 0;
@@ -1620,8 +1630,17 @@ function hash(str) {
   return h;
 }
 function maskId(id) {
+
   return "Student #" + (hash(id) % 900 + 100);
 }
+// Graceful handling if a voice note arrives damaged — dim it and explain
+document.addEventListener("error", function (e) {
+  const t = e.target;
+  if (t && t.tagName === "AUDIO") {
+    t.style.opacity = ".55";
+    t.title = "This voice note could not load — ask your teacher to resend it.";
+  }
+}, true);
 function setWsChip(text, live) {
   let label = String(text || "WS");
   if (/live/i.test(label) && !/off|connect/i.test(label)) label = "WS live";
@@ -1887,9 +1906,12 @@ function renderInbox() {
   if (!box) return;
   if (!mine.length) {
     box.innerHTML = "<p class='lead'>No private messages yet</p>";
+    box._lastHtml = "";
     return;
   }
-  box.innerHTML = mine.map((m) => {
+  // Only rebuild the DOM when content changed — re-rendering on every poll
+  // restarted any voice note the student was listening to.
+  const html = mine.map((m) => {
     const mineMsg = !m.fromTeacher && !m.fromCopilot;
     const who = m.fromTeacher
       ? "Teacher"
@@ -1906,6 +1928,9 @@ function renderInbox() {
       "</div>"
     );
   }).join("");
+  if (box._lastHtml === html) { box.scrollTop = box.scrollHeight; return; }
+  box._lastHtml = html;
+  box.innerHTML = html;
   box.scrollTop = box.scrollHeight;
 }
 function renderMates(students, state) {
@@ -2144,7 +2169,10 @@ function applyState(state) {
     if (forMe) {
       lastAnnounceAt = ann.at;
       showAnnounce(ann.text || "");
-      snack(ann.text || "Team announcement");
+      // banner already shows the text; only snack when the banner is hidden
+      if (!$("announceBanner") || !$("announceBanner").classList.contains("show")) {
+        snack(ann.text || "Team announcement");
+      }
     }
   }
   $("status").textContent =
@@ -2156,16 +2184,33 @@ function applyState(state) {
   renderMates(state.students || [], state);
   if (state.lab && Array.isArray(state.lab.inbox)) {
     const incoming = (state.lab.inbox || []).filter((m) => (Number(m.at) || 0) >= chatClearedAt);
-    inbox = dedupeInbox((inbox || []).filter((m) => (Number(m.at) || 0) >= chatClearedAt).concat(incoming));
-    const mine = inbox.filter((m) => m.fromTeacher && m.sid === sid);
-    if (mine.length > seenInbox) {
-      $("msgDot").classList.add("on");
-      const bar = $("msgDotBar");
-      if (bar) bar.classList.add("on");
-      playSucSound();
-      snack("New message from your teacher");
+    // WS-pushed teacher messages carry text only; merge the complete server
+    // copy (voice/image included) into that bubble instead of duplicating it.
+    const merged = inbox.filter((m) => (Number(m.at) || 0) >= chatClearedAt);
+    incoming.forEach((m) => {
+      if (m.fromTeacher) {
+        const i = merged.findIndex((p) => p.fromTeacher && p.text === m.text && Math.abs((Number(p.at) || 0) - (Number(m.at) || 0)) < 20000);
+        if (i >= 0) { merged[i] = Object.assign({}, merged[i], m); return; }
+      }
+      merged.push(m);
+    });
+    inbox = dedupeInbox(merged);
+    const mine = inbox.filter((m) => m.fromTeacher && (!m.toSid || m.toSid === sid));
+    // Notify once per actual new message — the old length comparison
+    // re-fired notifications when old messages dropped out of the slice(-40) window.
+    const tKeys = mine.map(inboxKey).join("|");
+    if (lastTeacherMsgKeys !== null && tKeys !== lastTeacherMsgKeys) {
+      const fresh = mine.filter((m) => !notifiedTeacherKeys.has(inboxKey(m)));
+      if (fresh.length) {
+        fresh.forEach((m) => notifiedTeacherKeys.add(inboxKey(m)));
+        $("msgDot").classList.add("on");
+        const bar = $("msgDotBar");
+        if (bar) bar.classList.add("on");
+        playSucSound();
+        snack("New message from your teacher");
+      }
     }
-    seenInbox = mine.length;
+    lastTeacherMsgKeys = tKeys;
     if ($("msgOverlay").classList.contains("show")) renderInbox();
   }
   if (state.lab && typeof state.lab.focusLock === "boolean") focusLock = state.lab.focusLock;
@@ -2647,10 +2692,12 @@ function connectWs() {
       if (sentMessageGuids.has(msgIdKey)) return;
       sentMessageGuids.add(msgIdKey);
       if (msg.fromRole === "teacher") {
-        inbox = inbox.concat([{
+        const tItem = {
           sid: sid, nick: "Teacher", text: msg.text || "",
-          fromTeacher: true, masked: false, at: Date.now()
-        }]);
+          fromTeacher: true, masked: false, at: msg.at || Date.now()
+        };
+        inbox = inbox.concat([tItem]);
+        notifiedTeacherKeys.add(inboxKey(tItem)); // poll must not double-notify
         $("msgDot").classList.add("on");
         const bar = $("msgDotBar");
         if (bar) bar.classList.add("on");
@@ -3161,6 +3208,7 @@ $("msgImage").onchange = async () => {
 
 $("btnRec").onclick = async () => {
   if (recorder && recorder.state === "recording") {
+    clearTimeout(window._recMaxTimer);
     recorder.stop();
     $("btnRec").classList.remove("on");
     $("btnRec").innerHTML = "<span class='material-symbols-outlined'>mic</span>Record voice";
@@ -3169,7 +3217,23 @@ $("btnRec").onclick = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recChunks = [];
-    recorder = new MediaRecorder(stream);
+    // Low-bitrate Opus keeps clips small so the classroom backend never
+    // truncates them (truncation is why received voices failed to play).
+    let recOpts = {};
+    try {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+        recOpts = { mimeType: "audio/webm;codecs=opus", audioBitsPerSecond: 24000 };
+      } else {
+        recOpts = { audioBitsPerSecond: 24000 };
+      }
+    } catch (e) {}
+    try { recorder = new MediaRecorder(stream, recOpts); }
+    catch (e) { recorder = new MediaRecorder(stream); }
+    // Hard cap: recording auto-stops after 60 s so notes always send fully
+    clearTimeout(window._recMaxTimer);
+    window._recMaxTimer = setTimeout(() => {
+      if (recorder && recorder.state === "recording") recorder.stop();
+    }, 60000);
     recorder.ondataavailable = (e) => { if (e.data.size) recChunks.push(e.data); };
     recorder.onstop = async () => {
       stream.getTracks().forEach((t) => t.stop());
@@ -3232,6 +3296,8 @@ if ($("btnClearChat")) {
     sentMessageGuids = new Set();
     chatClearedAt = Date.now();
     seenInbox = 0;
+    lastTeacherMsgKeys = null;
+    notifiedTeacherKeys.clear();
     renderInbox();
     snack("Chat cleared");
   };
@@ -3655,17 +3721,5 @@ document.addEventListener("DOMContentLoaded", () => {
 setInterval(poll, 1000);
 </script>
 <div id="slTip" class="sl-tip" hidden></div>
-<style>
-  /* Custom Text Selection Color */
-  ::selection {
-    background-color: #808080;
-    color: #fff;
-  }
-  ::-moz-selection {
-    background-color: #808080;
-    color: #fff;
-  }
-</style>
-
 </body>
 </html>
