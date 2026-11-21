@@ -1088,5 +1088,227 @@
     })();
   </script>
 <hr>
+<!-- ============================================================
+     FIRST SECTION: WHAT RE-ENTRY MEANS (HTML + INLINE CSS + JS)
+     ============================================================ -->
+<section id="slReentryFirstSection" aria-labelledby="slReentryFirstHeading">
+  <style>
+    #slReentryFirstSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentryFirstSection .sl-re-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentryFirstSection .sl-re-head {
+      max-width: 780px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentryFirstSection.is-revealed .sl-re-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFirstSection .sl-re-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentryFirstSection .sl-re-title {
+      font-size: clamp(38px, 4.9vw, 66px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentryFirstSection .sl-re-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slReentryFirstSection .sl-re-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 26px;
+    }
+
+    #slReentryFirstSection .sl-re-card {
+      padding: 32px 28px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      min-height: 220px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slReentryFirstSection .sl-re-card:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slReentryFirstSection .sl-re-card:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slReentryFirstSection.is-revealed .sl-re-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFirstSection .sl-re-card:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    #slReentryFirstSection .sl-re-num {
+      display: inline-block;
+      font-size: 13.5px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 14px;
+    }
+
+    #slReentryFirstSection .sl-re-card-title {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #slReentryFirstSection .sl-re-card-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    @media (max-width: 960px) {
+      #slReentryFirstSection {
+        padding: 92px 22px;
+      }
+      #slReentryFirstSection .sl-re-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      #slReentryFirstSection .sl-re-card {
+        padding: 24px 20px;
+        min-height: auto;
+        border-radius: 20px;
+      }
+    }
+  </style>
+
+  <div class="sl-re-wrap">
+    <div class="sl-re-head">
+      <span class="sl-re-tag">01 · The Basics</span>
+      <h2 class="sl-re-title" id="slReentryFirstHeading">What happens during re-entry?</h2>
+      <p class="sl-re-sub">
+        A spacecraft in orbit moves fast. Coming back safely means trading that high speed into controlled drag and heat protection as it meets the upper air.
+      </p>
+    </div>
+
+    <div class="sl-re-grid">
+      <article class="sl-re-card">
+        <span class="sl-re-num">01 · High Speed</span>
+        <h3 class="sl-re-card-title">Orbital velocity is huge</h3>
+        <p class="sl-re-card-desc">
+          Before descending, a spacecraft carries massive energy from moving sideways around Earth—not just from altitude alone.
+        </p>
+      </article>
+
+      <article class="sl-re-card">
+        <span class="sl-re-num">02 · Air Drag &amp; Heat</span>
+        <h3 class="sl-re-card-title">Air slows the craft and warms the shield</h3>
+        <p class="sl-re-card-desc">
+          As thin upper air compresses in front of the craft, drag slows it down while heat builds up along the entry face.
+        </p>
+      </article>
+
+      <article class="sl-re-card">
+        <span class="sl-re-num">03 · Entry Angle</span>
+        <h3 class="sl-re-card-title">Too shallow or too steep matters</h3>
+        <p class="sl-re-card-desc">
+          A balanced entry corridor keeps heating and deceleration manageable instead of bouncing off or diving in too hard.
+        </p>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentryFirstSection');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+
+
+
 </body>
 </html>
