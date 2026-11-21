@@ -2815,7 +2815,6 @@
 
 <script>
 const API = "https://nh-classroom-live.avlauthority.workers.dev";
-const SITE = "https://newhorizons-beyondhorizon.pages.dev";
 const AI_WORKER = "https://qr-ai-proxy.mmunasinghesos.workers.dev/";
 const $ = (id) => document.getElementById(id);
 
@@ -2840,10 +2839,10 @@ let LABS = [
   { id:"photoquiz", name:"Photosynthesis Quest", desc:"Biology quiz · light reactions, Calvin cycle · auto marks to teacher", url:"lab-photosynthesis-quiz.html", img:"https://images.unsplash.com/vector-1757328201061-d557bad5f62b?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"biology plant photosynthesis quiz science" },
   { id:"atoms", name:"Atoms Lab", desc:"Atomic structure · shells, particles, isotopes · auto marks", url:"lab-atoms.html", img:"https://plus.unsplash.com/premium_vector-1758081739050-96df095ff89b?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"chemistry physics atom proton neutron electron isotope" },
   { id:"celldiv", name:"Cell Division", desc:"Mitosis & meiosis · phases, chromosomes · auto marks", url:"lab-cell-division.html", img:"https://images.unsplash.com/vector-1777540715346-597738eaa948?q=80&w=1082&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"biology cell mitosis meiosis chromosome science" },
-  { id:"deltav", name:"Delta-v lab", desc:"Velocity change simulation", url:"https://newhorizons-beyondhorizon.pages.dev/deltav-simulation", img:"https://images.unsplash.com/vector-1770131865203-fc2b89849ee9?q=80&w=711&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket delta-v" },
-  { id:"reentry", name:"Reentry heating", desc:"Thermal entry lab", url:"https://newhorizons-beyondhorizon.pages.dev/lab-reentry-heating", img:"https://images.unsplash.com/vector-1765389883990-6906dcaa7779?q=80&w=1050&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics heat reentry" },
-  { id:"twr", name:"Thrust to weight", desc:"TWR rocket lab", url:"https://newhorizons-beyondhorizon.pages.dev/lab-rocket-twr", img:"https://images.unsplash.com/vector-1759145395771-e7c12bb7c724?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket thrust" },
-  { id:"gravity", name:"Gravity turn", desc:"Ascent guidance lab", url:"https://newhorizons-beyondhorizon.pages.dev/lab-gravity-turn", img:"https://images.unsplash.com/vector-1763972963052-4e0a56d8d8a8?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics gravity ascent" }
+  { id:"deltav", name:"Delta-v lab", desc:"Velocity change simulation", url:"lab-deltav.html", img:"https://images.unsplash.com/vector-1770131865203-fc2b89849ee9?q=80&w=711&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket delta-v" },
+  { id:"reentry", name:"Reentry heating", desc:"Thermal entry lab", url:"reentry.html", img:"https://images.unsplash.com/vector-1765389883990-6906dcaa7779?q=80&w=1050&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics heat reentry" },
+  { id:"twr", name:"Thrust to weight", desc:"TWR rocket lab", url:"lab-rocket-twr.html", img:"https://images.unsplash.com/vector-1759145395771-e7c12bb7c724?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket thrust" },
+  { id:"gravity", name:"Gravity turn", desc:"Ascent guidance lab", url:"lab-gravity-turn.html", img:"https://images.unsplash.com/vector-1763972963052-4e0a56d8d8a8?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics gravity ascent" }
 ];
 
 const TEAM_NAMES = ["Alpha", "Beta", "Gamma", "Delta"];
@@ -2917,9 +2916,10 @@ function snack(msg) {
   setTimeout(() => s.classList.remove("show"), 2200);
 }
 
+// Students join the local page in the same folder (no external NH site)
 function joinLink() {
-  if (!roomId) return SITE + "/room.html";
-  return SITE + "/room.html?id=" + encodeURIComponent(roomId);
+  if (!roomId) return "join.html";
+  return "join.html?id=" + encodeURIComponent(roomId);
 }
 
 function setArmed(on) {
@@ -5701,5 +5701,16 @@ window.addEventListener("resize", () => {
 });
 setInterval(poll, 1000);
 </script>
+<style>
+  /* Custom Text Selection Color */
+  ::selection {
+    background-color: #808080;
+    color: #fff;
+  }
+  ::-moz-selection {
+    background-color: #808080;
+    color: #fff;
+  }
+</style>
 </body>
 </html>
