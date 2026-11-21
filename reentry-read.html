@@ -1627,6 +1627,562 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     THIRD SECTION: DESCENT & LANDING PHASES (HTML + INLINE CSS + JS)
+     ============================================================ -->
+<section id="slReentryThirdSection" aria-labelledby="slReentryThirdHeading">
+  <style>
+    #slReentryThirdSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 82% 28%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 18% 76%, rgba(120, 165, 255, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentryThirdSection .sl-re3-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentryThirdSection .sl-re3-head {
+      max-width: 760px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentryThirdSection.is-revealed .sl-re3-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryThirdSection .sl-re3-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentryThirdSection .sl-re3-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentryThirdSection .sl-re3-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* Main Split: Left Interactive Vertical Timeline | Right Phase Telemetry */
+    #slReentryThirdSection .sl-re3-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 48px;
+      align-items: stretch;
+    }
+
+    /* Left Vertical Step Timeline */
+    #slReentryThirdSection .sl-re3-timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+    }
+
+    #slReentryThirdSection.is-revealed .sl-re3-timeline {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryThirdSection .sl-re3-step {
+      width: 100%;
+      text-align: left;
+      padding: 20px 24px;
+      border-radius: 20px;
+      background: rgba(11, 15, 24, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f5f7fb;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition:
+        background-color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    #slReentryThirdSection .sl-re3-step:hover {
+      background: rgba(16, 22, 35, 0.85);
+      border-color: rgba(255, 255, 255, 0.24);
+      transform: translateX(4px);
+    }
+
+    #slReentryThirdSection .sl-re3-step.is-active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.42);
+      transform: translateX(6px);
+    }
+
+    #slReentryThirdSection .sl-re3-step-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #slReentryThirdSection .sl-re3-step-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(5, 7, 12, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.85);
+      flex-shrink: 0;
+      transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+    }
+
+    #slReentryThirdSection .sl-re3-step.is-active .sl-re3-step-dot {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slReentryThirdSection .sl-re3-step-name {
+      font-size: 19px;
+      font-weight: 400;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    #slReentryThirdSection .sl-re3-step-alt {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.62);
+    }
+
+    #slReentryThirdSection .sl-re3-step-arrow {
+      font-size: 18px;
+      color: rgba(245, 247, 251, 0.5);
+      transition: transform 0.22s ease, color 0.22s ease;
+    }
+
+    #slReentryThirdSection .sl-re3-step.is-active .sl-re3-step-arrow {
+      color: #ffffff;
+      transform: translateX(3px);
+    }
+
+    /* Right Live Phase Readout Card */
+    #slReentryThirdSection .sl-re3-panel {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.18s,
+        transform 0.86s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+    }
+
+    #slReentryThirdSection.is-revealed .sl-re3-panel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryThirdSection .sl-re3-panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    #slReentryThirdSection .sl-re3-phase-badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+    }
+
+    #slReentryThirdSection .sl-re3-next-btn {
+      padding: 7px 15px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slReentryThirdSection .sl-re3-next-btn:hover {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #slReentryThirdSection .sl-re3-panel-title {
+      font-size: clamp(26px, 2.8vw, 34px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #slReentryThirdSection .sl-re3-panel-desc {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    /* Visual Altitude Progress Bar */
+    #slReentryThirdSection .sl-re3-bar-box {
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slReentryThirdSection .sl-re3-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.68);
+      margin-bottom: 10px;
+    }
+
+    #slReentryThirdSection .sl-re3-bar-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    #slReentryThirdSection .sl-re3-bar-fill {
+      height: 100%;
+      width: 25%;
+      border-radius: 999px;
+      background: #ffffff;
+      transition: width 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* 3 Compact Telemetry Readouts */
+    #slReentryThirdSection .sl-re3-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #slReentryThirdSection .sl-re3-metric {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    #slReentryThirdSection .sl-re3-metric-label {
+      display: block;
+      font-size: 12.5px;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 4px;
+    }
+
+    #slReentryThirdSection .sl-re3-metric-val {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      #slReentryThirdSection {
+        padding: 92px 22px;
+      }
+      #slReentryThirdSection .sl-re3-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      #slReentryThirdSection .sl-re3-step:hover,
+      #slReentryThirdSection .sl-re3-step.is-active {
+        transform: none;
+      }
+      #slReentryThirdSection .sl-re3-panel {
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+      #slReentryThirdSection .sl-re3-metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="sl-re3-wrap">
+    <div class="sl-re3-head">
+      <span class="sl-re3-tag">03 · Step-by-Step Descent</span>
+      <h2 class="sl-re3-title" id="slReentryThirdHeading">Four stages from orbit to ground</h2>
+      <p class="sl-re3-sub">
+        Select each stage along the descent path to see how altitude, speed, and cooling shift before touchdown.
+      </p>
+    </div>
+
+    <div class="sl-re3-layout">
+      <!-- Left Vertical Timeline Selector -->
+      <div class="sl-re3-timeline" role="tablist" aria-label="Re-entry descent stages">
+        <button type="button" class="sl-re3-step is-active" data-phase="0" role="tab" aria-selected="true">
+          <span class="sl-re3-step-left">
+            <span class="sl-re3-step-dot">1</span>
+            <span>
+              <span class="sl-re3-step-name">De-Orbit Burn</span>
+              <span class="sl-re3-step-alt">~400 km · Orbit drop begins</span>
+            </span>
+          </span>
+          <span class="sl-re3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+
+        <button type="button" class="sl-re3-step" data-phase="1" role="tab" aria-selected="false">
+          <span class="sl-re3-step-left">
+            <span class="sl-re3-step-dot">2</span>
+            <span>
+              <span class="sl-re3-step-name">Peak Heating</span>
+              <span class="sl-re3-step-alt">~75 km · Maximum air compression</span>
+            </span>
+          </span>
+          <span class="sl-re3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+
+        <button type="button" class="sl-re3-step" data-phase="2" role="tab" aria-selected="false">
+          <span class="sl-re3-step-left">
+            <span class="sl-re3-step-dot">3</span>
+            <span>
+              <span class="sl-re3-step-name">Parachute Opening</span>
+              <span class="sl-re3-step-alt">~10 km · Subsonic steady fall</span>
+            </span>
+          </span>
+          <span class="sl-re3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+
+        <button type="button" class="sl-re3-step" data-phase="3" role="tab" aria-selected="false">
+          <span class="sl-re3-step-left">
+            <span class="sl-re3-step-dot">4</span>
+            <span>
+              <span class="sl-re3-step-name">Safe Touchdown</span>
+              <span class="sl-re3-step-alt">0 km · Land or ocean recovery</span>
+            </span>
+          </span>
+          <span class="sl-re3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+      </div>
+
+      <!-- Right Live Phase Telemetry Panel -->
+      <div class="sl-re3-panel">
+        <div>
+          <div class="sl-re3-panel-top">
+            <span class="sl-re3-phase-badge" id="slRe3Badge">Phase 1 of 4 · De-Orbit</span>
+            <button type="button" class="sl-re3-next-btn" id="slRe3NextBtn">Next Stage &#8594;</button>
+          </div>
+          <h3 class="sl-re3-panel-title" id="slRe3PanelTitle" style="margin-top: 18px;">
+            A short backward engine burn lowers the path
+          </h3>
+          <p class="sl-re3-panel-desc" id="slRe3PanelDesc">
+            Thrusters fire briefly against the direction of travel. Even a small drop in orbital speed curves the flight path gently into the upper atmosphere.
+          </p>
+        </div>
+
+        <div class="sl-re3-bar-box">
+          <div class="sl-re3-bar-meta">
+            <span>Descent Progress</span>
+            <span id="slRe3ProgressLabel">25% Complete</span>
+          </div>
+          <div class="sl-re3-bar-track">
+            <div class="sl-re3-bar-fill" id="slRe3BarFill"></div>
+          </div>
+        </div>
+
+        <div class="sl-re3-metrics">
+          <div class="sl-re3-metric">
+            <span class="sl-re3-metric-label">Altitude</span>
+            <span class="sl-re3-metric-val" id="slRe3MetricAlt">~400 km</span>
+          </div>
+          <div class="sl-re3-metric">
+            <span class="sl-re3-metric-label">Main Force</span>
+            <span class="sl-re3-metric-val" id="slRe3MetricForce">Thruster Impulse</span>
+          </div>
+          <div class="sl-re3-metric">
+            <span class="sl-re3-metric-label">Cabin State</span>
+            <span class="sl-re3-metric-val" id="slRe3MetricState">Heat Shield Aligned</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentryThirdSection');
+      if (!section) return;
+
+      const steps = section.querySelectorAll('.sl-re3-step');
+      const nextBtn = document.getElementById('slRe3NextBtn');
+      const badgeEl = document.getElementById('slRe3Badge');
+      const titleEl = document.getElementById('slRe3PanelTitle');
+      const descEl = document.getElementById('slRe3PanelDesc');
+      const progressLabelEl = document.getElementById('slRe3ProgressLabel');
+      const barFillEl = document.getElementById('slRe3BarFill');
+      const metricAltEl = document.getElementById('slRe3MetricAlt');
+      const metricForceEl = document.getElementById('slRe3MetricForce');
+      const metricStateEl = document.getElementById('slRe3MetricState');
+
+      const phases = [
+        {
+          badge: 'Phase 1 of 4 · De-Orbit',
+          title: 'A short backward engine burn lowers the path',
+          desc: 'Thrusters fire briefly against the direction of travel. Even a small drop in orbital speed curves the flight path gently into the upper atmosphere.',
+          progress: '25%',
+          alt: '~400 km',
+          force: 'Thruster Impulse',
+          state: 'Heat Shield Aligned'
+        },
+        {
+          badge: 'Phase 2 of 4 · Peak Heating',
+          title: 'Air compression peaks while drag slows the craft',
+          desc: 'Around 75 km up, thicker air slows the spacecraft rapidly. The blunt heat shield deflects glowing plasma away while keeping internal temperatures safe.',
+          progress: '55%',
+          alt: '~75 km',
+          force: 'Atmospheric Drag',
+          state: 'Thermal Shield Active'
+        },
+        {
+          badge: 'Phase 3 of 4 · Parachutes',
+          title: 'Drogue and main chutes steady the final fall',
+          desc: 'Once speed drops below the sound barrier, drogue chutes stabilize the capsule before large main parachutes open for a gentle descent.',
+          progress: '82%',
+          alt: '~10 km',
+          force: 'Canopy Drag',
+          state: 'Steady Vertical Fall'
+        },
+        {
+          badge: 'Phase 4 of 4 · Touchdown',
+          title: 'Soft landing completes the return journey',
+          desc: 'Retrorockets or water splashdown cushion the final meters so crew and instruments return safely at walking speed.',
+          progress: '100%',
+          alt: '0 km',
+          force: 'Cushioned Impact',
+          state: 'Mission Complete'
+        }
+      ];
+
+      let currentIndex = 0;
+
+      function setPhase(index) {
+        const item = phases[index];
+        if (!item) return;
+        currentIndex = index;
+
+        steps.forEach((step, idx) => {
+          const active = idx === index;
+          step.classList.toggle('is-active', active);
+          step.setAttribute('aria-selected', String(active));
+        });
+
+        if (badgeEl) badgeEl.textContent = item.badge;
+        if (titleEl) titleEl.textContent = item.title;
+        if (descEl) descEl.textContent = item.desc;
+        if (progressLabelEl) progressLabelEl.textContent = item.progress + ' Complete';
+        if (barFillEl) barFillEl.style.width = item.progress;
+        if (metricAltEl) metricAltEl.textContent = item.alt;
+        if (metricForceEl) metricForceEl.textContent = item.force;
+        if (metricStateEl) metricStateEl.textContent = item.state;
+      }
+
+      steps.forEach((step, idx) => {
+        step.addEventListener('click', () => setPhase(idx));
+      });
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          setPhase((currentIndex + 1) % phases.length);
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
