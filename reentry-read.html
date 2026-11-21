@@ -3214,6 +3214,706 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     SEVENTH SECTION: FLIGHT PATH ANGLE (°) (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slReentrySeventhSection" aria-labelledby="slReentrySeventhHeading">
+  <style>
+    #slReentrySeventhSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 78% 24%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentrySeventhSection .sl-re7-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentrySeventhSection .sl-re7-head {
+      max-width: 780px;
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentrySeventhSection.is-revealed .sl-re7-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySeventhSection .sl-re7-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentrySeventhSection .sl-re7-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentrySeventhSection .sl-re7-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* Interactive Angle Lab Card */
+    #slReentrySeventhSection .sl-re7-box {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 40px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    #slReentrySeventhSection.is-revealed .sl-re7-box {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySeventhSection .sl-re7-readout-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    #slReentrySeventhSection .sl-re7-deg {
+      font-size: clamp(44px, 5vw, 62px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    #slReentrySeventhSection .sl-re7-zone {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 13.5px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.9);
+    }
+
+    #slReentrySeventhSection .sl-re7-slider {
+      width: 100%;
+      accent-color: #ffffff;
+      cursor: pointer;
+      margin: 10px 0 18px;
+    }
+
+    #slReentrySeventhSection .sl-re7-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #slReentrySeventhSection .sl-re7-preset {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(245, 247, 251, 0.84);
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slReentrySeventhSection .sl-re7-preset:hover {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #slReentrySeventhSection .sl-re7-note-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.015em;
+    }
+
+    #slReentrySeventhSection .sl-re7-note-copy {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.78);
+      margin-bottom: 20px;
+    }
+
+    #slReentrySeventhSection .sl-re7-mini-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #slReentrySeventhSection .sl-re7-mini {
+      padding: 15px 17px;
+      border-radius: 16px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slReentrySeventhSection .sl-re7-mini span {
+      display: block;
+      font-size: 12.5px;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 4px;
+    }
+
+    #slReentrySeventhSection .sl-re7-mini strong {
+      font-size: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      #slReentrySeventhSection {
+        padding: 92px 22px;
+      }
+      #slReentrySeventhSection .sl-re7-box {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slReentrySeventhSection .sl-re7-mini-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="sl-re7-wrap">
+    <div class="sl-re7-head">
+      <span class="sl-re7-tag">07 · Flight Path Angle (&deg;)</span>
+      <h2 class="sl-re7-title" id="slReentrySeventhHeading">Entry angle sets the descent path</h2>
+      <p class="sl-re7-sub">
+        The flight path angle is the slope between the craft's motion vector and the local horizontal. Slide the angle to see how a shallow or steep entry behaves.
+      </p>
+    </div>
+
+    <div class="sl-re7-box">
+      <div>
+        <div class="sl-re7-readout-top">
+          <span class="sl-re7-deg" id="slRe7DegVal">-2.0&deg;</span>
+          <span class="sl-re7-zone" id="slRe7ZoneBadge">Shallow Entry</span>
+        </div>
+
+        <input
+          type="range"
+          min="-12"
+          max="0"
+          step="0.5"
+          value="-2"
+          class="sl-re7-slider"
+          id="slRe7Slider"
+          aria-label="Flight path angle in degrees"
+        />
+
+        <div class="sl-re7-presets">
+          <button type="button" class="sl-re7-preset" data-angle="-1.5">-1.5&deg; Shallow</button>
+          <button type="button" class="sl-re7-preset" data-angle="-5.0">-5.0&deg; Target Corridor</button>
+          <button type="button" class="sl-re7-preset" data-angle="-10.5">-10.5&deg; Steep Dive</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="sl-re7-note-title" id="slRe7NoteTitle">Longer air path, risk of skip-out</h3>
+        <p class="sl-re7-note-copy" id="slRe7NoteCopy">
+          A small downward angle takes a long curve through thin upper air. If it is too shallow, aerodynamic lift and orbital speed can skip the craft back out toward space.
+        </p>
+
+        <div class="sl-re7-mini-row">
+          <div class="sl-re7-mini">
+            <span>Heating Rate</span>
+            <strong id="slRe7HeatOut">Gradual / Extended</strong>
+          </div>
+          <div class="sl-re7-mini">
+            <span>G-Load Profile</span>
+            <strong id="slRe7GOut">Low to Moderate</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentrySeventhSection');
+      if (!section) return;
+
+      const slider = document.getElementById('slReentrySeventhSection') ? document.getElementById('slRe7Slider') : null;
+      const degVal = document.getElementById('slRe7DegVal');
+      const zoneBadge = document.getElementById('slRe7ZoneBadge');
+      const noteTitle = document.getElementById('slRe7NoteTitle');
+      const noteCopy = document.getElementById('slRe7NoteCopy');
+      const heatOut = document.getElementById('slRe7HeatOut');
+      const gOut = document.getElementById('slRe7GOut');
+      const presets = section.querySelectorAll('.sl-re7-preset');
+
+      function updateAngle(val) {
+        const angle = Number(val);
+        if (degVal) degVal.textContent = angle.toFixed(1) + '\u00B0';
+        if (slider && Number(slider.value) !== angle) slider.value = String(angle);
+
+        if (angle > -3.5) {
+          if (zoneBadge) zoneBadge.textContent = 'Shallow Entry';
+          if (noteTitle) noteTitle.textContent = 'Longer air path, risk of skip-out';
+          if (noteCopy) noteCopy.textContent = 'A small downward angle takes a long curve through thin upper air. If it is too shallow, aerodynamic lift and orbital speed can skip the craft back out toward space.';
+          if (heatOut) heatOut.textContent = 'Gradual / Extended';
+          if (gOut) gOut.textContent = 'Low to Moderate';
+        } else if (angle >= -7.5) {
+          if (zoneBadge) zoneBadge.textContent = 'Balanced Corridor';
+          if (noteTitle) noteTitle.textContent = 'Controlled braking and steady heat';
+          if (noteCopy) noteCopy.textContent = 'Inside a balanced entry corridor, atmospheric drag slows the spacecraft smoothly while keeping peak temperatures and deceleration loads inside safe limits.';
+          if (heatOut) heatOut.textContent = 'Controlled Peak';
+          if (gOut) gOut.textContent = 'Moderate Peak';
+        } else {
+          if (zoneBadge) zoneBadge.textContent = 'Steep Entry';
+          if (noteTitle) noteTitle.textContent = 'Fast drop into dense air, high stress';
+          if (noteCopy) noteCopy.textContent = 'A steep angle plunges quickly into thicker lower air, causing sharper deceleration loads and intense peak heating over a shorter time.';
+          if (heatOut) heatOut.textContent = 'High Peak Heat';
+          if (gOut) gOut.textContent = 'High G-Force';
+        }
+      }
+
+      if (slider) {
+        slider.addEventListener('input', (e) => updateAngle(e.target.value));
+      }
+
+      presets.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetAngle = btn.getAttribute('data-angle');
+          if (targetAngle !== null) updateAngle(targetAngle);
+        });
+      });
+
+      updateAngle(-2);
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     EIGHTH SECTION: VELOCITY (HTML + INLINE CSS + INLINE JS)
+     ============================================================ -->
+<section id="slReentryEighthSection" aria-labelledby="slReentryEighthHeading">
+  <style>
+    #slReentryEighthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 22% 26%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 80% 78%, rgba(120, 165, 255, 0.06) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentryEighthSection .sl-re8-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentryEighthSection .sl-re8-head {
+      max-width: 780px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentryEighthSection.is-revealed .sl-re8-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryEighthSection .sl-re8-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentryEighthSection .sl-re8-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentryEighthSection .sl-re8-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* 4 Velocity Bands Strip */
+    #slReentryEighthSection .sl-re8-bands {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.76s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+    }
+
+    #slReentryEighthSection.is-revealed .sl-re8-bands {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryEighthSection .sl-re8-band-btn {
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      color: #f5f7fb;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+    }
+
+    #slReentryEighthSection .sl-re8-band-btn:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.26);
+      transform: translateY(-2px);
+    }
+
+    #slReentryEighthSection .sl-re8-band-btn.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slReentryEighthSection .sl-re8-band-speed {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(245, 247, 251, 0.58);
+    }
+
+    #slReentryEighthSection .sl-re8-band-btn.is-active .sl-re8-band-speed {
+      color: rgba(8, 11, 16, 0.65);
+    }
+
+    #slReentryEighthSection .sl-re8-band-name {
+      font-size: 21px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+    }
+
+    #slReentryEighthSection .sl-re8-band-note {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    #slReentryEighthSection .sl-re8-band-btn.is-active .sl-re8-band-note {
+      color: rgba(8, 11, 16, 0.78);
+    }
+
+    /* Detail Strip Below Bands */
+    #slReentryEighthSection .sl-re8-detail {
+      padding: 32px 34px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.16s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
+    }
+
+    #slReentryEighthSection.is-revealed .sl-re8-detail {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryEighthSection .sl-re8-detail-title {
+      font-size: clamp(24px, 2.5vw, 32px);
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.015em;
+    }
+
+    #slReentryEighthSection .sl-re8-detail-copy {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.8);
+      max-width: 780px;
+    }
+
+    #slReentryEighthSection .sl-re8-pill-stat {
+      padding: 14px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-width: 200px;
+    }
+
+    #slReentryEighthSection .sl-re8-pill-stat span {
+      display: block;
+      font-size: 12.5px;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 4px;
+    }
+
+    #slReentryEighthSection .sl-re8-pill-stat strong {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    @media (max-width: 980px) {
+      #slReentryEighthSection {
+        padding: 92px 22px;
+      }
+      #slReentryEighthSection .sl-re8-bands {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      #slReentryEighthSection .sl-re8-detail {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      #slReentryEighthSection .sl-re8-bands {
+        grid-template-columns: 1fr;
+      }
+      #slReentryEighthSection .sl-re8-pill-stat {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="sl-re8-wrap">
+    <div class="sl-re8-head">
+      <span class="sl-re8-tag">08 · Velocity</span>
+      <h2 class="sl-re8-title" id="slReentryEighthHeading">How speed drops from orbit to landing</h2>
+      <p class="sl-re8-sub">
+        Velocity is both speed and direction. Re-entry is all about shedding huge horizontal speed safely before reaching the surface.
+      </p>
+    </div>
+
+    <div class="sl-re8-bands" role="tablist" aria-label="Velocity stages during re-entry">
+      <button type="button" class="sl-re8-band-btn is-active" data-vel="0" role="tab" aria-selected="true">
+        <span class="sl-re8-band-speed">~7.8 km/s</span>
+        <span class="sl-re8-band-name">Orbital Speed</span>
+        <span class="sl-re8-band-note">Fast sideways motion</span>
+      </button>
+
+      <button type="button" class="sl-re8-band-btn" data-vel="1" role="tab" aria-selected="false">
+        <span class="sl-re8-band-speed">Mach 25 &rarr; Mach 5</span>
+        <span class="sl-re8-band-name">Hypersonic</span>
+        <span class="sl-re8-band-note">Peak thermal braking</span>
+      </button>
+
+      <button type="button" class="sl-re8-band-btn" data-vel="2" role="tab" aria-selected="false">
+        <span class="sl-re8-band-speed">Mach 5 &rarr; &lt; Mach 1</span>
+        <span class="sl-re8-band-name">Supersonic</span>
+        <span class="sl-re8-band-note">Slowing past sound</span>
+      </button>
+
+      <button type="button" class="sl-re8-band-btn" data-vel="3" role="tab" aria-selected="false">
+        <span class="sl-re8-band-speed">&lt; 30 m/s &rarr; 0</span>
+        <span class="sl-re8-band-name">Terminal &amp; Touchdown</span>
+        <span class="sl-re8-band-note">Chutes &amp; final stop</span>
+      </button>
+    </div>
+
+    <div class="sl-re8-detail">
+      <div>
+        <h3 class="sl-re8-detail-title" id="slRe8DetailTitle">High sideways speed keeps a craft in orbit</h3>
+        <p class="sl-re8-detail-copy" id="slReentryEighthCopy">
+          In low Earth orbit, moving horizontally around 7.8 km/s lets Earth curve away beneath the craft as fast as gravity pulls it down. A small retro-burn lowers the path into air.
+        </p>
+      </div>
+
+      <div class="sl-re8-pill-stat">
+        <span>Dominant Effect</span>
+        <strong id="slRe8EffectOut">Orbital Free-Fall Balance</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentryEighthSection');
+      if (!section) return;
+
+      const btns = section.querySelectorAll('.sl-re8-band-btn');
+      const titleEl = document.getElementById('slRe8DetailTitle');
+      const copyEl = document.getElementById('slReentryEighthCopy');
+      const effectEl = document.getElementById('slRe8EffectOut');
+
+      const regimes = [
+        {
+          title: 'High sideways speed keeps a craft in orbit',
+          copy: 'In low Earth orbit, moving horizontally around 7.8 km/s lets Earth curve away beneath the craft as fast as gravity pulls it down. A small retro-burn lowers the path into air.',
+          effect: 'Orbital Free-Fall Balance'
+        },
+        {
+          title: 'Hypersonic speed creates a strong shock and heat',
+          copy: 'At hypersonic speeds well above Mach 5, air compresses sharply ahead of the heat shield. Drag removes most of the kinetic energy while the shield protects the vehicle.',
+          effect: 'Shock Layer & Drag Braking'
+        },
+        {
+          title: 'Supersonic deceleration prepares for recovery',
+          copy: 'As drag continues to slow the vehicle through supersonic speeds, thermal stress eases and the craft prepares for aerodynamic control or drogue deployment.',
+          effect: 'Steady Speed Reduction'
+        },
+        {
+          title: 'Subsonic descent brings a safe, gentle arrival',
+          copy: 'Parachutes or landing thrusters bring the remaining downward speed down to a safe touch-down rate so crew and payloads arrive intact.',
+          effect: 'Controlled Landing'
+        }
+      ];
+
+      btns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const item = regimes[idx];
+          if (!item) return;
+
+          btns.forEach((b, bIdx) => {
+            const active = bIdx === idx;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', String(active));
+          });
+
+          if (titleEl) titleEl.textContent = item.title;
+          if (copyEl) copyEl.textContent = item.copy;
+          if (effectEl) effectEl.textContent = item.effect;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+
 
 </body>
 </html>
