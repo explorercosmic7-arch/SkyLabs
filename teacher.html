@@ -1128,6 +1128,13 @@
       overflow: visible;
       isolation: isolate;
     }
+    .ai-fab.ai-return {
+      animation: aiReturn .5s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes aiReturn {
+      from { transform: scale(.4); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
     body.dark .ai-fab {
       background: #3c4043;
       color: #e8eaed;
@@ -2447,7 +2454,6 @@
     }
     .tbtn.on, .tbtn.primary.on {
       /* active tab highlight */
-      opacity: 1;
     }
     .panel.show {
       animation: slPanelIn .18s ease;
@@ -2538,7 +2544,7 @@
   <section class="panel" id="labsPanel">
     <div class="bleed">
       <h2>Open a lab</h2>
-      <p class="lead">Biology, chemistry, physics &amp; aerospace — open one lab for the whole class. Quiz labs auto-send marks to Reports.</p>
+      <p class="lead">Rocketry, physics &amp; aerospace — open one lab for the whole class. Quiz labs auto-send marks to Reports.</p>
       <hr class="line" />
       <label for="labSearch">Search labs</label>
       <input id="labSearch" type="search" placeholder="Search biology, atoms, mitosis, rocket…" autocomplete="off" />
@@ -2841,9 +2847,6 @@ const OG = [
 ];
 
 let LABS = [
-  { id:"photoquiz", name:"Photosynthesis Quest", desc:"Biology quiz · light reactions, Calvin cycle · auto marks to teacher", url:"lab-photosynthesis-quiz.html", img:"https://images.unsplash.com/vector-1757328201061-d557bad5f62b?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"biology plant photosynthesis quiz science" },
-  { id:"atoms", name:"Atoms Lab", desc:"Atomic structure · shells, particles, isotopes · auto marks", url:"lab-atoms.html", img:"https://plus.unsplash.com/premium_vector-1758081739050-96df095ff89b?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"chemistry physics atom proton neutron electron isotope" },
-  { id:"celldiv", name:"Cell Division", desc:"Mitosis & meiosis · phases, chromosomes · auto marks", url:"lab-cell-division.html", img:"https://images.unsplash.com/vector-1777540715346-597738eaa948?q=80&w=1082&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"biology cell mitosis meiosis chromosome science" },
   { id:"deltav", name:"Delta-v lab", desc:"Velocity change simulation", url:"lab-deltav.html", img:"https://images.unsplash.com/vector-1770131865203-fc2b89849ee9?q=80&w=711&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket delta-v" },
   { id:"reentry", name:"Reentry heating", desc:"Thermal entry lab", url:"reentry.html", img:"https://images.unsplash.com/vector-1765389883990-6906dcaa7779?q=80&w=1050&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics heat reentry" },
   { id:"twr", name:"Thrust to weight", desc:"TWR rocket lab", url:"lab-rocket-twr.html", img:"https://images.unsplash.com/vector-1759145395771-e7c12bb7c724?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket thrust" },
@@ -2986,6 +2989,7 @@ function hidePanels() {
   document.querySelectorAll(".tbtn.on").forEach((b) => {
     if (!b.classList.contains("primary")) b.classList.remove("on");
   });
+  syncGlamberLab(); // keep Glamber in sync whenever panels/lab view change
 }
 
 function showPanel(id) {
@@ -3607,7 +3611,7 @@ let labVisibleCount = 6;
 let labFilteredList = [];
 
 function renderLabs(filterText, resetCount) {
-  if (resetCount !== false) labVisibleCount = 6;
+  if (resetCount !== false) labVisibleCount = 4; // first view: 4 lab cards
   const q = String(filterText != null ? filterText : (($("labSearch") && $("labSearch").value) || ""))
     .trim()
     .toLowerCase();
@@ -3621,13 +3625,13 @@ function renderLabs(filterText, resetCount) {
   if (meta) {
     meta.textContent = q
       ? (list.length ? list.length + " lab" + (list.length === 1 ? "" : "s") + " match “" + q + "”" : "No labs match “" + q + "”")
-      : LABS.length + " labs · biology, chemistry, physics, aerospace";
+      : LABS.length + " labs · rocketry, physics, aerospace";
   }
   const grid = $("labGrid");
   if (!grid) return;
   const moreWrap = $("labMoreWrap");
   if (!list.length) {
-    grid.innerHTML = "<p class='lead' style='grid-column:1/-1'>Try another search — e.g. photosynthesis, atoms, cell, rocket.</p>";
+    grid.innerHTML = "<p class='lead' style='grid-column:1/-1'>Try another search — e.g. reentry, rocket, delta-v.</p>";
     if (moreWrap) moreWrap.style.display = "none";
     return;
   }
@@ -3645,7 +3649,7 @@ function renderLabs(filterText, resetCount) {
       moreWrap.style.display = "flex";
       const label = $("labMoreLabel");
       const icon = $("labMoreIcon");
-      if (label) label.textContent = "Show more (" + Math.min(4, list.length - labVisibleCount) + ")";
+      if (label) label.textContent = "Show more (" + Math.min(2, list.length - labVisibleCount) + ")";
       if (icon) icon.textContent = "expand_more";
     } else {
       moreWrap.style.display = "none";
@@ -3661,7 +3665,7 @@ function loadMoreLabs() {
   if (icon) icon.textContent = "progress_activity";
   if (label) label.textContent = "Loading…";
   setTimeout(() => {
-    labVisibleCount += 4;
+    labVisibleCount += 2; // each "Show more" reveals 2 more labs
     renderLabs(undefined, false);
     if (btn) btn.classList.remove("loading");
   }, 450);
@@ -3977,6 +3981,22 @@ async function openLab(id) {
   wsSend({ type: "macro", action: "OPEN_LAB", payload: { labUrl: lab.url, labName: lab.name, frictionMul: frictionMul, simFrozen: simFrozen } });
   addNote("Opened " + lab.name);
   snack(lab.name + " sent to the class");
+  syncGlamberLab(); // Glamber steps aside while a lab is open
+}
+
+/* Glamber hides while a lab is open on screen, returns when it closes */
+function syncGlamberLab() {
+  const fab = $("aiFab");
+  if (!fab) return;
+  const labOpen = !!$("labFrame") && $("labFrame").classList.contains("show");
+  fab.style.display = labOpen ? "none" : "";
+  if (labOpen) {
+    const panel = $("aiPanel");
+    if (panel && panel.classList.contains("show")) setAiPanelOpen(false);
+  } else {
+    fab.classList.add("ai-return");
+    setTimeout(() => fab && fab.classList.remove("ai-return"), 600);
+  }
 }
 
 function openMsg(sid, nick) {
@@ -4688,6 +4708,7 @@ $("btnCloseLab").onclick = async () => {
   wsSend({ type: "macro", action: "LOBBY", payload: {} });
   $("labFrame").removeAttribute("src");
   $("labFrame").classList.remove("show");
+  syncGlamberLab(); // Glamber comes back after the lab closes
   view = "class";
   $("stage").style.display = "grid";
   renderStage();
@@ -5560,7 +5581,7 @@ async function aiSend() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gpt-oss-120b",
+        // your worker fixes the model (gpt-oss-120b via Groq) and rotates keys itself
         messages: [
           {
             role: "system",
