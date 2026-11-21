@@ -1,0 +1,4076 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Google Fonts & Material Symbols Activation -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&family=Inter:wght@300;400;500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <title>SkyLabs</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="SkyLabs">
+    <meta name="description" content="SkyLabs — interactive STEM labs, real-time virtual classrooms, simulations, and collaborative learning tools.">
+    <meta name="keywords" content="SkyLabs, STEM labs, virtual classroom, interactive simulations, physics lab, biology lab, chemistry lab, aerospace simulations">
+    <meta name="author" content="SkyLabs">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://skylabs.pages.dev/">
+
+    <!-- Favicon, PWA & Theme Color -->
+    <link rel="icon" type="image/png" href="Favicon.png">
+    <link rel="apple-touch-icon" href="Favicon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1a73e8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SkyLabs">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skylabs.pages.dev/">
+    <meta property="og:title" content="SkyLabs">
+    <meta property="og:description" content="Interactive STEM laboratories, real-time classrooms, and simulations built for hands-on learning.">
+    <meta property="og:image" content="https://skylabs.pages.dev/Logo.png">
+    <meta property="og:site_name" content="SkyLabs">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://skylabs.pages.dev/">
+    <meta name="twitter:title" content="SkyLabs">
+    <meta name="twitter:description" content="Interactive STEM laboratories, real-time classrooms, and simulations built for hands-on learning.">
+    <meta name="twitter:image" content="https://skylabs.pages.dev/Logo.png">
+
+    <!-- JSON-LD Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "@id": "https://skylabs.pages.dev/#website",
+          "url": "https://skylabs.pages.dev/",
+          "name": "SkyLabs",
+          "description": "Interactive STEM labs, real-time classrooms, and science simulations.",
+          "publisher": {
+            "@type": "Organization",
+            "name": "SkyLabs",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://skylabs.pages.dev/Logo.png"
+            }
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://skylabs.pages.dev/#organization",
+          "name": "SkyLabs",
+          "url": "https://skylabs.pages.dev/",
+          "logo": "https://skylabs.pages.dev/Logo.png",
+          "sameAs": []
+        }
+      ]
+    }
+    </script>
+</head>
+  <!-- Google Sans (Light / Regular / Medium) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --sl-nav-height: 92px;
+      --sl-glass-bg: rgba(8, 10, 14, 0.72);
+      --sl-glass-bg-scrolled: rgba(5, 7, 10, 0.86);
+      --sl-glass-border: rgba(255, 255, 255, 0.14);
+      --sl-text: #f5f7fb;
+      --sl-text-muted: rgba(245, 247, 251, 0.78);
+      --sl-hover-bg: rgba(255, 255, 255, 0.10);
+      --sl-dropdown-bg: rgba(12, 15, 22, 0.90);
+      --sl-accent-pill: #ffffff;
+      --sl-accent-text: #090b10;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ============================================================
+       CUSTOM THIN BLACK SCROLLBAR (WEBKIT + FIREFOX)
+       ============================================================ */
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.24) #05070b;
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #05070b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    html, body {
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      background-color: #06080c;
+      color: var(--sl-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============================================================
+       MASSIVE BLACK GLASS NAVIGATION BAR (GOOGLE-CLEAN STYLE)
+       ============================================================ */
+    .sl-glass-nav {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      width: 100%;
+      min-height: var(--sl-nav-height);
+      background: var(--sl-glass-bg);
+      backdrop-filter: blur(22px) saturate(165%);
+      -webkit-backdrop-filter: blur(22px) saturate(165%);
+      border-bottom: 1px solid var(--sl-glass-border);
+      transition: background-color 0.28s ease, border-color 0.28s ease;
+    }
+
+    .sl-glass-nav.is-scrolled {
+      background: var(--sl-glass-bg-scrolled);
+      border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .sl-nav-container {
+      position: relative;
+      z-index: 10002;
+      width: 100%;
+      max-width: 1640px;
+      min-height: var(--sl-nav-height);
+      margin: 0 auto;
+      padding: 12px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      background: inherit;
+    }
+
+    /* Left Cluster: Massive Icon + Massive SkyLabs Word + Gap */
+    .sl-left-group {
+      display: flex;
+      align-items: center;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .sl-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      text-decoration: none;
+      color: var(--sl-text);
+      flex-shrink: 0;
+      margin-right: 64px; /* Bit gap before starting nav buttons */
+    }
+
+    .sl-brand-icon {
+      width: 66px;
+      height: 66px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.55));
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-brand:hover .sl-brand-icon {
+      transform: scale(1.05);
+    }
+
+    .sl-brand-word {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--sl-text);
+      white-space: nowrap;
+    }
+
+    /* Navigation Links (Words Only, Massive Google Sans) */
+    .sl-nav-list {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sl-nav-item {
+      position: relative;
+    }
+
+    .sl-nav-trigger {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--sl-text);
+      text-decoration: none;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+    }
+
+    .sl-nav-item:hover > .sl-nav-trigger,
+    .sl-nav-item:focus-within > .sl-nav-trigger,
+    .sl-nav-trigger:hover {
+      background: var(--sl-hover-bg);
+      border-color: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    /* Animated Glass Dropdown Menu */
+    .sl-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      min-width: 270px;
+      padding: 12px;
+      border-radius: 22px;
+      background: var(--sl-dropdown-bg);
+      backdrop-filter: blur(26px) saturate(170%);
+      -webkit-backdrop-filter: blur(26px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.65);
+
+      /* Smooth open/close animation */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) scale(0.98);
+      transform-origin: top left;
+      pointer-events: none;
+      transition:
+        opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0.24s linear;
+    }
+
+    /* Invisible hover bridge so moving cursor to dropdown never flickers */
+    .sl-dropdown::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      left: 0;
+      right: 0;
+      height: 14px;
+    }
+
+    .sl-nav-item:hover > .sl-dropdown,
+    .sl-nav-item:focus-within > .sl-dropdown,
+    .sl-dropdown.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .sl-dropdown-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sl-dropdown-link {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--sl-text);
+      text-decoration: none;
+      transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    }
+
+    .sl-dropdown-link:hover,
+    .sl-dropdown-link:focus-visible {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .sl-dropdown-badge {
+      display: inline-block;
+      margin-bottom: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #0b0e14;
+      background: #ffffff;
+    }
+
+    /* Right Side Corner Button: Massive Words Only */
+    .sl-right-action {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .sl-join-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 32px;
+      border-radius: 999px;
+      background: var(--sl-accent-pill);
+      color: var(--sl-accent-text);
+      font-family: 'Google Sans', sans-serif;
+      font-size: 23px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 24px rgba(255, 255, 255, 0.14);
+    }
+
+    .sl-join-btn:hover,
+    .sl-join-btn:focus-visible {
+      background: #e9eef8;
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.22);
+    }
+
+    .sl-join-btn:active {
+      transform: scale(0.98);
+    }
+
+    /* ============================================================
+       MOBILE 2-LINE HAMBURGER (NO CIRCLE CONTAINER) -> SLOW CLOSE
+       ============================================================ */
+    .sl-hamburger {
+      display: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .sl-hamburger-line {
+      width: 26px;
+      height: 1.75px;
+      border-radius: 999px;
+      background: var(--sl-text);
+      transform-origin: center;
+      transition:
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.45s ease;
+    }
+
+    .sl-hamburger.is-open .sl-hamburger-line:nth-child(1) {
+      transform: translateY(4.375px) rotate(45deg);
+    }
+
+    .sl-hamburger.is-open .sl-hamburger-line:nth-child(2) {
+      transform: translateY(-4.375px) rotate(-45deg);
+    }
+
+    /* ============================================================
+       MOBILE FULL-WIDTH TOP PANEL (DROPS FROM TOP & SPREADS TO EDGE)
+       ============================================================ */
+    .sl-mobile-panel {
+      display: none;
+      position: fixed;
+      top: var(--sl-nav-height);
+      left: 0;
+      right: 0;
+      width: 100vw;
+      max-height: calc(100vh - var(--sl-nav-height));
+      overflow-y: auto;
+      z-index: 10000;
+      padding: 16px 24px 32px;
+      background: rgba(8, 10, 15, 0.94);
+      backdrop-filter: blur(28px) saturate(175%);
+      -webkit-backdrop-filter: blur(28px) saturate(175%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-100%) scaleX(0.92);
+      transform-origin: top center;
+      pointer-events: none;
+      transition:
+        transform 0.58s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.42s ease,
+        visibility 0.58s linear;
+    }
+
+    .sl-mobile-panel.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scaleX(1);
+      pointer-events: auto;
+    }
+
+    .sl-mobile-section {
+      padding: 6px 0;
+    }
+
+    .sl-mobile-main-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 4px;
+      background: transparent;
+      border: 0;
+      color: #ffffff;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 25px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .sl-arrow {
+      display: inline-block;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--sl-text-muted);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-mobile-main-btn.is-open .sl-arrow {
+      transform: rotate(90deg);
+    }
+
+    /* Smooth accordion collapse/expand for mobile dropdowns */
+    .sl-mobile-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.32s ease;
+    }
+
+    .sl-mobile-collapse.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .sl-mobile-collapse-inner {
+      overflow: hidden;
+    }
+
+    .sl-mobile-sublist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px 0 12px 12px;
+    }
+
+    .sl-mobile-sublist a {
+      display: block;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--sl-text-muted);
+      text-decoration: none;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sl-mobile-sublist a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .sl-mobile-divider {
+      border: 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 6px 0;
+    }
+
+    .sl-mobile-join {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+      padding: 16px 24px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #090b10;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 23px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .sl-mobile-join:hover {
+      background: #e9eef8;
+    }
+
+    @media (max-width: 1240px) {
+      .sl-nav-container {
+        padding: 12px 24px;
+        gap: 18px;
+      }
+      .sl-brand {
+        margin-right: 32px;
+        gap: 14px;
+      }
+      .sl-brand-icon {
+        width: 54px;
+        height: 54px;
+      }
+      .sl-brand-word {
+        font-size: 32px;
+      }
+      .sl-nav-trigger {
+        font-size: 19px;
+        padding: 10px 15px;
+      }
+      .sl-dropdown-link {
+        font-size: 18px;
+      }
+      .sl-join-btn {
+        font-size: 20px;
+        padding: 13px 24px;
+      }
+    }
+
+    @media (max-width: 1020px) {
+      :root {
+        --sl-nav-height: 78px;
+      }
+      .sl-nav-list,
+      .sl-right-action {
+        display: none;
+      }
+      .sl-hamburger {
+        display: inline-flex;
+      }
+      .sl-mobile-panel {
+        display: block;
+      }
+      .sl-brand {
+        margin-right: 0;
+      }
+      .sl-brand-icon {
+        width: 52px;
+        height: 52px;
+      }
+      .sl-brand-word {
+        font-size: 30px;
+      }
+    }
+
+    /* ============================================================
+       SKYLABS HERO SECTION (SLIGHTLY SCALED · EDGE-TO-EDGE)
+       ============================================================ */
+    .sl-hero {
+      position: relative;
+      width: 100%;
+      min-height: 92vh;
+      min-height: 92dvh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 96px 28px 68px;
+      background-color: #05070c;
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      isolation: isolate;
+    }
+
+    /* Full-bleed edge-to-edge background photo */
+    .sl-hero-bg {
+      position: absolute;
+      inset: -6%;
+      z-index: -2;
+      background-image: url("https://images.unsplash.com/photo-1516850228053-a807778c4e0f?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      transform: translate3d(0, 0, 0) scale(1.04);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    /* Atmospheric dark & glass gradient overlay for crisp contrast */
+    .sl-hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(8, 12, 22, 0.36) 0%, rgba(5, 7, 12, 0.78) 72%, rgba(4, 6, 10, 0.92) 100%),
+        linear-gradient(180deg, rgba(5, 7, 12, 0.54) 0%, rgba(5, 7, 12, 0.42) 48%, rgba(5, 7, 12, 0.88) 100%);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+    }
+
+    .sl-hero-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Slightly scaled crisp Google Sans slogan */
+    .sl-hero-title {
+      font-family: 'Google Sans', sans-serif;
+      font-size: clamp(42px, 7.2vw, 98px);
+      font-weight: 400;
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      text-shadow: 0 12px 42px rgba(0, 0, 0, 0.55);
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Clean short paragraph below slogan */
+    .sl-hero-sub {
+      margin-top: 20px;
+      max-width: 540px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: clamp(15px, 1.45vw, 19px);
+      font-weight: 300;
+      line-height: 1.5;
+      letter-spacing: -0.005em;
+      color: rgba(245, 247, 251, 0.84);
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.14s, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s;
+    }
+
+    /* Separated action buttons ("Start" and "Docs") */
+    .sl-hero-actions {
+      margin-top: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.26s, transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.26s;
+    }
+
+    .sl-hero.is-ready .sl-hero-title,
+    .sl-hero.is-ready .sl-hero-sub,
+    .sl-hero.is-ready .sl-hero-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sl-hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 136px;
+      padding: 13px 30px;
+      border-radius: 999px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      cursor: pointer;
+      transition:
+        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.24s ease,
+        border-color 0.24s ease,
+        box-shadow 0.24s ease;
+    }
+
+    .sl-hero-btn-primary {
+      background: #ffffff;
+      color: #080b10;
+      border: 1px solid #ffffff;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .sl-hero-btn-primary:hover,
+    .sl-hero-btn-primary:focus-visible {
+      background: #e9eef8;
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 14px 36px rgba(255, 255, 255, 0.24);
+    }
+
+    .sl-hero-btn-secondary {
+      background: rgba(10, 14, 22, 0.58);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .sl-hero-btn-secondary:hover,
+    .sl-hero-btn-secondary:focus-visible {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.52);
+      transform: translateY(-2px) scale(1.02);
+    }
+
+    .sl-hero-btn:active {
+      transform: scale(0.98);
+    }
+
+    @media (max-width: 768px) {
+      .sl-hero {
+        min-height: 86vh;
+        min-height: 86dvh;
+        padding: 88px 20px 52px;
+      }
+      .sl-hero-sub {
+        margin-top: 16px;
+        font-size: 15px;
+      }
+      .sl-hero-actions {
+        margin-top: 26px;
+        gap: 12px;
+        width: 100%;
+      }
+      .sl-hero-btn {
+        flex: 1 1 124px;
+        min-width: 120px;
+        padding: 12px 20px;
+        font-size: 16px;
+      }
+    }
+
+    /* ============================================================
+       SECTION 1: WHAT IS SKYLABS? (BLACK GLASS · GOOGLE SANS)
+       ============================================================ */
+    .sl-what-section {
+      position: relative;
+      width: 100%;
+      padding: 112px 32px;
+      background:
+        radial-gradient(circle at 82% 25%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        linear-gradient(180deg, #05070c 0%, #070a10 50%, #05070c 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--sl-text);
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+    }
+
+    .sl-what-container {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.75fr);
+      align-items: center;
+      gap: 56px;
+    }
+
+    .sl-what-text {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-what-section.is-visible .sl-what-text {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sl-what-heading {
+      font-family: 'Google Sans', sans-serif;
+      font-size: clamp(36px, 4.8vw, 62px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 22px;
+    }
+
+    .sl-what-desc {
+      font-family: 'Google Sans', sans-serif;
+      font-size: clamp(17px, 1.55vw, 21px);
+      font-weight: 300;
+      line-height: 1.68;
+      letter-spacing: -0.005em;
+      color: var(--sl-text-muted);
+      margin-bottom: 18px;
+      max-width: 680px;
+    }
+
+    .sl-what-desc:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Curved Glass Box Beside Text Holding Favicon.png */
+    .sl-what-media {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(28px) scale(0.96);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.14s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.14s;
+    }
+
+    .sl-what-section.is-visible .sl-what-media {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .sl-curved-box {
+      width: 100%;
+      max-width: 360px;
+      aspect-ratio: 1 / 1;
+      border-radius: 36px;
+      padding: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      backdrop-filter: blur(22px) saturate(160%);
+      -webkit-backdrop-filter: blur(22px) saturate(160%);
+      border: 1px solid #000;
+      box-shadow:
+        0 24px 60px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease;
+    }
+
+    .sl-curved-box:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .sl-curved-box img {
+      width: 78%;
+      height: 78%;
+      object-fit: cover;
+      display: block;
+    }
+
+    @media (max-width: 920px) {
+      .sl-what-section {
+        padding: 84px 24px;
+      }
+      .sl-what-container {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+      .sl-what-media {
+        width: 100%;
+        justify-content: center;
+      }
+      .sl-curved-box {
+        margin: 0 auto;
+        max-width: 240px;
+        border-radius: 28px;
+        padding: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="sl-glass-nav" id="slGlassNav">
+    <div class="sl-nav-container">
+      <div class="sl-left-group">
+        <!-- Left: Massive Icon + Massive SkyLabs Word + Gap -->
+        <a href="index.html" class="sl-brand" aria-label="SkyLabs Space Lab Home">
+          <img
+            src="Favicon.png"
+            onerror="this.onerror=null; this.src='Logo.jpg';"
+            alt="SkyLabs Mark"
+            class="sl-brand-icon"
+          />
+          <span class="sl-brand-word">SkyLabs</span>
+        </a>
+
+        <!-- Navigation Links (Words Only) -->
+        <nav aria-label="Primary Navigation">
+          <ul class="sl-nav-list">
+            <!-- 1. About Dropdown: Journey, Labs, Telemetry -->
+            <li class="sl-nav-item">
+              <a href="#about" class="sl-nav-trigger" aria-expanded="false">About</a>
+              <div class="sl-dropdown" role="menu" aria-label="About menu">
+                <ul class="sl-dropdown-list">
+                  <li><a href="#journey" class="sl-dropdown-link" role="menuitem">Journey</a></li>
+                  <li><a href="#labs" class="sl-dropdown-link" role="menuitem">Labs</a></li>
+                  <li><a href="#telemetry" class="sl-dropdown-link" role="menuitem">Telemetry</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <!-- 2. Class Dropdown: 3 Space Lab Topics -->
+            <li class="sl-nav-item">
+              <a href="join.html" class="sl-nav-trigger" aria-expanded="false">Class</a>
+              <div class="sl-dropdown" role="menu" aria-label="Class topics">
+                <ul class="sl-dropdown-list">
+                  <li><a href="join.html#orbital-mechanics" class="sl-dropdown-link" role="menuitem">Orbital Mechanics</a></li>
+                  <li><a href="join.html#rocket-propulsion" class="sl-dropdown-link" role="menuitem">Rocket Propulsion</a></li>
+                  <li><a href="join.html#exoplanet-lab" class="sl-dropdown-link" role="menuitem">Exoplanet Lab</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <!-- 3. Contact -->
+            <li class="sl-nav-item">
+              <a href="Contact.html" class="sl-nav-trigger">Contact</a>
+            </li>
+
+            <!-- 4. Docs Dropdown: Important -->
+            <li class="sl-nav-item">
+              <a href="#docs" class="sl-nav-trigger" aria-expanded="false">Docs</a>
+              <div class="sl-dropdown" role="menu" aria-label="Documentation">
+                <span class="sl-dropdown-badge">Important</span>
+                <ul class="sl-dropdown-list">
+                  <li><a href="#important-mission-guide" class="sl-dropdown-link" role="menuitem">Mission Guide</a></li>
+                  <li><a href="#important-sim-physics" class="sl-dropdown-link" role="menuitem">Simulation Physics</a></li>
+                  <li><a href="#important-safety-rules" class="sl-dropdown-link" role="menuitem">Lab Safety &amp; Rules</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <!-- Right Corner Button: Massive Words Only -->
+      <div class="sl-right-action">
+        <a href="join.html" class="sl-join-btn">Join Now</a>
+      </div>
+
+      <!-- Mobile 2-Line Hamburger Button (No Circle Container) -->
+      <button
+        type="button"
+        class="sl-hamburger"
+        id="slHamburger"
+        aria-label="Toggle Navigation Menu"
+        aria-expanded="false"
+        aria-controls="slMobilePanel"
+      >
+        <span class="sl-hamburger-line"></span>
+        <span class="sl-hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Mobile Full-Width Top Panel -->
+    <div class="sl-mobile-panel" id="slMobilePanel" aria-label="Mobile Navigation">
+      <!-- 1. About -->
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobAbout" aria-expanded="false">
+          <span>About</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobAbout">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="#about-all">About All</a></li>
+              <li><a href="#journey">Journey</a></li>
+              <li><a href="#labs">Labs</a></li>
+              <li><a href="#telemetry">Telemetry</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <!-- 2. Class -->
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobClass" aria-expanded="false">
+          <span>Class</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobClass">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="join.html#orbital-mechanics">Orbital Mechanics</a></li>
+              <li><a href="join.html#rocket-propulsion">Rocket Propulsion</a></li>
+              <li><a href="join.html#exoplanet-lab">Exoplanet Lab</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <!-- 3. Contact -->
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobContact" aria-expanded="false">
+          <span>Contact</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobContact">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="#contact-mission">Mission Desk</a></li>
+              <li><a href="#contact-educators">Educators &amp; Schools</a></li>
+              <li><a href="#contact-support">Lab Support</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <!-- 4. Docs -->
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobDocs" aria-expanded="false">
+          <span>Docs</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobDocs">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="#important-mission-guide">Important — Mission Guide</a></li>
+              <li><a href="#important-sim-physics">Important — Simulation Physics</a></li>
+              <li><a href="#important-safety-rules">Important — Lab Safety &amp; Rules</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <a href="join.html" class="sl-mobile-join">Join Now</a>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       SKYLABS HERO SECTION (SLIGHTLY SCALED · EDGE-TO-EDGE)
+       ============================================================ -->
+  <section class="sl-hero" id="slHero" aria-label="SkyLabs Space Lab Hero">
+    <div class="sl-hero-bg" id="slHeroBg" aria-hidden="true"></div>
+    <div class="sl-hero-overlay" aria-hidden="true"></div>
+
+    <div class="sl-hero-inner">
+      <h1 class="sl-hero-title">Orbit. Simulate. Launch.</h1>
+      <p class="sl-hero-sub">
+        Interactive orbital mechanics, rocket propulsion labs, and real-time space classrooms built for hands-on cosmic discovery.
+      </p>
+
+      <div class="sl-hero-actions">
+        <a href="Start.html" class="sl-hero-btn sl-hero-btn-primary">Start</a>
+        <a href="#what-is-skylabs" class="sl-hero-btn sl-hero-btn-secondary">View</a>
+      </div>
+    </div>
+  </section>
+<hr>
+  <!-- ============================================================
+       SECTION 1: WHAT IS SKYLABS?
+       ============================================================ -->
+  <section class="sl-what-section" id="what-is-skylabs" aria-labelledby="slWhatHeading">
+    <div class="sl-what-container">
+      <div class="sl-what-text">
+        <h2 class="sl-what-heading" id="slWhatHeading">What is SkyLabs?</h2>
+        <p class="sl-what-desc">
+          SkyLabs is an interactive space learning lab where you can explore how rockets fly, how planets and satellites stay in orbit, and how real space missions work. Instead of only reading long textbooks, you test ideas visually and learn by doing.
+        </p>
+        <p class="sl-what-desc">
+          Whether you are a student starting with basic space science, a teacher running a live class, or someone curious about rockets and astronomy, SkyLabs brings clear simulations and guided lessons together in one simple place.
+        </p>
+      </div>
+
+      <div class="sl-what-media">
+        <div class="sl-curved-box">
+          <img
+            src="Favicon.png"
+            onerror="this.onerror=null; this.src='Logo.jpg';"
+            alt="SkyLabs Emblem"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const glassNav = document.getElementById('slGlassNav');
+    const hamburger = document.getElementById('slHamburger');
+    const mobilePanel = document.getElementById('slMobilePanel');
+    const navItems = document.querySelectorAll('.sl-nav-item');
+
+    window.addEventListener('scroll', () => {
+      glassNav.classList.toggle('is-scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // PC dropdown behavior preserved from attached index.html
+    navItems.forEach((item) => {
+      const trigger = item.querySelector('.sl-nav-trigger');
+      const dropdown = item.querySelector('.sl-dropdown');
+      if (!trigger || !dropdown) return;
+
+      item.addEventListener('mouseenter', () => {
+        trigger.setAttribute('aria-expanded', 'true');
+      });
+
+      item.addEventListener('mouseleave', () => {
+        trigger.setAttribute('aria-expanded', 'false');
+        dropdown.classList.remove('is-open');
+      });
+
+      trigger.addEventListener('click', (e) => {
+        const isTouchOrKeyboard = window.matchMedia('(hover: none)').matches;
+        if (isTouchOrKeyboard) {
+          const willOpen = !dropdown.classList.contains('is-open');
+          if (willOpen) {
+            e.preventDefault();
+            document.querySelectorAll('.sl-dropdown.is-open').forEach((d) => d.classList.remove('is-open'));
+            dropdown.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+          }
+        }
+      });
+    });
+
+    // Mobile 2-line hamburger -> slow close + top panel drop/spread
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobilePanel.classList.toggle('is-open');
+      hamburger.classList.toggle('is-open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // Mobile main buttons: arrow rotates, dropdown opens, others auto-close
+    const mobileButtons = document.querySelectorAll('.sl-mobile-main-btn[data-mobile-target]');
+
+    mobileButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-mobile-target');
+        const targetCollapse = document.getElementById(targetId);
+        const willOpen = targetCollapse && !targetCollapse.classList.contains('is-open');
+
+        mobileButtons.forEach((otherBtn) => {
+          const otherId = otherBtn.getAttribute('data-mobile-target');
+          const otherCollapse = document.getElementById(otherId);
+          otherBtn.classList.remove('is-open');
+          otherBtn.setAttribute('aria-expanded', 'false');
+          if (otherCollapse) otherCollapse.classList.remove('is-open');
+        });
+
+        if (willOpen && targetCollapse) {
+          btn.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+          targetCollapse.classList.add('is-open');
+        }
+      });
+    });
+
+    // Hero entrance + subtle scroll/pointer depth
+    (function initHeroMotion() {
+      const hero = document.getElementById('slHero');
+      const heroBg = document.getElementById('slHeroBg');
+      if (!hero || !heroBg) return;
+
+      requestAnimationFrame(() => {
+        hero.classList.add('is-ready');
+      });
+
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduceMotion) return;
+
+      let currentScrollY = 0;
+      let pointerX = 0;
+      let pointerY = 0;
+
+      function applyHeroTransform() {
+        const offsetY = Math.min(currentScrollY * 0.14, 90);
+        const moveX = pointerX * 12;
+        const moveY = pointerY * 10 + offsetY;
+        heroBg.style.transform = `translate3d(${moveX.toFixed(1)}px, ${moveY.toFixed(1)}px, 0) scale(1.06)`;
+      }
+
+      window.addEventListener('scroll', () => {
+        currentScrollY = window.scrollY || 0;
+        requestAnimationFrame(applyHeroTransform);
+      }, { passive: true });
+
+      hero.addEventListener('pointermove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        pointerX = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+        pointerY = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+        requestAnimationFrame(applyHeroTransform);
+      }, { passive: true });
+
+      hero.addEventListener('pointerleave', () => {
+        pointerX = 0;
+        pointerY = 0;
+        requestAnimationFrame(applyHeroTransform);
+      });
+    })();
+
+    // Section 1 entrance animation when scrolling near the section
+    (function initWhatSectionReveal() {
+      const whatSection = document.getElementById('what-is-skylabs');
+      if (!whatSection) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        whatSection.classList.add('is-visible');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              whatSection.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -80px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(whatSection);
+    })();
+  </script>
+<hr>
+<!-- ============================================================
+     SECTION 2: HOW IT WORKS (HTML + INLINE CSS + INLINE JS)
+     ============================================================ -->
+<section id="slHowItWorks" aria-labelledby="slHowHeading">
+  <style>
+    #slHowItWorks {
+      position: relative;
+      width: 100%;
+      padding: 116px 32px;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(120, 165, 255, 0.07) 0%, transparent 46%),
+        radial-gradient(circle at 85% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #080b12 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slHowItWorks .sl-hiw-wrap {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* Section Header */
+    #slHowItWorks .sl-hiw-header {
+      max-width: 720px;
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slHowItWorks.is-active .sl-hiw-header {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slHowItWorks .sl-hiw-eyebrow {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.85);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slHowItWorks .sl-hiw-title {
+      font-size: clamp(36px, 4.8vw, 62px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slHowItWorks .sl-hiw-subtitle {
+      font-size: clamp(16px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.76);
+    }
+
+    /* Main 2-Column Layout: Interactive Steps + Wide Visual Stage */
+    #slHowItWorks .sl-hiw-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    #slHowItWorks .sl-hiw-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #slHowItWorks .sl-hiw-step {
+      position: relative;
+      width: 100%;
+      text-align: left;
+      padding: 22px 24px;
+      border-radius: 22px;
+      background: rgba(12, 16, 25, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      cursor: pointer;
+      color: inherit;
+      font-family: inherit;
+      opacity: 0;
+      transform: translateX(-24px);
+      transition:
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.25s ease,
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+
+    #slHowItWorks .sl-hiw-step:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slHowItWorks .sl-hiw-step:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slHowItWorks.is-active .sl-hiw-step {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    #slHowItWorks .sl-hiw-step:hover {
+      background: rgba(18, 24, 38, 0.82);
+      border-color: rgba(255, 255, 255, 0.22);
+    }
+
+    #slHowItWorks .sl-hiw-step.is-selected {
+      background: rgba(22, 29, 46, 0.94);
+      border-color: rgba(255, 255, 255, 0.42);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.55);
+      transform: translateX(6px);
+    }
+
+    #slHowItWorks .sl-hiw-step-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 8px;
+    }
+
+    #slHowItWorks .sl-hiw-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 400;
+      color: #f5f7fb;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      transition: background-color 0.25s ease, color 0.25s ease;
+      flex-shrink: 0;
+    }
+
+    #slHowItWorks .sl-hiw-step.is-selected .sl-hiw-num {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slHowItWorks .sl-hiw-step-title {
+      font-size: 21px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+    }
+
+    #slHowItWorks .sl-hiw-step-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.76);
+      padding-left: 48px;
+    }
+
+    /* Wide Panoramic Image Stage (Distinct from Section 1's small square box) */
+    #slHowItWorks .sl-hiw-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: 26px;
+      overflow: hidden;
+      background: #ffff;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 28px 70px rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+      transition:
+        opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.16s,
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
+    }
+
+    #slHowItWorks.is-active .sl-hiw-stage {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    #slHowItWorks .sl-hiw-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.03);
+      transition: opacity 0.45s ease, transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slHowItWorks .sl-hiw-img.is-fading {
+      opacity: 0.25;
+      transform: scale(1.07);
+    }
+
+    #slHowItWorks .sl-hiw-caption {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 28px 26px 22px;
+      background: linear-gradient(180deg, rgba(5, 7, 12, 0) 0%, rgba(5, 7, 12, 0.88) 100%);
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    #slHowItWorks .sl-hiw-caption-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: rgba(245, 247, 251, 0.7);
+      margin-bottom: 4px;
+    }
+
+    #slHowItWorks .sl-hiw-caption-text {
+      font-size: 18px;
+      font-weight: 400;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    #slHowItWorks .sl-hiw-pill {
+      padding: 7px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      color: #090b10;
+      background: #ffffff;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 960px) {
+      #slHowItWorks {
+        padding: 88px 22px;
+      }
+      #slHowItWorks .sl-hiw-grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      #slHowItWorks .sl-hiw-stage {
+        order: -1;
+        aspect-ratio: 16 / 11;
+        border-radius: 20px;
+      }
+      #slHowItWorks .sl-hiw-step {
+        padding: 18px 18px;
+        border-radius: 18px;
+      }
+      #slHowItWorks .sl-hiw-step.is-selected {
+        transform: none;
+      }
+      #slHowItWorks .sl-hiw-step-desc {
+        padding-left: 0;
+        margin-top: 6px;
+        font-size: 15px;
+      }
+      #slHowItWorks .sl-hiw-caption {
+        padding: 20px 18px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+
+  <div class="sl-hiw-wrap">
+    <div class="sl-hiw-header">
+      <span class="sl-hiw-eyebrow">Workflow</span>
+      <h2 class="sl-hiw-title" id="slHowHeading">How it works</h2>
+      <p class="sl-hiw-subtitle">
+        Go from a simple space question to a live orbital or rocket experiment in three clear steps.
+      </p>
+    </div>
+
+    <div class="sl-hiw-grid">
+      <div class="sl-hiw-steps" role="tablist" aria-label="How SkyLabs works steps">
+        <button
+          type="button"
+          class="sl-hiw-step is-selected"
+          data-step="0"
+          role="tab"
+          aria-selected="true"
+        >
+          <div class="sl-hiw-step-top">
+            <span class="sl-hiw-num">01</span>
+            <h3 class="sl-hiw-step-title">Choose a topic or lab</h3>
+          </div>
+          <p class="sl-hiw-step-desc">
+            Pick orbital mechanics, rocket propulsion, or exoplanet study based on what you want to explore today.
+          </p>
+        </button>
+
+        <button
+          type="button"
+          class="sl-hiw-step"
+          data-step="1"
+          role="tab"
+          aria-selected="false"
+        >
+          <div class="sl-hiw-step-top">
+            <span class="sl-hiw-num">02</span>
+            <h3 class="sl-hiw-step-title">Adjust thrust, speed, and gravity</h3>
+          </div>
+          <p class="sl-hiw-step-desc">
+            Change values in real time and watch right away how a rocket climbs, turns, or settles into orbit.
+          </p>
+        </button>
+
+        <button
+          type="button"
+          class="sl-hiw-step"
+          data-step="2"
+          role="tab"
+          aria-selected="false"
+        >
+          <div class="sl-hiw-step-top">
+            <span class="sl-hiw-num">03</span>
+            <h3 class="sl-hiw-step-title">Learn from live results</h3>
+          </div>
+          <p class="sl-hiw-step-desc">
+            See why a launch succeeds or misses its target with clear visual feedback and short guided notes.
+          </p>
+        </button>
+      </div>
+
+      <div class="sl-hiw-stage">
+        <img
+          id="slHiwImg"
+          class="sl-hiw-img"
+          src="https://plus.unsplash.com/premium_vector-1773230443771-83ea4bebbc37?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+          alt="Rocket ascending into the night sky during a launch mission"
+        />
+        <div class="sl-hiw-caption">
+          <div>
+            <div class="sl-hiw-caption-label" id="slHiwLabel">Step 01 · Mission Selection</div>
+            <div class="sl-hiw-caption-text" id="slHiwCaption">Start with a focused space lab and clear goals</div>
+          </div>
+          <span class="sl-hiw-pill" id="slHiwBadge">Step 1 of 3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slHowItWorks');
+      if (!section) return;
+
+      const steps = section.querySelectorAll('.sl-hiw-step');
+      const imgEl = document.getElementById('slHiwImg');
+      const labelEl = document.getElementById('slHiwLabel');
+      const captionEl = document.getElementById('slHiwCaption');
+      const badgeEl = document.getElementById('slHiwBadge');
+
+      const fallbackSvg =
+        'data:image/svg+xml;utf8,' +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750">' +
+            '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0%" stop-color="#0b101d"/><stop offset="100%" stop-color="#17233b"/>' +
+            '</linearGradient></defs>' +
+            '<rect width="1200" height="750" fill="url(#g)"/>' +
+            '<circle cx="600" cy="375" r="210" fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="2" stroke-dasharray="8 8"/>' +
+            '<circle cx="600" cy="375" r="95" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.28)" stroke-width="2"/>' +
+            '<text x="600" y="640" text-anchor="middle" fill="rgba(255,255,255,0.72)" font-family="sans-serif" font-size="24">SkyLabs Flight &amp; Orbit Stage</text>' +
+          '</svg>'
+        );
+
+      const stepData = [
+        {
+          label: 'Step 01 · Mission Selection',
+          caption: 'Start with a focused space lab and clear goals',
+          badge: 'Step 1 of 3',
+          src: 'https://plus.unsplash.com/premium_vector-1773230443771-83ea4bebbc37?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          alt: 'Rocket ascending into the night sky during a launch mission'
+        },
+        {
+          label: 'Step 02 · Live Parameters',
+          caption: 'Adjust thrust, angle, and orbital velocity as you test',
+          badge: 'Step 2 of 3',
+          src: 'https://plus.unsplash.com/premium_vector-1773230443027-6458d69a099a?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          alt: 'Earth seen from space with glowing orbital horizon'
+        },
+        {
+          label: 'Step 03 · Visual Feedback',
+          caption: 'See how each change shapes flight paths and orbits',
+          badge: 'Step 3 of 3',
+          src: 'https://plus.unsplash.com/premium_vector-1773230442979-615752f74624?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          alt: 'Deep space view of Earth curvature and starlight'
+        }
+      ];
+
+      if (imgEl) {
+        imgEl.addEventListener('error', () => {
+          if (imgEl.src !== fallbackSvg) {
+            imgEl.src = fallbackSvg;
+          }
+        });
+      }
+
+      function selectStep(index) {
+        const data = stepData[index];
+        if (!data) return;
+
+        steps.forEach((btn, idx) => {
+          const active = idx === index;
+          btn.classList.toggle('is-selected', active);
+          btn.setAttribute('aria-selected', String(active));
+        });
+
+        if (labelEl) labelEl.textContent = data.label;
+        if (captionEl) captionEl.textContent = data.caption;
+        if (badgeEl) badgeEl.textContent = data.badge;
+
+        if (imgEl) {
+          imgEl.classList.add('is-fading');
+          window.setTimeout(() => {
+            imgEl.src = data.src;
+            imgEl.alt = data.alt;
+            imgEl.classList.remove('is-fading');
+          }, 180);
+        }
+      }
+
+      steps.forEach((btn, idx) => {
+        btn.addEventListener('click', () => selectStep(idx));
+      });
+
+      // Scroll-triggered entrance animation
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-active');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-active');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -70px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+
+<hr>
+
+<!-- ============================================================
+     SECTION 3: WHY SKYLABS? (NEW SIMPLE BENTO GRID · HTML + CSS + JS)
+     ============================================================ -->
+<section id="slWhySkylabs" aria-labelledby="slWhyHeading">
+  <style>
+    #slWhySkylabs {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.05) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slWhySkylabs .sl-why-inner {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Centered / Spacious Top Intro */
+    #slWhySkylabs .sl-why-intro {
+      max-width: 780px;
+      margin: 0 auto 64px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slWhySkylabs.is-revealed .sl-why-intro {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slWhySkylabs .sl-why-kicker {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.85);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slWhySkylabs .sl-why-heading {
+      font-size: clamp(38px, 5vw, 68px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    #slWhySkylabs .sl-why-sub {
+      font-size: clamp(17px, 1.5vw, 21px);
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* PC: Spacious 2x2 Grid Taking Generous Space */
+    #slWhySkylabs .sl-why-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    #slWhySkylabs .sl-why-box {
+      position: relative;
+      padding: 36px 34px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 240px;
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slWhySkylabs .sl-why-box:nth-child(2) {
+      transition-delay: 0.08s;
+    }
+
+    #slWhySkylabs .sl-why-box:nth-child(3) {
+      transition-delay: 0.16s;
+    }
+
+    #slWhySkylabs .sl-why-box:nth-child(4) {
+      transition-delay: 0.24s;
+    }
+
+    #slWhySkylabs.is-revealed .sl-why-box {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slWhySkylabs .sl-why-box:hover {
+      background: rgba(16, 22, 35, 0.88);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    #slWhySkylabs .sl-why-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    #slWhySkylabs .sl-why-pill {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      color: #090c12;
+      background: #ffffff;
+    }
+
+    #slWhySkylabs .sl-why-num {
+      font-size: 15px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.52);
+    }
+
+    #slWhySkylabs .sl-why-card-title {
+      font-size: 24px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #slWhySkylabs .sl-why-card-desc {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* Tablets & Mobile: Clean Down List */
+    @media (max-width: 900px) {
+      #slWhySkylabs {
+        padding: 92px 22px;
+      }
+      #slWhySkylabs .sl-why-intro {
+        text-align: left;
+        margin-bottom: 38px;
+      }
+      #slWhySkylabs .sl-why-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      #slWhySkylabs .sl-why-box {
+        padding: 24px 22px;
+        min-height: auto;
+        border-radius: 20px;
+      }
+      #slWhySkylabs .sl-why-card-title {
+        font-size: 21px;
+      }
+      #slWhySkylabs .sl-why-card-desc {
+        font-size: 15.5px;
+      }
+    }
+  </style>
+
+  <div class="sl-why-inner">
+    <div class="sl-why-intro">
+      <span class="sl-why-kicker">Why SkyLabs</span>
+      <h2 class="sl-why-heading" id="slWhyHeading">Why SkyLabs?</h2>
+      <p class="sl-why-sub">
+        Understanding space is much easier when you can test ideas visually instead of only reading static diagrams and formulas.
+      </p>
+    </div>
+
+    <div class="sl-why-grid">
+      <article class="sl-why-box">
+        <div>
+          <div class="sl-why-top-row">
+            <span class="sl-why-pill">Visual Learning</span>
+            <span class="sl-why-num">01</span>
+          </div>
+          <h3 class="sl-why-card-title">See orbits and flight happen</h3>
+          <p class="sl-why-card-desc">
+            Watch how speed, gravity, and thrust shape paths in real time so space physics feels clear and natural.
+          </p>
+        </div>
+      </article>
+
+      <article class="sl-why-box">
+        <div>
+          <div class="sl-why-top-row">
+            <span class="sl-why-pill">Experimentation</span>
+            <span class="sl-why-num">02</span>
+          </div>
+          <h3 class="sl-why-card-title">Test freely with zero risk</h3>
+          <p class="sl-why-card-desc">
+            Try different launch angles and rocket setups, learn from mistakes, and reset anytime in one click.
+          </p>
+        </div>
+      </article>
+
+      <article class="sl-why-box">
+        <div>
+          <div class="sl-why-top-row">
+            <span class="sl-why-pill">Simple Design</span>
+            <span class="sl-why-num">03</span>
+          </div>
+          <h3 class="sl-why-card-title">Clean and easy to read</h3>
+          <p class="sl-why-card-desc">
+            Built with calm spacing and Google Sans typography so nothing feels cluttered while you explore.
+          </p>
+        </div>
+      </article>
+
+      <article class="sl-why-box">
+        <div>
+          <div class="sl-why-top-row">
+            <span class="sl-why-pill">Any Pace</span>
+            <span class="sl-why-num">04</span>
+          </div>
+          <h3 class="sl-why-card-title">Made for solo study and classes</h3>
+          <p class="sl-why-card-desc">
+            Helpful whether you are exploring space on your own or learning together with classmates and teachers.
+          </p>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slWhySkylabs');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     SECTION 4: ACCESS — CLASS PIN ONLY (HTML + INLINE CSS + JS)
+     ============================================================ -->
+<section id="slAccessSection" aria-labelledby="slAccessHeading">
+  <style>
+    #slAccessSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 75% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 20% 80%, rgba(120, 165, 255, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slAccessSection .sl-acc-wrap {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    #slAccessSection .sl-acc-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+      gap: 56px;
+      align-items: center;
+    }
+
+    /* Left Column: Clean Explanation */
+    #slAccessSection .sl-acc-info {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slAccessSection.is-revealed .sl-acc-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slAccessSection .sl-acc-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slAccessSection .sl-acc-title {
+      font-size: clamp(38px, 4.9vw, 66px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    #slAccessSection .sl-acc-desc {
+      font-size: clamp(17px, 1.48vw, 20.5px);
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 540px;
+      margin-bottom: 24px;
+    }
+
+    #slAccessSection .sl-acc-note {
+      font-size: 15.5px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(245, 247, 251, 0.64);
+      max-width: 540px;
+    }
+
+    /* Right Column: Clean Join Card Matching Image Style */
+    #slAccessSection .sl-join-card {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      transform: translateY(28px) scale(0.97);
+      transition:
+        opacity 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.14s,
+        transform 0.88s cubic-bezier(0.22, 1, 0.36, 1) 0.14s;
+    }
+
+    #slAccessSection.is-revealed .sl-join-card {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    #slAccessSection .sl-join-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    #slAccessSection .sl-join-card-label {
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.85);
+    }
+
+    #slAccessSection .sl-join-demo-link {
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(245, 247, 251, 0.88);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slAccessSection .sl-join-demo-link:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    #slAccessSection .sl-field {
+      margin-bottom: 20px;
+    }
+
+    #slAccessSection .sl-field-label {
+      display: block;
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.88);
+      margin-bottom: 9px;
+      letter-spacing: -0.005em;
+    }
+
+    #slAccessSection .sl-input {
+      width: 100%;
+      height: 54px;
+      padding: 0 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(5, 7, 12, 0.78);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #slAccessSection .sl-input:focus {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(7, 10, 18, 0.92);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.07);
+    }
+
+    #slAccessSection .sl-input::placeholder {
+      color: rgba(245, 247, 251, 0.4);
+    }
+
+    #slAccessSection .sl-join-submit {
+      width: 100%;
+      height: 54px;
+      margin-top: 6px;
+      border-radius: 999px;
+      border: 0;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 18px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+    }
+
+    #slAccessSection .sl-join-submit:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #slAccessSection .sl-join-submit:active {
+      transform: scale(0.99);
+    }
+
+    #slAccessSection .sl-join-status {
+      margin-top: 14px;
+      min-height: 22px;
+      font-size: 14.5px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.78);
+      text-align: center;
+    }
+
+    @media (max-width: 960px) {
+      #slAccessSection {
+        padding: 92px 22px;
+      }
+      #slAccessSection .sl-acc-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      #slAccessSection .sl-join-card {
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+
+  <div class="sl-acc-wrap">
+    <div class="sl-acc-grid">
+      <div class="sl-acc-info">
+        <span class="sl-acc-badge">Class PIN Access</span>
+        <h2 class="sl-acc-title" id="slAccessHeading">Access</h2>
+        <p class="sl-acc-desc">
+          Enter your class PIN and a nickname to jump straight in. No sign-up, no password, and no profile creation needed.
+        </p>
+        <p class="sl-acc-note">
+          Fast for students, clean for classrooms, and focused only on your active session.
+        </p>
+      </div>
+
+      <form class="sl-join-card" id="slPinJoinForm" novalidate>
+        <div class="sl-join-top">
+          <span class="sl-join-card-label">Quick Session Entry</span>
+          <button type="button" class="sl-join-demo-link" id="slFillDemoJoin">Fill Demo</button>
+        </div>
+
+        <div class="sl-field">
+          <label class="sl-field-label" for="slClassPinInput">Class pin</label>
+          <input
+            type="text"
+            class="sl-input"
+            id="slClassPinInput"
+            name="classPin"
+            placeholder="SL-XXXX-XXXX"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </div>
+
+        <div class="sl-field">
+          <label class="sl-field-label" for="slNicknameInput">Your name</label>
+          <input
+            type="text"
+            class="sl-input"
+            id="slNicknameInput"
+            name="nickname"
+            placeholder="Nickname"
+            autocomplete="nickname"
+          />
+        </div>
+
+        <button type="submit" class="sl-join-submit">Join</button>
+        <p class="sl-join-status" id="slJoinStatus" role="status" aria-live="polite">
+          No account or password required.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slAccessSection');
+      if (!section) return;
+
+      const form = document.getElementById('slPinJoinForm');
+      const pinInput = document.getElementById('slClassPinInput');
+      const nameInput = document.getElementById('slNicknameInput');
+      const demoBtn = document.getElementById('slFillDemoJoin');
+      const statusEl = document.getElementById('slJoinStatus');
+
+      if (pinInput) {
+        pinInput.addEventListener('input', () => {
+          const raw = pinInput.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+          let formatted = raw;
+          if (raw.length > 2 && raw.length <= 6) {
+            formatted = raw.slice(0, 2) + '-' + raw.slice(2);
+          } else if (raw.length > 6) {
+            formatted = raw.slice(0, 2) + '-' + raw.slice(2, 6) + '-' + raw.slice(6);
+          }
+          pinInput.value = formatted;
+        });
+      }
+
+      if (demoBtn) {
+        demoBtn.addEventListener('click', () => {
+          if (pinInput) pinInput.value = 'SL-4829-1042';
+          if (nameInput) nameInput.value = 'OrbitExplorer';
+          if (statusEl) statusEl.textContent = 'Demo PIN and nickname filled — click Join to test.';
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const pinVal = (pinInput ? pinInput.value.trim() : '');
+          const nickVal = (nameInput ? nameInput.value.trim() : '') || 'Guest';
+
+          if (!pinVal) {
+            if (statusEl) statusEl.textContent = 'Please enter a class pin first (for example, SL-4829-1042).';
+            if (pinInput) pinInput.focus();
+            return;
+          }
+
+          if (statusEl) {
+            statusEl.textContent = 'Joining class ' + pinVal + ' as ' + nickVal + ' — no account needed.';
+          }
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     SECTION 5: FOR TEACHERS (CLEAN MINIMALIST · HTML + CSS + JS)
+     ============================================================ -->
+<section id="slForTeachers" aria-labelledby="slTeachersHeading">
+  <style>
+    #slForTeachers {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(255, 255, 255, 0.04) 0%, transparent 48%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slForTeachers .sl-tch-wrap {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    #slForTeachers .sl-tch-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.15fr);
+      gap: 64px;
+      align-items: start;
+    }
+
+    /* Left Minimalist Header Column */
+    #slForTeachers .sl-tch-intro {
+      position: sticky;
+      top: 124px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slForTeachers.is-revealed .sl-tch-intro {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slForTeachers .sl-tch-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.85);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slForTeachers .sl-tch-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    #slForTeachers .sl-tch-lead {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.76);
+      margin-bottom: 28px;
+      max-width: 460px;
+    }
+
+    #slForTeachers .sl-tch-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 13px 26px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: transform 0.22s ease, background-color 0.22s ease;
+    }
+
+    #slForTeachers .sl-tch-action:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    /* Right Clean Minimalist List */
+    #slForTeachers .sl-tch-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    #slForTeachers .sl-tch-item {
+      padding: 28px 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        padding-left 0.25s ease;
+    }
+
+    #slForTeachers .sl-tch-item:nth-child(2) {
+      transition-delay: 0.08s;
+    }
+
+    #slForTeachers .sl-tch-item:nth-child(3) {
+      transition-delay: 0.16s;
+    }
+
+    #slForTeachers .sl-tch-item:nth-child(4) {
+      transition-delay: 0.24s;
+    }
+
+    #slForTeachers.is-revealed .sl-tch-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slForTeachers .sl-tch-item:hover {
+      padding-left: 16px;
+    }
+
+    #slForTeachers .sl-tch-item-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+
+    #slForTeachers .sl-tch-item-title {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+    }
+
+    #slForTeachers .sl-tch-item-num {
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.5);
+    }
+
+    #slForTeachers .sl-tch-item-desc {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.75);
+      max-width: 600px;
+    }
+
+    @media (max-width: 960px) {
+      #slForTeachers {
+        padding: 92px 22px;
+      }
+      #slForTeachers .sl-tch-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+      #slForTeachers .sl-tch-intro {
+        position: static;
+      }
+      #slForTeachers .sl-tch-item {
+        padding: 22px 4px;
+      }
+      #slForTeachers .sl-tch-item:hover {
+        padding-left: 4px;
+      }
+      #slForTeachers .sl-tch-item-title {
+        font-size: 20px;
+      }
+      #slForTeachers .sl-tch-item-desc {
+        font-size: 15.5px;
+      }
+    }
+  </style>
+
+  <div class="sl-tch-wrap">
+    <div class="sl-tch-grid">
+      <div class="sl-tch-intro">
+        <span class="sl-tch-tag">For Teachers</span>
+        <h2 class="sl-tch-title" id="slTeachersHeading">Built for smooth, stress-free classes</h2>
+        <p class="sl-tch-lead">
+          Spend class time teaching space ideas—not helping students reset forgotten passwords or fill out long forms.
+        </p>
+        <a href="teacher.html" class="sl-tch-action">Start a Session</a>
+      </div>
+
+      <div class="sl-tch-list">
+        <div class="sl-tch-item">
+          <div class="sl-tch-item-head">
+            <h3 class="sl-tch-item-title">Share one class PIN and begin</h3>
+            <span class="sl-tch-item-num">01</span>
+          </div>
+          <p class="sl-tch-item-desc">
+            Give students a single class PIN so everyone joins the same topic in seconds without setup delays.
+          </p>
+        </div>
+
+        <div class="sl-tch-item">
+          <div class="sl-tch-item-head">
+            <h3 class="sl-tch-item-title">Show physics visually in front of the class</h3>
+            <span class="sl-tch-item-num">02</span>
+          </div>
+          <p class="sl-tch-item-desc">
+            Demonstrate orbits, thrust, and flight paths on a screen so students see how changes affect motion right away.
+          </p>
+        </div>
+
+        <div class="sl-tch-item">
+          <div class="sl-tch-item-head">
+            <h3 class="sl-tch-item-title">No student accounts or passwords to manage</h3>
+            <span class="sl-tch-item-num">03</span>
+          </div>
+          <p class="sl-tch-item-desc">
+            Keep classroom entry simple with zero account creation, no password lockouts, and no extra profile steps.
+          </p>
+        </div>
+
+        <div class="sl-tch-item">
+          <div class="sl-tch-item-head">
+            <h3 class="sl-tch-item-title">Clear topics for guided or open exploration</h3>
+            <span class="sl-tch-item-num">04</span>
+          </div>
+          <p class="sl-tch-item-desc">
+            Move easily between structured lessons and open student experiments during short or full periods.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slForTeachers');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     SECTION 6: FOR STUDENTS (INTERACTIVE MODE STRIP · HTML + CSS + JS)
+     ============================================================ -->
+<section id="slForStudents" aria-labelledby="slStudentsHeading">
+  <style>
+    #slForStudents {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 15% 85%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slForStudents .sl-std-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    /* Header + Mode Pills Row */
+    #slForStudents .sl-std-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slForStudents.is-revealed .sl-std-top {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slForStudents .sl-std-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slForStudents .sl-std-title {
+      font-size: clamp(38px, 4.9vw, 66px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slForStudents .sl-std-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 600px;
+    }
+
+    /* Mode Selector Pills */
+    #slForStudents .sl-std-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    #slForStudents .sl-std-tab {
+      padding: 11px 20px;
+      border-radius: 999px;
+      border: 0;
+      background: transparent;
+      color: rgba(245, 247, 251, 0.78);
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.22s ease, color 0.22s ease;
+    }
+
+    #slForStudents .sl-std-tab:hover {
+      color: #ffffff;
+    }
+
+    #slForStudents .sl-std-tab.is-active {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    /* 3-Column Student Cards */
+    #slForStudents .sl-std-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+
+    #slForStudents .sl-std-card {
+      padding: 30px 28px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slForStudents .sl-std-card:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slForStudents .sl-std-card:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slForStudents.is-revealed .sl-std-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slForStudents .sl-std-card:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    #slForStudents .sl-std-card-step {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 14px;
+    }
+
+    #slForStudents .sl-std-card-title {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #slForStudents .sl-std-card-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* Bottom Spotlight Strip */
+    #slForStudents .sl-std-banner {
+      padding: 24px 28px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.24s,
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.24s;
+    }
+
+    #slForStudents.is-revealed .sl-std-banner {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slForStudents .sl-std-banner-text {
+      font-size: 17px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.88);
+      line-height: 1.5;
+    }
+
+    #slForStudents .sl-std-banner-text strong {
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    #slForStudents .sl-std-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    #slForStudents .sl-std-cta:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 980px) {
+      #slForStudents {
+        padding: 92px 22px;
+      }
+      #slForStudents .sl-std-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      #slForStudents .sl-std-card {
+        padding: 24px 20px;
+        min-height: auto;
+        border-radius: 20px;
+      }
+      #slForStudents .sl-std-tabs {
+        border-radius: 20px;
+        width: 100%;
+      }
+      #slForStudents .sl-std-tab {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 10px 14px;
+        font-size: 14.5px;
+      }
+    }
+  </style>
+
+  <div class="sl-std-wrap">
+    <div class="sl-std-top">
+      <div>
+        <span class="sl-std-tag">For Students</span>
+        <h2 class="sl-std-title" id="slStudentsHeading">Learn space at your own speed</h2>
+        <p class="sl-std-sub">
+          Try experiments, ask questions visually, and join a class in seconds—with no sign-up forms or complicated setup.
+        </p>
+      </div>
+
+      <div class="sl-std-tabs" role="tablist" aria-label="Student learning modes">
+        <button type="button" class="sl-std-tab is-active" data-mode="0" role="tab" aria-selected="true">Explore Orbits</button>
+        <button type="button" class="sl-std-tab" data-mode="1" role="tab" aria-selected="false">Test Rockets</button>
+        <button type="button" class="sl-std-tab" data-mode="2" role="tab" aria-selected="false">Class PIN</button>
+      </div>
+    </div>
+
+    <div class="sl-std-grid">
+      <article class="sl-std-card">
+        <div>
+          <span class="sl-std-card-step" id="slStdStep1">01 · Start</span>
+          <h3 class="sl-std-card-title" id="slStdTitle1">Pick a simple goal</h3>
+          <p class="sl-std-card-desc" id="slStdDesc1">
+            Begin with a clear idea like keeping a satellite in a steady circular orbit around Earth.
+          </p>
+        </div>
+      </article>
+
+      <article class="sl-std-card">
+        <div>
+          <span class="sl-std-card-step" id="slStdStep2">02 · Experiment</span>
+          <h3 class="sl-std-card-title" id="slStdTitle2">Change speed and path</h3>
+          <p class="sl-std-card-desc" id="slStdDesc2">
+            See what happens when speed is too slow, too fast, or just right to hold an orbit.
+          </p>
+        </div>
+      </article>
+
+      <article class="sl-std-card">
+        <div>
+          <span class="sl-std-card-step" id="slStdStep3">03 · Understand</span>
+          <h3 class="sl-std-card-title" id="slStdTitle3">Connect visuals to science</h3>
+          <p class="sl-std-card-desc" id="slStdDesc3">
+            Notice how gravity and velocity work together so school lessons feel much easier to remember.
+          </p>
+        </div>
+      </article>
+    </div>
+
+    <div class="sl-std-banner">
+      <p class="sl-std-banner-text" id="slStdBannerText">
+        <strong>Orbit Mode:</strong> Great for seeing how satellites stay up without falling or flying away.
+      </p>
+      <a href="join.html" class="sl-std-cta">Start Exploring</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slForStudents');
+      if (!section) return;
+
+      const tabs = section.querySelectorAll('.sl-std-tab');
+      const step1 = document.getElementById('slStdStep1');
+      const title1 = document.getElementById('slStdTitle1');
+      const desc1 = document.getElementById('slStdDesc1');
+      const step2 = document.getElementById('slStdStep2');
+      const title2 = document.getElementById('slStdTitle2');
+      const desc2 = document.getElementById('slStdDesc2');
+      const step3 = document.getElementById('slStdStep3');
+      const title3 = document.getElementById('slStdTitle3');
+      const desc3 = document.getElementById('slStdDesc3');
+      const bannerText = document.getElementById('slStdBannerText');
+
+      const modes = [
+        {
+          cards: [
+            {
+              step: '01 · Start',
+              title: 'Pick a simple goal',
+              desc: 'Begin with a clear idea like keeping a satellite in a steady circular orbit around Earth.'
+            },
+            {
+              step: '02 · Experiment',
+              title: 'Change speed and path',
+              desc: 'See what happens when speed is too slow, too fast, or just right to hold an orbit.'
+            },
+            {
+              step: '03 · Understand',
+              title: 'Connect visuals to science',
+              desc: 'Notice how gravity and velocity work together so school lessons feel much easier to remember.'
+            }
+          ],
+          banner: '<strong>Orbit Mode:</strong> Great for seeing how satellites stay up without falling or flying away.'
+        },
+        {
+          cards: [
+            {
+              step: '01 · Launch',
+              title: 'Set thrust and angle',
+              desc: 'Choose how hard your rocket pushes and how smoothly it pitches toward space.'
+            },
+            {
+              step: '02 · Watch',
+              title: 'Track climb and stage flight',
+              desc: 'Observe how fuel, mass, and gravity shape the climb from launchpad to higher altitude.'
+            },
+            {
+              step: '03 · Retry',
+              title: 'Adjust and launch again',
+              desc: 'Test a new idea in seconds whenever a flight comes up short or goes too high.'
+            }
+          ],
+          banner: '<strong>Rocket Mode:</strong> Hands-on flight testing where trying again takes only a second.'
+        },
+        {
+          cards: [
+            {
+              step: '01 · Enter PIN',
+              title: 'Type your class PIN',
+              desc: 'Use the PIN shared in class with no account creation, email, or password needed.'
+            },
+            {
+              step: '02 · Add Nickname',
+              title: 'Pick a quick nickname',
+              desc: 'Jump straight into the session with a simple name and zero profile forms.'
+            },
+            {
+              step: '03 · Follow Along',
+              title: 'Explore the class topic',
+              desc: 'Work through the active space lab together at a clear, relaxed pace.'
+            }
+          ],
+          banner: '<strong>Class PIN Mode:</strong> Fast classroom entry with no passwords or accounts to set up.'
+        }
+      ];
+
+      function applyMode(index) {
+        const mode = modes[index];
+        if (!mode) return;
+
+        tabs.forEach((tab, idx) => {
+          const active = idx === index;
+          tab.classList.toggle('is-active', active);
+          tab.setAttribute('aria-selected', String(active));
+        });
+
+        if (step1) step1.textContent = mode.cards[0].step;
+        if (title1) title1.textContent = mode.cards[0].title;
+        if (desc1) desc1.textContent = mode.cards[0].desc;
+
+        if (step2) step2.textContent = mode.cards[1].step;
+        if (title2) title2.textContent = mode.cards[1].title;
+        if (desc2) desc2.textContent = mode.cards[1].desc;
+
+        if (step3) step3.textContent = mode.cards[2].step;
+        if (title3) title3.textContent = mode.cards[2].title;
+        if (desc3) desc3.textContent = mode.cards[2].desc;
+
+        if (bannerText) bannerText.innerHTML = mode.banner;
+      }
+
+      tabs.forEach((tab, idx) => {
+        tab.addEventListener('click', () => applyMode(idx));
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     SECTION 7: LATEST NEWS (SCALLOP CLIPPED IMAGES · HTML + CSS + JS)
+     ============================================================ -->
+<section id="slLatestNews" aria-labelledby="slNewsHeading">
+  <svg width="0" height="0" style="position: absolute; pointer-events: none;" aria-hidden="true">
+    <defs>
+      <clipPath id="material-circular-scallop" clipPathUnits="objectBoundingBox">
+        <path d="M 0.996,0.500 C 0.996,0.544 0.973,0.583 0.961,0.624 C 0.950,0.664 0.955,0.710 0.933,0.750 C 0.911,0.788 0.869,0.809 0.838,0.838 C 0.809,0.869 0.788,0.911 0.750,0.933 C 0.710,0.955 0.664,0.950 0.624,0.961 C 0.583,0.973 0.544,0.996 0.500,0.996 C 0.456,0.996 0.417,0.973 0.376,0.961 C 0.336,0.950 0.290,0.955 0.250,0.933 C 0.212,0.911 0.191,0.869 0.162,0.838 C 0.131,0.809 0.089,0.788 0.067,0.750 C 0.045,0.710 0.050,0.664 0.039,0.624 C 0.027,0.583 0.004,0.544 0.004,0.500 C 0.004,0.456 0.027,0.417 0.039,0.376 C 0.050,0.336 0.045,0.290 0.067,0.250 C 0.089,0.212 0.131,0.191 0.162,0.162 C 0.191,0.131 0.212,0.089 0.250,0.067 C 0.290,0.045 0.336,0.050 0.376,0.039 C 0.417,0.027 0.456,0.004 0.500,0.004 C 0.544,0.004 0.583,0.027 0.624,0.039 C 0.664,0.050 0.710,0.045 0.750,0.067 C 0.788,0.089 0.809,0.131 0.838,0.162 C 0.869,0.191 0.911,0.212 0.933,0.250 C 0.955,0.290 0.950,0.336 0.961,0.376 C 0.973,0.417 0.996,0.456 0.996,0.500 Z" />
+      </clipPath>
+    </defs>
+  </svg>
+
+  <style>
+    #slLatestNews {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.05) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slLatestNews .sl-news-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slLatestNews .sl-news-head {
+      max-width: 720px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slLatestNews.is-revealed .sl-news-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slLatestNews .sl-news-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slLatestNews .sl-news-title {
+      font-size: clamp(38px, 4.9vw, 66px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slLatestNews .sl-news-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.76);
+    }
+
+    /* 3 News Items Grid */
+    #slLatestNews .sl-news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 32px;
+      align-items: start;
+    }
+
+    #slLatestNews .sl-news-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 28px 24px 30px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slLatestNews .sl-news-item:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slLatestNews .sl-news-item:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slLatestNews.is-revealed .sl-news-item {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slLatestNews .sl-news-item:hover {
+      background: rgba(16, 22, 35, 0.86);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    /* Image Clipped Directly by SVG Scallop Path (Not in a Common Box) */
+    #slLatestNews .sl-news-scallop-img {
+      width: 176px;
+      height: 176px;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 24px;
+      clip-path: url(#material-circular-scallop);
+      -webkit-clip-path: url(#material-circular-scallop);
+      filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.65));
+      transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slLatestNews .sl-news-item:hover .sl-news-scallop-img {
+      transform: scale(1.05) rotate(3deg);
+    }
+
+    #slLatestNews .sl-news-topic {
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 1.2;
+      letter-spacing: -0.015em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #slLatestNews .sl-news-info {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+      margin-bottom: 22px;
+    }
+
+    #slLatestNews .sl-news-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+
+    #slLatestNews .sl-news-link:hover {
+      background: #ffffff;
+      color: #080b10;
+      transform: translateX(3px);
+    }
+
+    @media (max-width: 980px) {
+      #slLatestNews {
+        padding: 92px 22px;
+      }
+      #slLatestNews .sl-news-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      #slLatestNews .sl-news-item {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slLatestNews .sl-news-scallop-img {
+        width: 154px;
+        height: 154px;
+        margin-bottom: 18px;
+      }
+    }
+  </style>
+
+  <div class="sl-news-wrap">
+    <div class="sl-news-head">
+      <span class="sl-news-tag">Latest News</span>
+      <h2 class="sl-news-title" id="slNewsHeading">What is new in SkyLabs</h2>
+      <p class="sl-news-sub">
+        Fresh tools and space labs built to make classroom teaching and hands-on learning even smoother.
+      </p>
+    </div>
+
+    <div class="sl-news-grid">
+      <!-- News 1: Launch Teacher Dash -->
+      <article class="sl-news-item">
+        <img
+          class="sl-news-scallop-img"
+          src="https://images.unsplash.com/vector-1769667988059-f62da9d6eef6?q=80&w=902&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+          alt="Launch Teacher Dash mission control visual"
+        />
+        <h3 class="sl-news-topic">Launch Teacher Dash</h3>
+        <p class="sl-news-info">
+          A clean dashboard for teachers to share class PINs quickly, guide topics, and run visual space demos without extra setup.
+        </p>
+        <a href="join.html" class="sl-news-link">Open Teacher Dash &#8594;</a>
+      </article>
+
+      <!-- News 2: Cloud Classrooms -->
+      <article class="sl-news-item">
+        <img
+          class="sl-news-scallop-img"
+          src="https://images.unsplash.com/vector-1759145395796-2827664b11f4?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+          alt="Cloud Classrooms global space view"
+        />
+        <h3 class="sl-news-topic">Cloud Classrooms</h3>
+        <p class="sl-news-info">
+          Join live space sessions from any browser using a simple class PIN—no student accounts, passwords, or heavy downloads needed.
+        </p>
+        <a href="join.html#cloud-classrooms" class="sl-news-link">Explore Cloud Classrooms &#8594;</a>
+      </article>
+
+      <!-- News 3: Launch 3 Rocket Labs -->
+      <article class="sl-news-item">
+        <img
+          class="sl-news-scallop-img"
+          src="https://images.unsplash.com/vector-1753855748023-91b582604435?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+          alt="Launch 3 Rocket Labs propulsion plume"
+        />
+        <h3 class="sl-news-topic">Launch 3 Rocket Labs</h3>
+        <p class="sl-news-info">
+          Three focused rocket labs where you test thrust, climb angles, and staging ideas with clear visual feedback on every run.
+        </p>
+        <a href="join.html#rocket-propulsion" class="sl-news-link">Try the 3 Rocket Labs &#8594;</a>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slLatestNews');
+      if (!section) return;
+
+      const fallbackScallopSvg =
+        'data:image/svg+xml;utf8,' +
+        encodeURIComponent(
+          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">' +
+            '<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">' +
+            '<stop offset="0%" stop-color="#17233b"/><stop offset="100%" stop-color="#080c14"/>' +
+            '</linearGradient></defs>' +
+            '<rect width="400" height="400" fill="url(#bg)"/>' +
+            '<circle cx="200" cy="200" r="90" fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2"/>' +
+          '</svg>'
+        );
+
+      section.querySelectorAll('.sl-news-scallop-img').forEach((img) => {
+        img.addEventListener('error', () => {
+          if (img.src !== fallbackScallopSvg) {
+            img.src = fallbackScallopSvg;
+          }
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     NEWSLETTER SECTION — JS MAILTO (HTML + INLINE CSS + INLINE JS)
+     ============================================================ -->
+<section id="slNewsletterSection" aria-labelledby="slNewsletterHeading">
+  <style>
+    #slNewsletterSection {
+      position: relative;
+      width: 100%;
+      padding: 128px 36px;
+      background:
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 18% 80%, rgba(120, 165, 255, 0.05) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slNewsletterSection .sl-news-wrap {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    #slNewsletterSection .sl-news-card {
+      padding: 48px 42px;
+      border-radius: 30px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 44px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(26px) scale(0.98);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.84s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slNewsletterSection.is-revealed .sl-news-card {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    #slNewsletterSection .sl-news-badge {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slNewsletterSection .sl-news-heading {
+      font-size: clamp(34px, 4.4vw, 56px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slNewsletterSection .sl-news-copy {
+      font-size: clamp(16.5px, 1.45vw, 19.5px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 500px;
+    }
+
+    #slNewsletterSection .sl-news-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #slNewsletterSection .sl-news-label {
+      font-size: 15.5px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.88);
+    }
+
+    #slNewsletterSection .sl-news-row {
+      display: flex;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    #slNewsletterSection .sl-news-input {
+      flex: 1 1 auto;
+      min-width: 0;
+      height: 54px;
+      padding: 0 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(5, 7, 12, 0.8);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    #slNewsletterSection .sl-news-input:focus {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(7, 10, 18, 0.94);
+    }
+
+    #slNewsletterSection .sl-news-input::placeholder {
+      color: rgba(245, 247, 251, 0.42);
+    }
+
+    #slNewsletterSection .sl-news-btn {
+      height: 54px;
+      padding: 0 28px;
+      border-radius: 999px;
+      border: 0;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 400;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    #slNewsletterSection .sl-news-btn:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #slNewsletterSection .sl-news-btn:active {
+      transform: scale(0.98);
+    }
+
+    #slNewsletterSection .sl-news-status {
+      min-height: 22px;
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.5;
+      color: rgba(245, 247, 251, 0.76);
+    }
+
+    @media (max-width: 920px) {
+      #slNewsletterSection {
+        padding: 92px 22px;
+      }
+      #slNewsletterSection .sl-news-card {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 30px 22px;
+        border-radius: 24px;
+      }
+      #slNewsletterSection .sl-news-row {
+        flex-direction: column;
+      }
+      #slNewsletterSection .sl-news-btn {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="sl-news-wrap">
+    <div class="sl-news-card">
+      <div>
+        <span class="sl-news-badge">Newsletter</span>
+        <h2 class="sl-news-heading" id="slNewsletterHeading">Get new lab updates</h2>
+        <p class="sl-news-copy">
+          Enter your email to join the newsletter and receive updates on new space labs, class tools, and lessons.
+        </p>
+      </div>
+
+      <form class="sl-news-form" id="slNewsletterForm" novalidate>
+        <label class="sl-news-label" for="slNewsletterEmail">Your email</label>
+        <div class="sl-news-row">
+          <input
+            type="email"
+            class="sl-news-input"
+            id="slNewsletterEmail"
+            name="email"
+            placeholder="name@example.com"
+            autocomplete="email"
+          />
+          <button type="submit" class="sl-news-btn">Join</button>
+        </div>
+        <p class="sl-news-status" id="slNewsletterStatus" role="status" aria-live="polite">
+          Opens your email app cleanly when you click Join.
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slNewsletterSection');
+      if (!section) return;
+
+      const form = document.getElementById('slNewsletterForm');
+      const emailInput = document.getElementById('slNewsletterEmail');
+      const statusEl = document.getElementById('slNewsletterStatus');
+
+      function getNewsletterRecipient() {
+        const user = ['binulnethaka', '297'].join('');
+        const host = ['gmail', 'com'].join('.');
+        return user + '@' + host;
+      }
+
+      function buildMailtoLink(subscriberEmail) {
+        const scheme = ['mail', 'to'].join('');
+        const recipient = getNewsletterRecipient();
+        const subject = encodeURIComponent('SkyLabs Newsletter Subscription');
+        const body = encodeURIComponent(
+          'Please add this email to the SkyLabs newsletter:\n' + subscriberEmail
+        );
+        return scheme + ':' + recipient + '?subject=' + subject + '&body=' + body;
+      }
+
+      function isValidEmail(value) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+      }
+
+      if (form) {
+        form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          const email = emailInput ? emailInput.value.trim() : '';
+
+          if (!email || !isValidEmail(email)) {
+            if (statusEl) {
+              statusEl.textContent = 'Please enter a valid email address first.';
+            }
+            if (emailInput) emailInput.focus();
+            return;
+          }
+
+          const mailtoUrl = buildMailtoLink(email);
+          if (statusEl) {
+            statusEl.textContent = 'Opening your email app to subscribe ' + email + '...';
+          }
+
+          window.location.href = mailtoUrl;
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     FOOTER SECTION — GOOGLE-CLEAN MINIMALIST (HTML + CSS + JS)
+     ============================================================ -->
+<footer id="slFooterSection" aria-label="SkyLabs Footer">
+  <style>
+    #slFooterSection {
+      position: relative;
+      width: 100%;
+      padding: 88px 36px 44px;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
+        linear-gradient(180deg, #05070c 0%, #04060a 100%);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slFooterSection .sl-ft-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slFooterSection.is-revealed .sl-ft-wrap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Top Brand & Quick Action Row */
+    #slFooterSection .sl-ft-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding-bottom: 44px;
+      margin-bottom: 48px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slFooterSection .sl-ft-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    #slFooterSection .sl-ft-brand-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    #slFooterSection .sl-ft-icon {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      display: block;
+      border-radius: 10px;
+    }
+
+    #slFooterSection .sl-ft-word {
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    #slFooterSection .sl-ft-tagline {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.68);
+      line-height: 1.5;
+    }
+
+    #slFooterSection .sl-ft-top-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 22px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-size: 15.5px;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    #slFooterSection .sl-ft-top-btn:hover {
+      background: #ffffff;
+      color: #080b10;
+      transform: translateY(-1px);
+    }
+
+    /* Multi-Column Links Grid */
+    #slFooterSection .sl-ft-cols {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 36px;
+      padding-bottom: 52px;
+    }
+
+    #slFooterSection .sl-ft-col-title {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    #slFooterSection .sl-ft-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #slFooterSection .sl-ft-links a {
+      display: inline-block;
+      font-size: 15.5px;
+      font-weight: 300;
+      line-height: 1.45;
+      color: rgba(245, 247, 251, 0.72);
+      text-decoration: none;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    #slFooterSection .sl-ft-links a:hover {
+      color: #ffffff;
+      transform: translateX(3px);
+    }
+
+    /* Bottom Legal & Utility Strip */
+    #slFooterSection .sl-ft-bottom {
+      padding-top: 26px;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    #slFooterSection .sl-ft-copy {
+      font-size: 14.5px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.58);
+    }
+
+    #slFooterSection .sl-ft-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    #slFooterSection .sl-ft-meta-link,
+    #slFooterSection .sl-ft-top-trigger {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.68);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    #slFooterSection .sl-ft-meta-link:hover,
+    #slFooterSection .sl-ft-top-trigger:hover {
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      #slFooterSection {
+        padding: 72px 22px 36px;
+      }
+      #slFooterSection .sl-ft-cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 20px;
+        padding-bottom: 40px;
+      }
+      #slFooterSection .sl-ft-top {
+        padding-bottom: 32px;
+        margin-bottom: 36px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #slFooterSection .sl-ft-cols {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      #slFooterSection .sl-ft-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+
+  <div class="sl-ft-wrap">
+    <div class="sl-ft-top">
+      <div class="sl-ft-brand-group">
+        <a href="index.html" class="sl-ft-brand-link" aria-label="SkyLabs Home">
+          <img
+            src="Favicon.png"
+            onerror="this.onerror=null; this.src='Logo.jpg';"
+            alt="SkyLabs Logo"
+            class="sl-ft-icon"
+          />
+          <span class="sl-ft-word">SkyLabs</span>
+        </a>
+        <span class="sl-ft-tagline">Visual space labs, orbits, and simple PIN classrooms.</span>
+      </div>
+
+      <a href="join.html" class="sl-ft-top-btn">Join with PIN</a>
+    </div>
+
+    <div class="sl-ft-cols">
+      <div>
+        <h3 class="sl-ft-col-title">Space Labs</h3>
+        <ul class="sl-ft-links">
+          <li><a href="join.html#orbital-mechanics">Orbital Mechanics</a></li>
+          <li><a href="join.html#rocket-propulsion">Rocket Propulsion</a></li>
+          <li><a href="join.html#exoplanet-lab">Exoplanet Lab</a></li>
+          <li><a href="join.html#cloud-classrooms">Cloud Classrooms</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="sl-ft-col-title">Learning</h3>
+        <ul class="sl-ft-links">
+          <li><a href="#what-is-skylabs">What is SkyLabs</a></li>
+          <li><a href="#slHowItWorks">How it works</a></li>
+          <li><a href="#slWhySkylabs">Why SkyLabs</a></li>
+          <li><a href="#slForStudents">For Students</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="sl-ft-col-title">Platform</h3>
+        <ul class="sl-ft-links">
+          <li><a href="#slAccessSection">Class PIN Access</a></li>
+          <li><a href="#slForTeachers">For Teachers</a></li>
+          <li><a href="#slLatestNews">Latest News</a></li>
+          <li><a href="#slNewsletterSection">Newsletter</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="sl-ft-col-title">Documentation</h3>
+        <ul class="sl-ft-links">
+          <li><a href="#important-mission-guide">Mission Guide</a></li>
+          <li><a href="#important-sim-physics">Simulation Physics</a></li>
+          <li><a href="#important-safety-rules">Lab Safety &amp; Rules</a></li>
+          <li><a href="Contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sl-ft-bottom">
+      <p class="sl-ft-copy" id="slFooterCopy">SkyLabs — Space Lab</p>
+      <div class="sl-ft-meta">
+        <a href="#slAccessSection" class="sl-ft-meta-link">PIN Access</a>
+        <a href="#slNewsletterSection" class="sl-ft-meta-link">Updates</a>
+        <button type="button" class="sl-ft-top-trigger" id="slBackToTop">Back to top &#8593;</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const footer = document.getElementById('slFooterSection');
+      if (!footer) return;
+
+      const copyEl = document.getElementById('slFooterCopy');
+      const backTopBtn = document.getElementById('slBackToTop');
+
+      if (copyEl) {
+        const year = new Date().getFullYear();
+        copyEl.textContent = '\u00A9 ' + year + ' SkyLabs. All rights reserved.';
+      }
+
+      if (backTopBtn) {
+        backTopBtn.addEventListener('click', function () {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        footer.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              footer.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -50px 0px',
+          threshold: 0.08
+        }
+      );
+
+      observer.observe(footer);
+    })();
+  </script>
+</footer>
+
+
+
+
+<style>
+  /* Custom Text Selection Color */
+  ::selection {
+    background-color: #808080;
+    color: #fff;
+  }
+  ::-moz-selection {
+    background-color: #808080;
+    color: #fff;
+  }
+</style>
+</body>
+</html>

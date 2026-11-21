@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Google Fonts & Material Symbols Activation -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&family=Inter:wght@300;400;500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <title>Contact · SkyLabs</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Contact · SkyLabs">
+    <meta name="description" content="Get in touch with the SkyLabs team for classroom support, lab feedback, partnerships, and general inquiries.">
+    <meta name="keywords" content="SkyLabs contact, support, feedback, virtual classroom help, STEM labs inquiry">
+    <meta name="author" content="SkyLabs">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://skylabs.pages.dev/contact">
+
+    <!-- Favicon, PWA & Theme Color -->
+    <link rel="icon" type="image/png" href="Favicon.png">
+    <link rel="apple-touch-icon" href="Favicon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1a73e8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SkyLabs">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skylabs.pages.dev/contact">
+    <meta property="og:title" content="Contact · SkyLabs">
+    <meta property="og:description" content="Reach out to SkyLabs for support, feedback, and questions about classrooms and interactive STEM labs.">
+    <meta property="og:image" content="https://skylabs.pages.dev/Logo.png">
+    <meta property="og:site_name" content="SkyLabs">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://skylabs.pages.dev/contact">
+    <meta name="twitter:title" content="Contact · SkyLabs">
+    <meta name="twitter:description" content="Reach out to SkyLabs for support, feedback, and questions about classrooms and interactive STEM labs.">
+    <meta name="twitter:image" content="https://skylabs.pages.dev/Logo.png">
+
+    <!-- JSON-LD Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "ContactPage",
+          "@id": "https://skylabs.pages.dev/contact#contactpage",
+          "url": "https://skylabs.pages.dev/contact",
+          "name": "Contact · SkyLabs",
+          "description": "Contact page for SkyLabs classroom support, feedback, and inquiries.",
+          "isPartOf": {
+            "@id": "https://skylabs.pages.dev/#website"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SkyLabs",
+            "url": "https://skylabs.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://skylabs.pages.dev/Logo.png"
+            }
+          }
+        }
+      ]
+    }
+    </script>
+</head>
+
+  <!-- Google Sans (Light / Regular / Medium) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --sl-nav-height: 92px;
+      --sl-glass-bg: rgba(8, 10, 14, 0.72);
+      --sl-glass-bg-scrolled: rgba(5, 7, 10, 0.86);
+      --sl-glass-border: rgba(255, 255, 255, 0.14);
+      --sl-text: #f5f7fb;
+      --sl-text-muted: rgba(245, 247, 251, 0.78);
+      --sl-hover-bg: rgba(255, 255, 255, 0.10);
+      --sl-dropdown-bg: rgba(12, 15, 22, 0.90);
+      --sl-accent-pill: #ffffff;
+      --sl-accent-text: #090b10;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Custom thin black scrollbar */
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.24) #05070b;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #05070b; }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); }
+
+    html, body {
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      background-color: #06080c;
+      color: var(--sl-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Black glass navigation bar */
+    .sl-glass-nav {
+      position: sticky;
+      top: 0;
+      z-index: 9999;
+      width: 100%;
+      min-height: var(--sl-nav-height);
+      background: var(--sl-glass-bg);
+      backdrop-filter: blur(22px) saturate(165%);
+      -webkit-backdrop-filter: blur(22px) saturate(165%);
+      border-bottom: 1px solid var(--sl-glass-border);
+      transition: background-color 0.28s ease, border-color 0.28s ease;
+    }
+
+    .sl-glass-nav.is-scrolled {
+      background: var(--sl-glass-bg-scrolled);
+      border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .sl-nav-container {
+      position: relative;
+      z-index: 10002;
+      width: 100%;
+      max-width: 1640px;
+      min-height: var(--sl-nav-height);
+      margin: 0 auto;
+      padding: 12px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      background: inherit;
+    }
+
+    .sl-left-group {
+      display: flex;
+      align-items: center;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .sl-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 20px;
+      text-decoration: none;
+      color: var(--sl-text);
+      flex-shrink: 0;
+      margin-right: 64px;
+    }
+
+    .sl-brand-icon {
+      width: 66px;
+      height: 66px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.55));
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-brand:hover .sl-brand-icon { transform: scale(1.05); }
+
+    .sl-brand-word {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 40px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: var(--sl-text);
+      white-space: nowrap;
+    }
+
+    .sl-nav-list {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .sl-nav-item { position: relative; }
+
+    .sl-nav-trigger {
+      display: inline-flex;
+      align-items: center;
+      padding: 12px 20px;
+      border-radius: 999px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+      color: var(--sl-text);
+      text-decoration: none;
+      background: transparent;
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+    }
+
+    .sl-nav-item:hover > .sl-nav-trigger,
+    .sl-nav-item:focus-within > .sl-nav-trigger,
+    .sl-nav-trigger:hover {
+      background: var(--sl-hover-bg);
+      border-color: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    .sl-dropdown {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 0;
+      min-width: 270px;
+      padding: 12px;
+      border-radius: 22px;
+      background: var(--sl-dropdown-bg);
+      backdrop-filter: blur(26px) saturate(170%);
+      -webkit-backdrop-filter: blur(26px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.65);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px) scale(0.98);
+      transform-origin: top left;
+      pointer-events: none;
+      transition:
+        opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0.24s linear;
+    }
+
+    .sl-dropdown::before {
+      content: "";
+      position: absolute;
+      top: -14px;
+      left: 0;
+      right: 0;
+      height: 14px;
+    }
+
+    .sl-nav-item:hover > .sl-dropdown,
+    .sl-nav-item:focus-within > .sl-dropdown,
+    .sl-dropdown.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .sl-dropdown-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sl-dropdown-link {
+      display: block;
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 300;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--sl-text);
+      text-decoration: none;
+      transition: background-color 0.2s ease, transform 0.2s ease, color 0.2s ease;
+    }
+
+    .sl-dropdown-link:hover,
+    .sl-dropdown-link:focus-visible {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .sl-dropdown-badge {
+      display: inline-block;
+      margin-bottom: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #0b0e14;
+      background: #ffffff;
+    }
+
+    .sl-right-action {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .sl-join-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px 32px;
+      border-radius: 999px;
+      background: var(--sl-accent-pill);
+      color: var(--sl-accent-text);
+      font-family: 'Google Sans', sans-serif;
+      font-size: 23px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: -0.01em;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 6px 24px rgba(255, 255, 255, 0.14);
+    }
+
+    .sl-join-btn:hover,
+    .sl-join-btn:focus-visible {
+      background: #e9eef8;
+      transform: translateY(-1px) scale(1.02);
+      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.22);
+    }
+
+    .sl-join-btn:active { transform: scale(0.98); }
+
+    /* Mobile 2-line hamburger */
+    .sl-hamburger {
+      display: none;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      cursor: pointer;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+
+    .sl-hamburger-line {
+      width: 26px;
+      height: 1.75px;
+      border-radius: 999px;
+      background: var(--sl-text);
+      transform-origin: center;
+      transition:
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        background-color 0.45s ease;
+    }
+
+    .sl-hamburger.is-open .sl-hamburger-line:nth-child(1) { transform: translateY(4.375px) rotate(45deg); }
+    .sl-hamburger.is-open .sl-hamburger-line:nth-child(2) { transform: translateY(-4.375px) rotate(-45deg); }
+
+    /* Mobile full-width top panel */
+    .sl-mobile-panel {
+      display: none;
+      position: fixed;
+      top: var(--sl-nav-height);
+      left: 0;
+      right: 0;
+      width: 100vw;
+      max-height: calc(100vh - var(--sl-nav-height));
+      overflow-y: auto;
+      z-index: 10000;
+      padding: 16px 24px 32px;
+      background: rgba(8, 10, 15, 0.94);
+      backdrop-filter: blur(28px) saturate(175%);
+      -webkit-backdrop-filter: blur(28px) saturate(175%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-100%) scaleX(0.92);
+      transform-origin: top center;
+      pointer-events: none;
+      transition:
+        transform 0.58s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.42s ease,
+        visibility 0.58s linear;
+    }
+
+    .sl-mobile-panel.is-open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scaleX(1);
+      pointer-events: auto;
+    }
+
+    .sl-mobile-section { padding: 6px 0; }
+
+    .sl-mobile-main-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 4px;
+      background: transparent;
+      border: 0;
+      color: #ffffff;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 25px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .sl-arrow {
+      display: inline-block;
+      font-size: 22px;
+      line-height: 1;
+      color: var(--sl-text-muted);
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-mobile-main-btn.is-open .sl-arrow { transform: rotate(90deg); }
+
+    .sl-mobile-collapse {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition:
+        grid-template-rows 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.32s ease;
+    }
+
+    .sl-mobile-collapse.is-open {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .sl-mobile-collapse-inner { overflow: hidden; }
+
+    .sl-mobile-sublist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px 0 12px 12px;
+    }
+
+    .sl-mobile-sublist a {
+      display: block;
+      padding: 9px 12px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--sl-text-muted);
+      text-decoration: none;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sl-mobile-sublist a:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      transform: translateX(4px);
+    }
+
+    .sl-mobile-divider {
+      border: 0;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.12);
+      margin: 6px 0;
+    }
+
+    .sl-mobile-join {
+      display: block;
+      width: 100%;
+      text-align: center;
+      margin-top: 16px;
+      padding: 16px 24px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #090b10;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 23px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .sl-mobile-join:hover { background: #e9eef8; }
+
+    @media (max-width: 1240px) {
+      .sl-nav-container { padding: 12px 24px; gap: 18px; }
+      .sl-brand { margin-right: 32px; gap: 14px; }
+      .sl-brand-icon { width: 54px; height: 54px; }
+      .sl-brand-word { font-size: 32px; }
+      .sl-nav-trigger { font-size: 19px; padding: 10px 15px; }
+      .sl-dropdown-link { font-size: 18px; }
+      .sl-join-btn { font-size: 20px; padding: 13px 24px; }
+    }
+
+    @media (max-width: 1020px) {
+      :root { --sl-nav-height: 78px; }
+      .sl-nav-list,
+      .sl-right-action { display: none; }
+      .sl-hamburger { display: inline-flex; }
+      .sl-mobile-panel { display: block; }
+      .sl-brand { margin-right: 0; }
+      .sl-brand-icon { width: 52px; height: 52px; }
+      .sl-brand-word { font-size: 30px; }
+    }
+
+    /* Contact hero */
+    .sl-contact-hero {
+      position: relative;
+      width: 100%;
+      min-height: 68vh;
+      min-height: 68dvh;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      padding: 88px 36px 76px;
+      background-color: #05070c;
+      color: #f5f7fb;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      isolation: isolate;
+    }
+
+    .sl-contact-hero-bg {
+      position: absolute;
+      inset: -6%;
+      z-index: -2;
+      background-image: url("https://images.unsplash.com/photo-1464802686167-b939a6910659?q=80&w=1150&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D");
+      background-size: cover;
+      background-position: center center;
+      background-repeat: no-repeat;
+      transform: translate3d(0, 0, 0) scale(1.04);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+
+    .sl-contact-hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        radial-gradient(circle at 24% 38%, rgba(8, 13, 24, 0.42) 0%, rgba(5, 7, 12, 0.84) 72%, rgba(4, 6, 10, 0.94) 100%),
+        linear-gradient(90deg, rgba(5, 7, 12, 0.86) 0%, rgba(5, 7, 12, 0.62) 55%, rgba(5, 7, 12, 0.82) 100%);
+    }
+
+    .sl-contact-hero-inner {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .sl-contact-eyebrow {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-contact-hero-title {
+      font-size: clamp(42px, 6vw, 84px);
+      font-weight: 400;
+      line-height: 1.04;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      max-width: 860px;
+      margin-bottom: 18px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.08s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+    }
+
+    .sl-contact-hero-sub {
+      max-width: 620px;
+      font-size: clamp(17px, 1.5vw, 20.5px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.82);
+      margin-bottom: 28px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.16s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
+    }
+
+    .sl-contact-hero-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      opacity: 0;
+      transform: translateY(14px);
+      transition: opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1) 0.24s, transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.24s;
+    }
+
+    .sl-contact-hero.is-ready .sl-contact-eyebrow,
+    .sl-contact-hero.is-ready .sl-contact-hero-title,
+    .sl-contact-hero.is-ready .sl-contact-hero-sub,
+    .sl-contact-hero.is-ready .sl-contact-hero-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sl-hero-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 48px;
+      padding: 0 26px;
+      border-radius: 999px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 16.5px;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.22s ease, background-color 0.22s ease, border-color 0.22s ease;
+    }
+
+    .sl-hero-btn-primary {
+      background: #ffffff;
+      color: #080b10;
+      border: 1px solid #ffffff;
+    }
+
+    .sl-hero-btn-primary:hover { background: #e9eef8; transform: translateY(-1px); }
+
+    .sl-hero-btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+    }
+
+    .sl-hero-btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.42);
+      transform: translateY(-1px);
+    }
+
+    /* Page sections */
+    .sl-section {
+      width: 100%;
+      padding: 112px 36px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .sl-section-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    .sl-sec-head {
+      max-width: 720px;
+      margin-bottom: 48px;
+    }
+
+    .sl-sec-tag {
+      display: inline-block;
+      margin-bottom: 12px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.85);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .sl-sec-title {
+      font-size: clamp(32px, 4.2vw, 54px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    .sl-sec-sub {
+      font-size: clamp(16.5px, 1.45vw, 19.5px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.76);
+    }
+
+    /* Channel cards */
+    .sl-channel-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    .sl-channel-card {
+      padding: 30px 28px;
+      border-radius: 24px;
+      background: rgba(11, 15, 24, 0.76);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: border-color 0.22s ease, background-color 0.22s ease, transform 0.22s ease;
+    }
+
+    .sl-channel-card:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.24);
+      transform: translateY(-2px);
+    }
+
+    .sl-channel-kicker {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(245, 247, 251, 0.58);
+    }
+
+    .sl-channel-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    .sl-channel-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(245, 247, 251, 0.76);
+    }
+
+    .sl-channel-action {
+      margin-top: auto;
+      padding-top: 8px;
+      font-size: 15px;
+      font-weight: 400;
+      color: #ffffff;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    /* Form + side info */
+    .sl-form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+      gap: 36px;
+      align-items: start;
+    }
+
+    .sl-form-card {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sl-form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .sl-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sl-label {
+      font-size: 15.5px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.88);
+    }
+
+    .sl-input,
+    .sl-textarea {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(5, 7, 12, 0.8);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .sl-input:focus,
+    .sl-textarea:focus {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(7, 10, 18, 0.95);
+    }
+
+    .sl-textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    /* ============================================================
+       CUSTOM DROPDOWNS (NO NATIVE <select> BROWSER DROPDOWN)
+       ============================================================ */
+    .sl-dd {
+      position: relative;
+      width: 100%;
+    }
+
+    .sl-dd-trigger {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 13px 16px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(5, 7, 12, 0.8);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 300;
+      text-align: left;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .sl-dd-trigger:hover { border-color: rgba(255, 255, 255, 0.3); }
+
+    .sl-dd-trigger:focus-visible,
+    .sl-dd.is-open .sl-dd-trigger {
+      border-color: rgba(255, 255, 255, 0.45);
+      background: rgba(7, 10, 18, 0.95);
+    }
+
+    .sl-dd-value {
+      flex: 1 1 auto;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sl-dd-value.is-placeholder { color: rgba(245, 247, 251, 0.42); }
+
+    .sl-dd-caret {
+      flex-shrink: 0;
+      width: 18px;
+      height: 18px;
+      position: relative;
+      transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-dd-caret::before,
+    .sl-dd-caret::after {
+      content: "";
+      position: absolute;
+      top: 55%;
+      width: 10px;
+      height: 1.75px;
+      border-radius: 999px;
+      background: var(--sl-text-muted);
+    }
+
+    .sl-dd-caret::before { left: 2px; transform: rotate(45deg); }
+    .sl-dd-caret::after  { right: 2px; transform: rotate(-45deg); }
+
+    .sl-dd.is-open .sl-dd-caret { transform: rotate(180deg); }
+
+    .sl-dd-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      width: 100%;
+      z-index: 60;
+      padding: 8px;
+      border-radius: 18px;
+      background: var(--sl-dropdown-bg);
+      backdrop-filter: blur(26px) saturate(170%);
+      -webkit-backdrop-filter: blur(26px) saturate(170%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 22px 48px rgba(0, 0, 0, 0.7);
+      max-height: 264px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.24) transparent;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px) scale(0.985);
+      transform-origin: top center;
+      pointer-events: none;
+      transition:
+        opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+        visibility 0.22s linear;
+    }
+
+    .sl-dd.is-open .sl-dd-menu {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+
+    .sl-dd-menu.is-flipped {
+      top: auto;
+      bottom: calc(100% + 8px);
+      transform-origin: bottom center;
+    }
+
+    .sl-dd-option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 11px 14px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: var(--sl-text);
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 300;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.18s ease, color 0.18s ease;
+    }
+
+    .sl-dd-option:hover,
+    .sl-dd-option:focus-visible {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      outline: none;
+    }
+
+    .sl-dd-option.is-selected {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      font-weight: 400;
+    }
+
+    .sl-dd-option .sl-dd-check {
+      opacity: 0;
+      font-size: 14px;
+      transition: opacity 0.15s ease;
+    }
+
+    .sl-dd-option.is-selected .sl-dd-check { opacity: 1; }
+
+    .sl-submit-btn {
+      height: 52px;
+      padding: 0 28px;
+      border-radius: 999px;
+      border: 0;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 400;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .sl-submit-btn:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    .sl-status {
+      min-height: 22px;
+      font-size: 15px;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    .sl-aside-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .sl-info-box {
+      padding: 26px 24px;
+      border-radius: 22px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+    }
+
+    .sl-info-box h3 {
+      font-size: 20px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .sl-info-box p {
+      font-size: 15.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.75);
+    }
+
+    /* FAQ accordion */
+    .sl-faq-list {
+      display: flex;
+      flex-direction: column;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .sl-faq-item { border-bottom: 1px solid rgba(255, 255, 255, 0.12); }
+
+    .sl-faq-btn {
+      width: 100%;
+      padding: 22px 8px;
+      background: transparent;
+      border: 0;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 20px;
+      font-weight: 400;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      cursor: pointer;
+    }
+
+    .sl-faq-panel {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.34s ease, opacity 0.28s ease;
+    }
+
+    .sl-faq-item.is-open .sl-faq-panel {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
+    .sl-faq-panel-inner { overflow: hidden; }
+
+    .sl-faq-answer {
+      padding: 0 8px 22px;
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.76);
+      max-width: 780px;
+    }
+
+    /* Footer */
+    .sl-footer {
+      padding: 68px 36px 38px;
+      background: #04060a;
+    }
+
+    .sl-footer-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .sl-footer-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .sl-footer-links a {
+      color: rgba(245, 247, 251, 0.74);
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .sl-footer-links a:hover { color: #ffffff; }
+
+    @media (max-width: 980px) {
+      .sl-contact-hero {
+        padding: 72px 22px 60px;
+        min-height: 60vh;
+      }
+      .sl-section { padding: 84px 22px; }
+      .sl-channel-grid,
+      .sl-form-grid,
+      .sl-form-row { grid-template-columns: 1fr; }
+      .sl-form-card {
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+      .sl-submit-btn { width: 100%; }
+      .sl-footer { padding: 52px 22px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="sl-glass-nav" id="slGlassNav">
+    <div class="sl-nav-container">
+      <div class="sl-left-group">
+        <a href="index.html" class="sl-brand" aria-label="SkyLabs Space Lab Home">
+          <img
+            src="Favicon.png"
+            onerror="this.onerror=null; this.src='Logo.jpg';"
+            alt="SkyLabs Mark"
+            class="sl-brand-icon"
+          />
+          <span class="sl-brand-word">SkyLabs</span>
+        </a>
+
+        <nav aria-label="Primary Navigation">
+          <ul class="sl-nav-list">
+            <li class="sl-nav-item">
+              <a href="index.html#about" class="sl-nav-trigger" aria-expanded="false">About</a>
+              <div class="sl-dropdown" role="menu" aria-label="About menu">
+                <ul class="sl-dropdown-list">
+                  <li><a href="index.html#journey" class="sl-dropdown-link" role="menuitem">Journey</a></li>
+                  <li><a href="index.html#labs" class="sl-dropdown-link" role="menuitem">Labs</a></li>
+                  <li><a href="index.html#telemetry" class="sl-dropdown-link" role="menuitem">Telemetry</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="sl-nav-item">
+              <a href="join.html" class="sl-nav-trigger" aria-expanded="false">Class</a>
+              <div class="sl-dropdown" role="menu" aria-label="Class topics">
+                <ul class="sl-dropdown-list">
+                  <li><a href="join.html#orbital-mechanics" class="sl-dropdown-link" role="menuitem">Orbital Mechanics</a></li>
+                  <li><a href="join.html#rocket-propulsion" class="sl-dropdown-link" role="menuitem">Rocket Propulsion</a></li>
+                  <li><a href="join.html#exoplanet-lab" class="sl-dropdown-link" role="menuitem">Exoplanet Lab</a></li>
+                </ul>
+              </div>
+            </li>
+
+            <li class="sl-nav-item">
+              <a href="contact.html" class="sl-nav-trigger">Contact</a>
+            </li>
+
+            <li class="sl-nav-item">
+              <a href="index.html#docs" class="sl-nav-trigger" aria-expanded="false">Docs</a>
+              <div class="sl-dropdown" role="menu" aria-label="Documentation">
+                <span class="sl-dropdown-badge">Important</span>
+                <ul class="sl-dropdown-list">
+                  <li><a href="index.html#important-mission-guide" class="sl-dropdown-link" role="menuitem">Mission Guide</a></li>
+                  <li><a href="index.html#important-sim-physics" class="sl-dropdown-link" role="menuitem">Simulation Physics</a></li>
+                  <li><a href="index.html#important-safety-rules" class="sl-dropdown-link" role="menuitem">Lab Safety &amp; Rules</a></li>
+                </ul>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="sl-right-action">
+        <a href="join.html" class="sl-join-btn">Join Now</a>
+      </div>
+
+      <button
+        type="button"
+        class="sl-hamburger"
+        id="slHamburger"
+        aria-label="Toggle Navigation Menu"
+        aria-expanded="false"
+        aria-controls="slMobilePanel"
+      >
+        <span class="sl-hamburger-line"></span>
+        <span class="sl-hamburger-line"></span>
+      </button>
+    </div>
+
+    <div class="sl-mobile-panel" id="slMobilePanel" aria-label="Mobile Navigation">
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobAbout" aria-expanded="false">
+          <span>About</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobAbout">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="index.html#about-all">About All</a></li>
+              <li><a href="index.html#journey">Journey</a></li>
+              <li><a href="index.html#labs">Labs</a></li>
+              <li><a href="index.html#telemetry">Telemetry</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobClass" aria-expanded="false">
+          <span>Class</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobClass">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="join.html#orbital-mechanics">Orbital Mechanics</a></li>
+              <li><a href="join.html#rocket-propulsion">Rocket Propulsion</a></li>
+              <li><a href="join.html#exoplanet-lab">Exoplanet Lab</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobContact" aria-expanded="false">
+          <span>Contact</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobContact">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="#contact-channels">Contact Channels</a></li>
+              <li><a href="#contact-message">Send a Message</a></li>
+              <li><a href="#contact-faq">Common Questions</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <div class="sl-mobile-section">
+        <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobDocs" aria-expanded="false">
+          <span>Docs</span>
+          <span class="sl-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+        <div class="sl-mobile-collapse" id="mobDocs">
+          <div class="sl-mobile-collapse-inner">
+            <ul class="sl-mobile-sublist">
+              <li><a href="index.html#important-mission-guide">Important — Mission Guide</a></li>
+              <li><a href="index.html#important-sim-physics">Important — Simulation Physics</a></li>
+              <li><a href="index.html#important-safety-rules">Important — Lab Safety &amp; Rules</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <hr class="sl-mobile-divider" />
+
+      <a href="join.html" class="sl-mobile-join">Join Now</a>
+    </div>
+  </header>
+
+  <!-- Contact hero -->
+  <section class="sl-contact-hero" id="slContactHero" aria-labelledby="slContactHeroTitle">
+    <div class="sl-contact-hero-bg" id="slContactHeroBg" aria-hidden="true"></div>
+    <div class="sl-contact-hero-overlay" aria-hidden="true"></div>
+
+    <div class="sl-contact-hero-inner">
+      <span class="sl-contact-eyebrow">SkyLabs Support &amp; Outreach</span>
+      <h1 class="sl-contact-hero-title" id="slContactHeroTitle">Get in touch with SkyLabs</h1>
+      <p class="sl-contact-hero-sub">
+        Have a question about classroom PIN sessions, rocket and orbit labs, or running SkyLabs with your students? Send a note directly and we will help you get started.
+      </p>
+      <div class="sl-contact-hero-actions">
+        <a href="#contact-message" class="sl-hero-btn sl-hero-btn-primary">Send a Message</a>
+        <a href="join.html" class="sl-hero-btn sl-hero-btn-secondary">Join Class</a>
+      </div>
+    </div>
+  </section>
+<hr>
+  <!-- Section 2: Contact channels -->
+  <section class="sl-section" id="contact-channels" aria-labelledby="slChannelsHeading">
+    <div class="sl-section-inner">
+      <div class="sl-sec-head">
+        <span class="sl-sec-tag">Direct Channels</span>
+        <h2 class="sl-sec-title" id="slChannelsHeading">How would you like to connect?</h2>
+        <p class="sl-sec-sub">
+          Choose the topic that fits your message so your note goes straight to the right place.
+        </p>
+      </div>
+
+      <div class="sl-channel-grid">
+        <article class="sl-channel-card">
+          <span class="sl-channel-kicker">01 · Educators</span>
+          <h3 class="sl-channel-title">Teachers &amp; School Clubs</h3>
+          <p class="sl-channel-desc">
+            Planning a lesson, astronomy club session, or classroom demo using class PINs with zero student sign-ups?
+          </p>
+          <button type="button" class="sl-channel-action" data-preset-topic="Teachers & Classrooms">Select Classroom Topic</button>
+        </article>
+
+        <article class="sl-channel-card">
+          <span class="sl-channel-kicker">02 · Students &amp; Labs</span>
+          <h3 class="sl-channel-title">Lab Feedback &amp; Ideas</h3>
+          <p class="sl-channel-desc">
+            Spot a bug in an orbit or rocket simulation, or have a clear idea for a new space experiment?
+          </p>
+          <button type="button" class="sl-channel-action" data-preset-topic="Lab Feedback">Select Lab Feedback</button>
+        </article>
+
+        <article class="sl-channel-card">
+          <span class="sl-channel-kicker">03 · General</span>
+          <h3 class="sl-channel-title">General Questions</h3>
+          <p class="sl-channel-desc">
+            Need quick help finding a lab, understanding how PIN access works, or reaching out about SkyLabs?
+          </p>
+          <button type="button" class="sl-channel-action" data-preset-topic="General Question">Select General Question</button>
+        </article>
+      </div>
+    </div>
+  </section>
+<hr>
+  <!-- Section 3: Message form & quick info -->
+  <section class="sl-section" id="contact-message" aria-labelledby="slFormHeading">
+    <div class="sl-section-inner">
+      <div class="sl-sec-head">
+        <span class="sl-sec-tag">Message Desk</span>
+        <h2 class="sl-sec-title" id="slFormHeading">Send us a message</h2>
+        <p class="sl-sec-sub">
+          Fill out the short form below and open your mail app cleanly with your message ready.
+        </p>
+      </div>
+
+      <div class="sl-form-grid">
+        <form class="sl-form-card" id="slContactForm" novalidate>
+          <div class="sl-form-row">
+            <div class="sl-field">
+              <label class="sl-label" for="slContactName">Your name</label>
+              <input type="text" class="sl-input" id="slContactName" name="name" placeholder="Your name or nickname" />
+            </div>
+            <div class="sl-field">
+              <label class="sl-label" for="slContactEmail">Your email</label>
+              <input type="email" class="sl-input" id="slContactEmail" name="email" placeholder="name@example.com" />
+            </div>
+          </div>
+
+          <div class="sl-form-row">
+            <div class="sl-field">
+              <span class="sl-label" id="slRoleLabel">I am a</span>
+              <div class="sl-dd" id="slRoleDD" aria-labelledby="slRoleLabel"></div>
+            </div>
+
+            <div class="sl-field">
+              <span class="sl-label" id="slTopicLabel">Topic</span>
+              <div class="sl-dd" id="slTopicDD" aria-labelledby="slTopicLabel"></div>
+            </div>
+          </div>
+
+          <div class="sl-field">
+            <label class="sl-label" for="slContactMessage">Message</label>
+            <textarea
+              class="sl-textarea"
+              id="slContactMessage"
+              name="message"
+              placeholder="Write your question, classroom note, or feedback here..."
+            ></textarea>
+          </div>
+
+          <button type="submit" class="sl-submit-btn">Send Message</button>
+          <p class="sl-status" id="slContactStatus" role="status" aria-live="polite">
+            No account required — prepares your email message cleanly when submitted.
+          </p>
+        </form>
+
+        <aside class="sl-aside-stack" aria-label="Helpful contact details">
+          <div class="sl-info-box">
+            <h3>No account needed to reach out</h3>
+            <p>
+              Students and teachers never need a password or profile to use SkyLabs or ask questions about a session.
+            </p>
+          </div>
+
+          <div class="sl-info-box">
+            <h3>Classroom &amp; club friendly</h3>
+            <p>
+              Mention your class size, topic (orbits, rockets, or exoplanets), and when your session is planned so we can give clear guidance.
+            </p>
+          </div>
+
+          <div class="sl-info-box">
+            <h3>Quick entry</h3>
+            <p>
+              Already have a class PIN? Head to the <a href="join.html" style="color:#ffffff;">Join page</a> to enter directly.
+            </p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+<hr>
+  <!-- Section 4: FAQ -->
+  <section class="sl-section" id="contact-faq" aria-labelledby="slFaqHeading">
+    <div class="sl-section-inner">
+      <div class="sl-sec-head">
+        <span class="sl-sec-tag">Quick Answers</span>
+        <h2 class="sl-sec-title" id="slFaqHeading">Common questions</h2>
+        <p class="sl-sec-sub">
+          Short answers to everyday questions about classrooms, PINs, and space labs.
+        </p>
+      </div>
+
+      <div class="sl-faq-list">
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Do students need to sign up or create a password?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                No. Students can join sessions using a class PIN and a nickname without creating accounts or managing passwords.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Can teachers use SkyLabs during live lessons?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Yes. Teachers can share a class PIN, show visual orbital and rocket behavior on screen, and guide students through topics smoothly.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>What topics are covered in the labs?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                SkyLabs focuses on visual learning around orbital mechanics, rocket propulsion, exoplanet study, and interactive classroom sessions.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>How does a class PIN work?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                The teacher starts a session and shares their class PIN. Students open the Join page, type the PIN plus a nickname, and land straight in the lab. Nothing is stored about the students themselves.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Is SkyLabs free to use?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Yes. The virtual classroom space labs are free for teachers and students. There is no subscription, trial expiry, or payment step hidden anywhere in the flow.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>What devices and browsers does it run on?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Any modern browser on a laptop, Chromebook, tablet, or phone. SkyLabs runs entirely in the browser, so there is nothing to install and no special hardware needed.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Can I suggest a new lab or experiment?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Absolutely, and we love these. Pick "Lab Feedback" as the topic in the form above and describe your idea. Ideas that fit the mission get prototyped and added to the labs list.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>How quickly do you reply to messages?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Most messages get a reply within a couple of days. If your class session is this week, mention your timeline in the message and we will prioritize it.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Is student data collected or shared?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                No. Students join with a PIN and a nickname only. No emails, passwords, or personal profiles are collected, and nothing is shared with third parties.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Can multiple classes run at the same time?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Yes. Each class gets its own PIN, so several teachers can run simultaneous sessions without interfering with one another.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Do you offer lesson plans or a mission guide?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                Yes. The Docs section has the Mission Guide, simulation physics notes, and lab safety rules that teachers can use to plan a full lesson around any lab.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="sl-faq-item">
+          <button type="button" class="sl-faq-btn" aria-expanded="false">
+            <span>Can SkyLabs partner with our school or club?</span>
+            <span aria-hidden="true">+</span>
+          </button>
+          <div class="sl-faq-panel">
+            <div class="sl-faq-panel-inner">
+              <p class="sl-faq-answer">
+                We enjoy working with schools, astronomy clubs, and STEM programs. Use the form with the "Teachers &amp; Classrooms" topic and tell us about your group and what you would like to run together.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+<hr>
+  <!-- Footer -->
+  <footer class="sl-footer">
+    <div class="sl-footer-inner">
+      <p id="slContactFooterCopy" style="color: rgba(245, 247, 251, 0.62); font-size: 14.5px;">
+        SkyLabs
+      </p>
+      <div class="sl-footer-links">
+        <a href="index.html">Home</a>
+        <a href="join.html">Join Now</a>
+        <a href="#contact-channels">Channels</a>
+        <a href="#contact-message">Message</a>
+        <a href="#contact-faq">FAQ</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const glassNav = document.getElementById('slGlassNav');
+    const hamburger = document.getElementById('slHamburger');
+    const mobilePanel = document.getElementById('slMobilePanel');
+    const navItems = document.querySelectorAll('.sl-nav-item');
+
+    window.addEventListener('scroll', () => {
+      glassNav.classList.toggle('is-scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    // PC dropdown behavior preserved from attached index.html
+    navItems.forEach((item) => {
+      const trigger = item.querySelector('.sl-nav-trigger');
+      const dropdown = item.querySelector('.sl-dropdown');
+      if (!trigger || !dropdown) return;
+
+      item.addEventListener('mouseenter', () => {
+        trigger.setAttribute('aria-expanded', 'true');
+      });
+
+      item.addEventListener('mouseleave', () => {
+        trigger.setAttribute('aria-expanded', 'false');
+        dropdown.classList.remove('is-open');
+      });
+
+      trigger.addEventListener('click', (e) => {
+        const isTouchOrKeyboard = window.matchMedia('(hover: none)').matches;
+        if (isTouchOrKeyboard) {
+          const willOpen = !dropdown.classList.contains('is-open');
+          if (willOpen) {
+            e.preventDefault();
+            document.querySelectorAll('.sl-dropdown.is-open').forEach((d) => d.classList.remove('is-open'));
+            dropdown.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+          }
+        }
+      });
+    });
+
+    // Mobile 2-line hamburger -> slow close + top panel drop/spread
+    hamburger.addEventListener('click', () => {
+      const isOpen = mobilePanel.classList.toggle('is-open');
+      hamburger.classList.toggle('is-open', isOpen);
+      hamburger.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    // Mobile main buttons: arrow rotates, dropdown opens, others auto-close
+    const mobileButtons = document.querySelectorAll('.sl-mobile-main-btn[data-mobile-target]');
+
+    mobileButtons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.getAttribute('data-mobile-target');
+        const targetCollapse = document.getElementById(targetId);
+        const willOpen = targetCollapse && !targetCollapse.classList.contains('is-open');
+
+        mobileButtons.forEach((otherBtn) => {
+          const otherId = otherBtn.getAttribute('data-mobile-target');
+          const otherCollapse = document.getElementById(otherId);
+          otherBtn.classList.remove('is-open');
+          otherBtn.setAttribute('aria-expanded', 'false');
+          if (otherCollapse) otherCollapse.classList.remove('is-open');
+        });
+
+        if (willOpen && targetCollapse) {
+          btn.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+          targetCollapse.classList.add('is-open');
+        }
+      });
+    });
+
+    // Contact hero entrance + subtle depth motion
+    (function initContactHeroMotion() {
+      const hero = document.getElementById('slContactHero');
+      const heroBg = document.getElementById('slContactHeroBg');
+      if (!hero) return;
+
+      requestAnimationFrame(() => {
+        hero.classList.add('is-ready');
+      });
+
+      if (!heroBg || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+      window.addEventListener('scroll', () => {
+        const offsetY = Math.min((window.scrollY || 0) * 0.12, 70);
+        heroBg.style.transform = 'translate3d(0, ' + offsetY.toFixed(1) + 'px, 0) scale(1.05)';
+      }, { passive: true });
+    })();
+
+    /* ============================================================
+       CUSTOM FORM DROPDOWNS (NO NATIVE <select>)
+       Glass-styled dropdowns matching the nav menus, with click,
+       outside-click close, Escape, and arrow-key navigation.
+       ============================================================ */
+    (function initCustomDropdowns() {
+      const ddRegistry = [];
+
+      function createDropdown(container, options, placeholder) {
+        const listId = container.id + '-list';
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'sl-dd-trigger';
+        trigger.setAttribute('role', 'combobox');
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.setAttribute('aria-controls', listId);
+
+        const valueEl = document.createElement('span');
+        valueEl.className = 'sl-dd-value is-placeholder';
+        valueEl.textContent = placeholder;
+        trigger.appendChild(valueEl);
+
+        const caret = document.createElement('span');
+        caret.className = 'sl-dd-caret';
+        caret.setAttribute('aria-hidden', 'true');
+        trigger.appendChild(caret);
+
+        const menu = document.createElement('div');
+        menu.className = 'sl-dd-menu';
+        menu.setAttribute('role', 'listbox');
+        menu.id = listId;
+        menu.tabIndex = -1;
+
+        const api = {
+          container: container,
+          trigger: trigger,
+          menu: menu,
+          valueEl: valueEl,
+          value: null,
+
+          open: function () {
+            // Flip upward when there is no room below in the viewport.
+            menu.classList.remove('is-flipped');
+            const rect = trigger.getBoundingClientRect();
+            const menuH = menu.scrollHeight || 220;
+            if (rect.bottom + 8 + menuH > window.innerHeight - 8) {
+              menu.classList.add('is-flipped');
+            }
+
+            document.querySelectorAll('.sl-dd.is-open').forEach((d) => {
+              if (d !== container) d.classList.remove('is-open');
+            });
+            container.classList.add('is-open');
+            trigger.setAttribute('aria-expanded', 'true');
+          },
+          close: function () {
+            container.classList.remove('is-open');
+            trigger.setAttribute('aria-expanded', 'false');
+          },
+          isOpen: function () {
+            return container.classList.contains('is-open');
+          },
+
+          select: function (value) {
+            api.value = value;
+            valueEl.classList.remove('is-placeholder');
+            valueEl.textContent = value;
+            container.querySelectorAll('.sl-dd-option').forEach((opt) => {
+              opt.classList.toggle('is-selected', opt.dataset.value === value);
+              opt.setAttribute('aria-selected', String(opt.dataset.value === value));
+            });
+            api.close();
+            trigger.focus();
+          },
+
+          get: function () {
+            return api.value || '';
+          },
+
+          set: function (value) {
+            if (options.some((o) => o.value === value)) {
+              api.select(value);
+            }
+          }
+        };
+
+        options.forEach((opt) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'sl-dd-option';
+          btn.setAttribute('role', 'option');
+          btn.setAttribute('aria-selected', 'false');
+          btn.dataset.value = opt.value;
+
+          const labelEl = document.createElement('span');
+          labelEl.textContent = opt.label;
+          btn.appendChild(labelEl);
+
+          const check = document.createElement('span');
+          check.className = 'sl-dd-check';
+          check.setAttribute('aria-hidden', 'true');
+          check.textContent = '✓';
+          btn.appendChild(check);
+
+          btn.addEventListener('click', () => api.select(opt.value));
+          menu.appendChild(btn);
+        });
+
+        container.appendChild(trigger);
+        container.appendChild(menu);
+
+        // Trigger interactions
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (api.isOpen()) { api.close(); } else { api.open(); }
+        });
+
+        trigger.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+            if (!api.isOpen()) {
+              e.preventDefault();
+              api.open();
+              const opts = menu.querySelectorAll('.sl-dd-option');
+              (container.querySelector('.sl-dd-option.is-selected') || opts[0]).focus();
+            }
+          } else if (e.key === 'Escape') {
+            api.close();
+          }
+        });
+
+        // Keyboard navigation inside the menu
+        menu.addEventListener('keydown', (e) => {
+          const opts = Array.from(menu.querySelectorAll('.sl-dd-option'));
+          const idx = opts.indexOf(document.activeElement);
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            (opts[idx + 1] || opts[0]).focus();
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            (opts[idx - 1] || opts[opts.length - 1]).focus();
+          } else if (e.key === 'Escape') {
+            e.preventDefault();
+            api.close();
+            trigger.focus();
+          } else if (e.key === 'Tab') {
+            api.close();
+          }
+        });
+
+        ddRegistry.push(api);
+        return api;
+      }
+
+      // Outside click closes any open form dropdown
+      document.addEventListener('click', (e) => {
+        ddRegistry.forEach((dd) => {
+          if (dd.isOpen() && !dd.container.contains(e.target)) dd.close();
+        });
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          ddRegistry.forEach((dd) => dd.close());
+        }
+      });
+      window.addEventListener('resize', () => {
+        ddRegistry.forEach((dd) => dd.close());
+      });
+
+      // Build the two custom dropdowns
+      const roleDD = createDropdown(document.getElementById('slRoleDD'), [
+        { value: 'Student', label: 'Student' },
+        { value: 'Teacher', label: 'Teacher' },
+        { value: 'School Club', label: 'School Club' },
+        { value: 'Parent', label: 'Parent' },
+        { value: 'Other', label: 'Other' }
+      ], 'Select your role');
+
+      const topicDD = createDropdown(document.getElementById('slTopicDD'), [
+        { value: 'General Question', label: 'General Question' },
+        { value: 'Teachers & Classrooms', label: 'Teachers & Classrooms' },
+        { value: 'Lab Feedback', label: 'Lab Feedback' },
+        { value: 'Class PIN Help', label: 'Class PIN Help' },
+        { value: 'Bug Report', label: 'Bug Report' },
+        { value: 'Partnership', label: 'Partnership' }
+      ], 'Select a topic');
+
+      // Channel cards preset the topic dropdown
+      document.querySelectorAll('[data-preset-topic]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const topic = btn.getAttribute('data-preset-topic');
+          if (topic) topicDD.set(topic);
+          const formSection = document.getElementById('contact-message');
+          if (formSection) {
+            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          const statusEl = document.getElementById('slContactStatus');
+          if (statusEl && topic) {
+            statusEl.textContent = 'Topic set to "' + topic + '".';
+          }
+        });
+      });
+
+      // Expose selected values for the mailto builder
+      window.slDropdownValues = () => ({
+        role: roleDD.get(),
+        topic: topicDD.get()
+      });
+    })();
+
+    // JS mailto form handler
+    (function initContactForm() {
+      const form = document.getElementById('slContactForm');
+      const nameInput = document.getElementById('slContactName');
+      const emailInput = document.getElementById('slContactEmail');
+      const msgInput = document.getElementById('slContactMessage');
+      const statusEl = document.getElementById('slContactStatus');
+      const copyEl = document.getElementById('slContactFooterCopy');
+
+      if (copyEl) {
+        copyEl.textContent = '\u00A9 ' + new Date().getFullYear() + ' SkyLabs. All rights reserved.';
+      }
+
+      function getRecipientAddress() {
+        const user = ['binulnethaka', '297'].join('');
+        const domain = ['gmail', 'com'].join('.');
+        return user + '@' + domain;
+      }
+
+      function buildMailto(name, senderEmail, role, topic, message) {
+        const proto = ['mail', 'to'].join('');
+        const to = getRecipientAddress();
+        const subject = encodeURIComponent('SkyLabs Contact: ' + topic);
+        const body = encodeURIComponent(
+          'Name: ' + (name || 'Not provided') + '\n' +
+          'Email: ' + (senderEmail || 'Not provided') + '\n' +
+          'Role: ' + (role || 'Not provided') + '\n' +
+          'Topic: ' + topic + '\n\n' +
+          message
+        );
+        return proto + ':' + to + '?subject=' + subject + '&body=' + body;
+      }
+
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = nameInput ? nameInput.value.trim() : '';
+          const email = emailInput ? emailInput.value.trim() : '';
+          const message = msgInput ? msgInput.value.trim() : '';
+          const vals = window.slDropdownValues ? window.slDropdownValues() : { role: '', topic: '' };
+          const role = vals.role;
+          const topic = vals.topic || 'General Question';
+
+          if (!message) {
+            if (statusEl) statusEl.textContent = 'Please write a short message before sending.';
+            if (msgInput) msgInput.focus();
+            return;
+          }
+
+          if (statusEl) {
+            statusEl.textContent = 'Opening your email app with your message ready...';
+          }
+
+          window.location.href = buildMailto(name, email, role, topic, message);
+        });
+      }
+
+      // FAQ accordion toggles
+      const faqItems = document.querySelectorAll('.sl-faq-item');
+      faqItems.forEach((item) => {
+        const btn = item.querySelector('.sl-faq-btn');
+        if (!btn) return;
+        btn.addEventListener('click', () => {
+          const isOpen = item.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', String(isOpen));
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
