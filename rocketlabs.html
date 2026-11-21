@@ -1082,7 +1082,571 @@
     })();
   </script>
 <hr>
+<!-- ============================================================
+     #SELECTLAB SECTION — 30 ROCKET LABS (3-COLUMN GRID, GOOGLE SANS)
+     ============================================================ -->
+<section id="selectlab" aria-labelledby="slSelectLabHeading">
+  <style>
+    #selectlab {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #selectlab .sl-lab-wrap {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #selectlab .sl-lab-head {
+      max-width: 820px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #selectlab.is-revealed .sl-lab-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #selectlab .sl-lab-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #selectlab .sl-lab-title {
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #selectlab .sl-lab-sub {
+      font-size: clamp(17.5px, 1.45vw, 21px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* 3 x 10 Massive Card Grid */
+    #selectlab .sl-lab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    #selectlab .sl-lab-card {
+      position: relative;
+      border-radius: 28px;
+      padding: 16px 16px 24px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #selectlab.is-revealed .sl-lab-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #selectlab .sl-lab-card.is-open-lab:hover {
+      background: rgba(16, 22, 36, 0.94);
+      border-color: rgba(255, 255, 255, 0.32);
+      transform: translateY(-4px);
+    }
+
+    /* Curved Upper Image Box */
+    #selectlab .sl-lab-media {
+      position: relative;
+      width: 100%;
+      height: 210px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(5, 7, 12, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    #selectlab .sl-lab-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #selectlab .sl-lab-card.is-open-lab:hover .sl-lab-media img {
+      transform: scale(1.05);
+    }
+
+    #selectlab .sl-lab-new-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 3;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    #selectlab .sl-lab-lock-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgba(5, 7, 12, 0.72);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    #selectlab .sl-lab-lock-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #selectlab .sl-lab-lock-sub {
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    /* Below Media: Title, Paragraph, Button */
+    #selectlab .sl-lab-body {
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+
+    #selectlab .sl-lab-index {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.52);
+      margin-bottom: 6px;
+    }
+
+    #selectlab .sl-lab-card-title {
+      font-size: clamp(24px, 2.1vw, 30px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #selectlab .sl-lab-card-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.76);
+      margin-bottom: 22px;
+    }
+
+    #selectlab .sl-lab-btn {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    #selectlab .sl-lab-btn-active {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #selectlab .sl-lab-btn-active:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #selectlab .sl-lab-btn-locked {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(245, 247, 251, 0.52);
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 1080px) {
+      #selectlab .sl-lab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #selectlab {
+        padding: 92px 20px;
+      }
+      #selectlab .sl-lab-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      #selectlab .sl-lab-card {
+        padding: 14px 14px 20px;
+        border-radius: 24px;
+      }
+      #selectlab .sl-lab-media {
+        height: 185px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+
+  <div class="sl-lab-wrap">
+    <div class="sl-lab-head">
+      <span class="sl-lab-tag">Select Lab · 30 Rocket Labs</span>
+      <h2 class="sl-lab-title" id="slSelectLabHeading">Rocket &amp; Propulsion Labs</h2>
+      <p class="sl-lab-sub">
+        Pick a lab below to explore flight physics. Re-Entry Heating is open now with a NEW badge while the other 29 labs are under update.
+      </p>
+    </div>
+
+    <div class="sl-lab-grid" id="slRocketLabsGrid"></div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('selectlab');
+      const grid = document.getElementById('slRocketLabsGrid');
+      if (!section || !grid) return;
+
+      const labs = [
+        {
+          num: '01',
+          title: 'Re-Entry Heating',
+          desc: 'Test how heat shields block atmospheric entry heat as speed drops from orbit.',
+          img: 'https://plus.unsplash.com/premium_vector-1736906838979-21b6ac6efa88?q=80&w=882&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          href: 'reentry.html',
+          unlocked: true,
+          isNew: true
+        },
+        {
+          num: '02',
+          title: 'Delta-V Equation',
+          desc: 'See how fuel mass and exhaust speed set how far a rocket can change velocity.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723424-24f1f84d2aa4?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '03',
+          title: 'Thrust-to-Weight',
+          desc: 'Compare engine thrust against rocket weight to see liftoff acceleration.',
+          img: 'https://plus.unsplash.com/premium_vector-1754029090817-92b24c82d730?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '04',
+          title: 'Specific Impulse',
+          desc: 'Explore how efficiently propellant produces thrust over time.',
+          img: 'https://plus.unsplash.com/premium_vector-1754299090597-54709dbb02bf?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '05',
+          title: 'Gravity Turn',
+          desc: 'Pitch gently downrange after liftoff to curve smoothly into orbit.',
+          img: 'https://plus.unsplash.com/premium_vector-1754044368482-2e7433f61a78?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '06',
+          title: 'Staging Mass',
+          desc: 'Drop empty booster tanks to keep remaining stages light and fast.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723395-97257ef22be2?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '07',
+          title: 'Fuel Flow Rate',
+          desc: 'Balance propellant burn rates with chamber thrust and flight time.',
+          img: 'https://plus.unsplash.com/premium_vector-1736837077023-ac5a52bd0930?q=80&w=879&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '08',
+          title: 'Nozzle Efficiency',
+          desc: 'Watch how bell expansion shapes exhaust flow from sea level to vacuum.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723363-2f2068addb21?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '09',
+          title: 'Aerodynamic Drag',
+          desc: 'Measure air resistance as rockets climb through thicker lower air.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723423-db9007b937d7?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '10',
+          title: 'Aero Braking',
+          desc: 'Dip into upper air passes to lower orbit speed without extra fuel.',
+          img: 'https://plus.unsplash.com/premium_vector-1736266200575-9f7aba85da72?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '11',
+          title: 'Chamber Pressure',
+          desc: 'Inspect how combustion pressure drives higher exhaust speed and thrust.',
+          img: 'https://plus.unsplash.com/premium_vector-1751986261636-9da33d70c7f9?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '12',
+          title: 'Mass Fraction',
+          desc: 'Compare propellant weight against dry structure and payload mass.',
+          img: 'https://plus.unsplash.com/premium_vector-1764854696084-aedc1363e1b0?q=80&w=1121&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '13',
+          title: 'Exhaust Velocity',
+          desc: 'See how faster exhaust gases boost thrust efficiency.',
+          img: 'https://plus.unsplash.com/premium_vector-1736064955641-97a7b037de8e?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '14',
+          title: 'Structural G-Load',
+          desc: 'Track acceleration loads on the airframe during climb and braking.',
+          img: 'https://plus.unsplash.com/premium_vector-1736064956910-a025fb0b4b8a?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '15',
+          title: 'Combustion Stability',
+          desc: 'Understand steady chamber burn and pressure balance inside engines.',
+          img: 'https://plus.unsplash.com/premium_vector-1765467403723-22bcd5d9782f?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '16',
+          title: 'Aero Stability (CoP)',
+          desc: 'Keep center of pressure behind center of mass for clean flight.',
+          img: 'https://plus.unsplash.com/premium_vector-1736916203234-988e82cc0963?q=80&w=663&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '17',
+          title: 'Max Q Load',
+          desc: 'Find the peak dynamic pressure point where speed and air density meet.',
+          img: 'https://plus.unsplash.com/premium_vector-1754148962367-4ef5ac72ed26?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '18',
+          title: 'Propellant Ratio',
+          desc: 'Tune oxidizer-to-fuel mix for clean combustion and performance.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723424-24f1f84d2aa4?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '19',
+          title: 'Turbopump Feed',
+          desc: 'Pump fuel and oxidizer into high-pressure chambers quickly.',
+          img: 'https://plus.unsplash.com/premium_vector-1754029090817-92b24c82d730?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '20',
+          title: 'Gimbal Steering',
+          desc: 'Tilt engine thrust slightly to steer pitch and yaw cleanly.',
+          img: 'https://plus.unsplash.com/premium_vector-1754044368482-2e7433f61a78?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '21',
+          title: 'Fairing Jettison',
+          desc: 'Release payload nose cones once air drag drops in thin air.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723395-97257ef22be2?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '22',
+          title: 'Booster Flip',
+          desc: 'Reorient a first stage after separation to line up a return burn.',
+          img: 'https://plus.unsplash.com/premium_vector-1736266200575-9f7aba85da72?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '23',
+          title: 'Entry Burn',
+          desc: 'Fire engines in upper air to lower booster speed and heating.',
+          img: 'https://plus.unsplash.com/premium_vector-1736906838979-21b6ac6efa88?q=80&w=882&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '24',
+          title: 'Grid Fin Control',
+          desc: 'Steer descending boosters through supersonic and subsonic air.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723423-db9007b937d7?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '25',
+          title: 'Suicide Landing Burn',
+          desc: 'Time a single landing burn so velocity reaches zero right at touch.',
+          img: 'https://plus.unsplash.com/premium_vector-1736064955641-97a7b037de8e?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '26',
+          title: 'Cryogenic Boil-Off',
+          desc: 'Manage cold liquid propellants so tanks stay insulated before launch.',
+          img: 'https://plus.unsplash.com/premium_vector-1736837077023-ac5a52bd0930?q=80&w=879&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '27',
+          title: 'Ullage Settling',
+          desc: 'Settle liquid fuel to tank bottoms before igniting upper stages.',
+          img: 'https://plus.unsplash.com/premium_vector-1751986261636-9da33d70c7f9?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '28',
+          title: 'Regenerative Cooling',
+          desc: 'Circulate cool propellant through nozzle walls to keep metal safe.',
+          img: 'https://plus.unsplash.com/premium_vector-1736496723363-2f2068addb21?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '29',
+          title: 'Throttle & Isp Trade',
+          desc: 'See how throttling engines up or down affects flight efficiency.',
+          img: 'https://plus.unsplash.com/premium_vector-1764854696084-aedc1363e1b0?q=80&w=1121&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        },
+        {
+          num: '30',
+          title: 'Payload Orbit Budget',
+          desc: 'Plan total delta-v and payload mass for low Earth orbit insertion.',
+          img: 'https://plus.unsplash.com/premium_vector-1754148962367-4ef5ac72ed26?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D',
+          unlocked: false
+        }
+      ];
+
+      grid.innerHTML = labs.map((lab, idx) => {
+        const delay = Math.min(idx % 3, 2) * 0.08;
+        const badgeHtml = lab.isNew
+          ? '<span class="sl-lab-new-badge">NEW</span>'
+          : '';
+        const lockHtml = lab.unlocked
+          ? ''
+          : '<div class="sl-lab-lock-overlay"><span class="sl-lab-lock-pill">Locked · Under Update</span><span class="sl-lab-lock-sub">Coming soon in SkyLabs</span></div>';
+
+        const ctaHtml = lab.unlocked
+          ? `<a href="${lab.href}" class="sl-lab-btn sl-lab-btn-active">Open Lab &#8594;</a>`
+          : `<button type="button" class="sl-lab-btn sl-lab-btn-locked" disabled aria-disabled="true">Under Update</button>`;
+
+        return `
+          <article class="sl-lab-card ${lab.unlocked ? 'is-open-lab' : ''}" style="transition-delay: ${delay}s;">
+            <div class="sl-lab-media">
+              ${badgeHtml}
+              <img src="${lab.img}" alt="${lab.title}" loading="lazy" />
+              ${lockHtml}
+            </div>
+            <div class="sl-lab-body">
+              <span class="sl-lab-index">Lab ${lab.num}</span>
+              <h3 class="sl-lab-card-title">${lab.title}</h3>
+              <p class="sl-lab-card-desc">${lab.desc}</p>
+              ${ctaHtml}
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -60px 0px',
+          threshold: 0.06
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
 
 </body>
 </html>
