@@ -3231,9 +3231,12 @@ function renderInbox() {
   inbox = dedupeInbox(inbox);
   if (!inbox.length) {
     list.innerHTML = "<p class='lead'>No private messages yet</p>";
+    list._lastHtml = "";
     return;
   }
-  list.innerHTML = inbox.map((m) => {
+  // Only rebuild when content changed — a full re-render on every poll
+  // restarted any voice note being listened to.
+  const html = inbox.map((m) => {
     const who = m.fromTeacher ? "You" : (maskOn ? maskId(m.sid) : (m.nick || maskId(m.sid)));
     const extra = m.image ? "<img class='msg-img' alt='' src='" + m.image + "' />" : "";
     const audio = m.voice
@@ -3248,6 +3251,9 @@ function renderInbox() {
       "</div>"
     );
   }).join("");
+  if (list._lastHtml === html) { list.scrollTop = list.scrollHeight; return; }
+  list._lastHtml = html;
+  list.innerHTML = html;
   list.scrollTop = list.scrollHeight;
 }
 
@@ -5158,7 +5164,23 @@ $("btnRec").onclick = async () => {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     recChunks = [];
-    recorder = new MediaRecorder(stream);
+    // Low-bitrate Opus keeps clips small so the classroom backend never
+    // truncates them (truncation is why students heard broken voice notes).
+    let recOpts = {};
+    try {
+      if (window.MediaRecorder && MediaRecorder.isTypeSupported("audio/webm;codecs=opus")) {
+        recOpts = { mimeType: "audio/webm;codecs=opus", audioBitsPerSecond: 24000 };
+      } else {
+        recOpts = { audioBitsPerSecond: 24000 };
+      }
+    } catch (e) {}
+    try { recorder = new MediaRecorder(stream, recOpts); }
+    catch (e) { recorder = new MediaRecorder(stream); }
+    // Hard cap: recording auto-stops after 60 s so notes always send fully
+    clearTimeout(window._recMaxTimer);
+    window._recMaxTimer = setTimeout(() => {
+      if (recorder && recorder.state === "recording") recorder.stop();
+    }, 60000);
     recorder.ondataavailable = (e) => { if (e.data.size) recChunks.push(e.data); };
     recorder.onstop = async () => {
       stream.getTracks().forEach((t) => t.stop());
@@ -5701,16 +5723,5 @@ window.addEventListener("resize", () => {
 });
 setInterval(poll, 1000);
 </script>
-<style>
-  /* Custom Text Selection Color */
-  ::selection {
-    background-color: #808080;
-    color: #fff;
-  }
-  ::-moz-selection {
-    background-color: #808080;
-    color: #fff;
-  }
-</style>
 </body>
 </html>
