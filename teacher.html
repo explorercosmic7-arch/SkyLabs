@@ -814,10 +814,23 @@
 
     @media (max-width:900px) { .lab-grid { grid-template-columns:1fr; } }
     .lab {
+      position:relative;
       border:1px solid var(--glass-border); border-radius:18px; overflow:hidden; background:rgba(255,255,255,.35);
       cursor:pointer; text-align:left; padding:0; font:inherit; color:inherit;
       backdrop-filter:blur(10px);
     }
+    .lab.locked { cursor:not-allowed; }
+    .lab.locked img { filter:grayscale(.85) brightness(.75); }
+    .lab.locked:hover { border-color:var(--glass-border); box-shadow:none; }
+    .lab .lockbadge {
+      position:absolute; top:10px; right:10px; z-index:2;
+      display:inline-flex; align-items:center; gap:5px;
+      padding:5px 10px; border-radius:999px;
+      font-size:12px; font-weight:500; color:#e8eaed;
+      background:rgba(20,22,28,.72); backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.16);
+    }
+    .lab .lockbadge .material-symbols-outlined { font-size:15px; }
     .lab img { width:100%; height:170px; object-fit:cover; display:block; background:#1a1d24; }
     .lab .pad { padding:16px; }
     .lab h3 { font-size:20px; font-weight:500; margin-bottom:4px; }
@@ -1364,13 +1377,13 @@
     }
     .ai-actions { margin-top: 8px; display: flex; gap: 6px; }
     .ai-action-btn { background: var(--blue); color: #fff; border: none; border-radius: 6px; padding: 4px 8px; font-size: 11px; cursor: pointer; }
-    * { scrollbar-width: thin; scrollbar-color: rgba(26,115,232,.35) transparent; }
-    *::-webkit-scrollbar { width: 6px; height: 6px; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(138,180,248,.35) transparent; }
+    *::-webkit-scrollbar { width: 4px; height: 4px; }
     *::-webkit-scrollbar-track { background: transparent; }
-    *::-webkit-scrollbar-thumb { background: rgba(26,115,232,.35); border-radius: 8px; }
-    *::-webkit-scrollbar-thumb:hover { background: rgba(26,115,232,.55); }
+    *::-webkit-scrollbar-thumb { background: rgba(138,180,248,.35); border-radius: 999px; }
+    *::-webkit-scrollbar-thumb:hover { background: rgba(138,180,248,.6); }
     body.dark *::-webkit-scrollbar-thumb { background: rgba(138,180,248,.35); }
-    body.dark *::-webkit-scrollbar-thumb:hover { background: rgba(138,180,248,.55); }
+    body.dark *::-webkit-scrollbar-thumb:hover { background: rgba(138,180,248,.6); }
     .file-btn {
       display:inline-flex; align-items:center; gap:10px;
       padding:14px 22px; border-radius:24px; border:1px solid #dadce0;
@@ -2847,10 +2860,10 @@ const OG = [
 ];
 
 let LABS = [
-  { id:"deltav", name:"Delta-v lab", desc:"Velocity change simulation", url:"lab-deltav.html", img:"https://images.unsplash.com/vector-1770131865203-fc2b89849ee9?q=80&w=711&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket delta-v" },
+  { id:"deltav", name:"Delta-v lab", desc:"Coming soon", url:"lab-deltav.html", img:"https://images.unsplash.com/vector-1770131865203-fc2b89849ee9?q=80&w=711&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket delta-v", locked:true },
   { id:"reentry", name:"Reentry heating", desc:"Thermal entry lab", url:"reentry.html", img:"https://images.unsplash.com/vector-1765389883990-6906dcaa7779?q=80&w=1050&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics heat reentry" },
-  { id:"twr", name:"Thrust to weight", desc:"TWR rocket lab", url:"lab-rocket-twr.html", img:"https://images.unsplash.com/vector-1759145395771-e7c12bb7c724?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket thrust" },
-  { id:"gravity", name:"Gravity turn", desc:"Ascent guidance lab", url:"lab-gravity-turn.html", img:"https://images.unsplash.com/vector-1763972963052-4e0a56d8d8a8?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics gravity ascent" }
+  { id:"twr", name:"Thrust to weight", desc:"Coming soon", url:"lab-rocket-twr.html", img:"https://images.unsplash.com/vector-1759145395771-e7c12bb7c724?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics rocket thrust", locked:true },
+  { id:"gravity", name:"Gravity turn", desc:"Coming soon", url:"lab-gravity-turn.html", img:"https://images.unsplash.com/vector-1763972963052-4e0a56d8d8a8?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0", tags:"aerospace physics gravity ascent", locked:true }
 ];
 
 const TEAM_NAMES = ["Alpha", "Beta", "Gamma", "Delta"];
@@ -3593,6 +3606,8 @@ async function loadPublishedLabs() {
     if (!res.ok) return;
     const data = await res.json();
     const remote = (data.labs || []).map(function (l) {
+      // Acids lab is not part of the space suite — filter it out
+      if (/acid/i.test((l.name || "") + " " + (l.id || ""))) return null;
       return {
         id: "pub-" + l.id,
         name: l.name || l.id,
@@ -3600,9 +3615,10 @@ async function loadPublishedLabs() {
         url: SL_LABS_URL + (l.url && l.url.indexOf("/labs/") === 0 ? l.url : "/labs/" + l.id),
         img: l.img || "",
         tags: (l.tags || "") + " published builder custom",
-        published: true
+        published: true,
+        locked: !/reentry/i.test((l.name || "") + " " + (l.id || ""))
       };
-    });
+    }).filter(Boolean);
     LABS = remote.concat(LABS.filter(function (l) { return !l.published; }));
     renderLabs($("labSearch") ? $("labSearch").value : "");
   } catch (e) {}
@@ -3637,12 +3653,17 @@ function renderLabs(filterText, resetCount) {
   }
   const shown = list.slice(0, labVisibleCount);
   grid.innerHTML = shown.map((lab) =>
-    "<button class='lab' data-id='" + lab.id + "' type='button'>" +
+    "<button class='lab" + (lab.locked ? " locked" : "") + "' data-id='" + lab.id + "' type='button'" + (lab.locked ? " title='Coming soon'" : "") + ">" +
     "<img alt='' src='" + (lab.img || "") + "' />" +
+    (lab.locked ? "<span class='lockbadge'><span class='material-symbols-outlined'>lock</span>Coming soon</span>" : "") +
     "<div class='pad'><h3>" + esc(lab.name) + "</h3><p>" + esc(lab.desc) + "</p></div></button>"
   ).join("");
   grid.querySelectorAll(".lab").forEach((btn) => {
-    btn.onclick = () => openLab(btn.dataset.id);
+    btn.onclick = () => {
+      const lab = LABS.find((x) => x.id === btn.dataset.id) || {};
+      if (lab.locked) { snack("This lab isn't ready yet — coming soon"); return; }
+      openLab(btn.dataset.id);
+    };
   });
   if (moreWrap) {
     if (labVisibleCount < list.length) {
