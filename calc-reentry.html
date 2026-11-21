@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Google Fonts & Material Symbols Activation -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&family=Inter:wght@300;400;500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+
+    <title>Reentry Calculator · SkyLabs</title>
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="Reentry Calculator · SkyLabs">
+    <meta name="description" content="Atmospheric reentry calculator for students, teachers, and scientists—compute entry heating, stagnation heat flux, aerodynamic drag, and deceleration.">
+    <meta name="keywords" content="SkyLabs, reentry calculator, atmospheric reentry, heat flux calculator, aerodynamic drag, thermal protection, aerospace calculator, STEM">
+    <meta name="author" content="SkyLabs">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <link rel="canonical" href="https://skylabs.pages.dev/reentry-calculator">
+
+    <!-- Favicon, PWA & Theme Color -->
+    <link rel="icon" type="image/png" href="Favicon.png">
+    <link rel="apple-touch-icon" href="Favicon.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#1a73e8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="SkyLabs">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skylabs.pages.dev/reentry-calculator">
+    <meta property="og:title" content="Reentry Calculator · SkyLabs">
+    <meta property="og:description" content="Calculate atmospheric entry heating, deceleration loads, and drag profiles for students, educators, and aerospace researchers on SkyLabs.">
+    <meta property="og:image" content="https://skylabs.pages.dev/Logo.png">
+    <meta property="og:site_name" content="SkyLabs">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://skylabs.pages.dev/reentry-calculator">
+    <meta name="twitter:title" content="Reentry Calculator · SkyLabs">
+    <meta name="twitter:description" content="Calculate atmospheric entry heating, deceleration loads, and drag profiles for students, educators, and aerospace researchers on SkyLabs.">
+    <meta name="twitter:image" content="https://skylabs.pages.dev/Logo.png">
+
+    <!-- JSON-LD Structured Data (Schema.org) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://skylabs.pages.dev/reentry-calculator#webapp",
+          "url": "https://skylabs.pages.dev/reentry-calculator",
+          "name": "Reentry Calculator · SkyLabs",
+          "description": "Interactive atmospheric reentry calculator for students, teachers, and scientists modeling aerodynamic heating, drag, and entry loads.",
+          "applicationCategory": "EducationalApplication",
+          "operatingSystem": "Any",
+          "audience": [
+            { "@type": "EducationalAudience", "educationalRole": "student" },
+            { "@type": "EducationalAudience", "educationalRole": "teacher" },
+            { "@type": "Audience", "audienceType": "Scientists & Researchers" }
+          ],
+          "isPartOf": {
+            "@id": "https://skylabs.pages.dev/#website"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "SkyLabs",
+            "url": "https://skylabs.pages.dev/",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://skylabs.pages.dev/Logo.png"
+            }
+          }
+        }
+      ]
+    }
+    </script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.24) #05070b;
+    }
+
+    ::-webkit-scrollbar {
+      width: 7px;
+      height: 7px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #05070b;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.22);
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      background-color: #05070c;
+      color: #f5f7fb;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Hide native white/browser number spin buttons everywhere */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    /* ============================================================
+       MAIN STAGE & MASSIVE PC CONTAINER (NO TOP NAVBAR)
+       ============================================================ */
+    .sl-calc-stage {
+      position: relative;
+      flex: 1 1 auto;
+      width: 100%;
+      padding: 84px 44px 104px;
+      background:
+        radial-gradient(circle at 82% 16%, rgba(120, 165, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 16% 84%, rgba(255, 255, 255, 0.05) 0%, transparent 55%),
+        linear-gradient(180deg, #05070c 0%, #070b13 50%, #05070c 100%);
+      display: flex;
+      align-items: flex-start;
+      overflow-x: clip;
+      isolation: isolate;
+    }
+
+    .sl-calc-wrap {
+      width: 100%;
+      max-width: 1580px;
+      margin: 0 auto;
+    }
+
+    .sl-calc-head {
+      max-width: 960px;
+      margin: 0 auto 58px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(18px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .sl-calc-stage.is-ready .sl-calc-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sl-calc-tag {
+      display: inline-block;
+      margin-bottom: 16px;
+      padding: 7px 18px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 400;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.9);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .sl-calc-title {
+      font-size: clamp(42px, 5.2vw, 72px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.028em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    .sl-calc-sub {
+      font-size: clamp(18px, 1.45vw, 22px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* 3 Mode Panels: Student | Teacher | Scientist */
+    .sl-track-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+      margin-bottom: 44px;
+    }
+
+    .sl-track-panel {
+      min-height: 300px;
+      padding: 36px 32px;
+      border-radius: 30px;
+      background: rgba(11, 15, 24, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: 0 26px 68px rgba(0, 0, 0, 0.72);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    .sl-track-panel:nth-child(2) {
+      transition-delay: 0.09s;
+    }
+
+    .sl-track-panel:nth-child(3) {
+      transition-delay: 0.18s;
+    }
+
+    .sl-calc-stage.is-ready .sl-track-panel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .sl-track-panel:hover {
+      background: rgba(16, 22, 36, 0.96);
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateY(-4px);
+    }
+
+    .sl-track-panel.is-selected {
+      background: rgba(18, 26, 44, 0.98);
+      border-color: rgba(145, 185, 255, 0.6);
+      box-shadow: 0 28px 76px rgba(0, 0, 0, 0.82), 0 0 0 1px rgba(145, 185, 255, 0.25);
+    }
+
+    .sl-track-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .sl-track-level {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.6);
+    }
+
+    .sl-track-chip {
+      padding: 5px 13px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 400;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .sl-track-name {
+      font-size: clamp(30px, 2.5vw, 40px);
+      font-weight: 400;
+      line-height: 1.12;
+      letter-spacing: -0.022em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    .sl-track-desc {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    .sl-track-btn {
+      width: 100%;
+      height: 54px;
+      padding: 0 24px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 400;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sl-track-btn:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    .sl-track-panel.is-selected .sl-track-btn {
+      background: #dce8ff;
+      color: #06080d;
+    }
+
+    /* ============================================================
+       MASSIVE CALCULATOR WORKSPACE
+       ============================================================ */
+    .sl-calc-workspace {
+      padding: 44px 40px;
+      border-radius: 34px;
+      background: rgba(11, 15, 24, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(26px);
+      -webkit-backdrop-filter: blur(26px);
+      box-shadow: 0 32px 88px rgba(0, 0, 0, 0.78);
+      display: none;
+    }
+
+    .sl-calc-workspace.is-visible {
+      display: block;
+      animation: slFadeInPanel 0.34s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes slFadeInPanel {
+      from {
+        opacity: 0;
+        transform: translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .sl-ws-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .sl-ws-badge {
+      display: inline-block;
+      margin-bottom: 8px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.9);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .sl-ws-title {
+      font-size: clamp(28px, 2.8vw, 40px);
+      font-weight: 400;
+      color: #ffffff;
+      letter-spacing: -0.022em;
+    }
+
+    .sl-ws-sub {
+      font-size: 16.5px;
+      color: rgba(245, 247, 251, 0.74);
+      margin-top: 6px;
+      max-width: 820px;
+    }
+
+    .sl-ws-controls-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .sl-ws-btn {
+      padding: 11px 22px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .sl-ws-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.36);
+    }
+
+    /* Spacious Two-Column Engine Grid */
+    .sl-engine-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.12fr) minmax(0, 1.12fr);
+      gap: 36px;
+      align-items: start;
+    }
+
+    .sl-box-card {
+      padding: 32px;
+      border-radius: 26px;
+      background: rgba(6, 9, 15, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .sl-box-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 22px;
+      letter-spacing: -0.015em;
+    }
+
+    /* Presets & Segmented Pills */
+    .sl-pill-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .sl-choice-pill {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(245, 247, 251, 0.85);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+    }
+
+    .sl-choice-pill:hover {
+      border-color: rgba(255, 255, 255, 0.36);
+      color: #ffffff;
+    }
+
+    .sl-choice-pill.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    /* Large Input Rows + Custom Dark Stepper */
+    .sl-input-item {
+      padding: 20px 22px;
+      border-radius: 20px;
+      background: rgba(13, 18, 29, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    .sl-input-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .sl-input-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .sl-input-label {
+      font-size: 17px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.92);
+    }
+
+    /* Custom Dark Stepper Pill: [-] [input] [+] */
+    .sl-stepper {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 14px;
+      background: #090d16;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      overflow: hidden;
+      height: 44px;
+    }
+
+    .sl-stepper-btn {
+      width: 40px;
+      height: 100%;
+      border: 0;
+      background: rgba(255, 255, 255, 0.04);
+      color: #f5f7fb;
+      font-family: inherit;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.16s ease, color 0.16s ease;
+    }
+
+    .sl-stepper-btn:hover {
+      background: rgba(145, 185, 255, 0.18);
+      color: #ffffff;
+    }
+
+    .sl-stepper-btn:active {
+      background: rgba(255, 255, 255, 0.24);
+    }
+
+    .sl-input-num {
+      width: 96px;
+      height: 100%;
+      padding: 0 8px;
+      border: 0;
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      background: #090d16;
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      text-align: center;
+      outline: none;
+    }
+
+    .sl-input-num:focus {
+      background: #0d1320;
+    }
+
+    .sl-stepper:focus-within {
+      border-color: rgba(145, 185, 255, 0.65);
+      box-shadow: 0 0 0 2px rgba(145, 185, 255, 0.15);
+    }
+
+    /* Large Custom Range Slider */
+    .sl-range {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .sl-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #090d16;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+    }
+
+    .sl-range::-webkit-slider-thumb:hover {
+      transform: scale(1.12);
+    }
+
+    .sl-range::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid #090d16;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      cursor: pointer;
+    }
+
+    .sl-input-hint {
+      font-size: 14px;
+      color: rgba(245, 247, 251, 0.62);
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+
+    /* Large Output Readout Cards */
+    .sl-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .sl-kpi-card {
+      padding: 24px;
+      border-radius: 22px;
+      background: rgba(14, 20, 33, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .sl-kpi-label {
+      display: block;
+      font-size: 14px;
+      color: rgba(245, 247, 251, 0.64);
+      margin-bottom: 8px;
+    }
+
+    .sl-kpi-val {
+      font-size: clamp(26px, 2.3vw, 34px);
+      font-weight: 400;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+      line-height: 1.18;
+    }
+
+    .sl-kpi-note {
+      display: block;
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.7);
+      margin-top: 7px;
+    }
+
+    /* Meter Bar */
+    .sl-meter-box {
+      padding: 20px 22px;
+      border-radius: 20px;
+      background: rgba(6, 9, 15, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      margin-bottom: 24px;
+    }
+
+    .sl-meter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      font-size: 15px;
+      color: rgba(245, 247, 251, 0.86);
+      margin-bottom: 12px;
+    }
+
+    .sl-meter-track {
+      width: 100%;
+      height: 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+    }
+
+    .sl-meter-fill {
+      height: 100%;
+      width: 40%;
+      border-radius: 999px;
+      background: #ffffff;
+      transition: width 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Explanation & Formula Step Box */
+    .sl-explain-box {
+      padding: 24px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .sl-explain-title {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .sl-explain-text {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.82);
+    }
+
+    .sl-steps-list {
+      margin-top: 14px;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      font-size: 15px;
+      color: rgba(245, 247, 251, 0.82);
+      line-height: 1.56;
+    }
+
+    .sl-status-good {
+      color: #9be7b8;
+    }
+
+    .sl-status-warn {
+      color: #ffd38a;
+    }
+
+    .sl-status-high {
+      color: #ff9d9d;
+    }
+
+    /* ============================================================
+       SMALL BOTTOM FOOTER (SMALL SKYLABS LOGO + GO BACK)
+       ============================================================ */
+    .sl-mini-footer {
+      width: 100%;
+      padding: 20px 36px;
+      background: #04060a;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', sans-serif;
+      font-weight: 300;
+    }
+
+    .sl-mini-footer-inner {
+      max-width: 1580px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .sl-mini-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #ffffff;
+      font-size: 16.5px;
+      font-weight: 400;
+    }
+
+    .sl-mini-brand img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      border-radius: 6px;
+      display: block;
+    }
+
+    .sl-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .sl-back-btn:hover {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    /* ============================================================
+       IPAD / TABLET ADJUSTMENTS (768px - 1180px)
+       ============================================================ */
+    @media (max-width: 1180px) {
+      .sl-calc-stage {
+        padding: 64px 28px 84px;
+      }
+      .sl-track-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+      .sl-track-grid > .sl-track-panel:last-child {
+        grid-column: 1 / -1;
+      }
+      .sl-engine-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      .sl-calc-workspace {
+        padding: 32px 26px;
+        border-radius: 26px;
+      }
+      .sl-box-card {
+        padding: 24px;
+      }
+    }
+
+    /* ============================================================
+       MOBILE ADJUSTMENTS (<= 767px)
+       ============================================================ */
+    @media (max-width: 767px) {
+      .sl-calc-stage {
+        padding: 44px 18px 64px;
+      }
+      .sl-calc-head {
+        margin-bottom: 36px;
+      }
+      .sl-track-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      .sl-track-grid > .sl-track-panel:last-child {
+        grid-column: auto;
+      }
+      .sl-track-panel {
+        min-height: 0;
+        padding: 24px 20px;
+        border-radius: 22px;
+        gap: 20px;
+      }
+      .sl-calc-workspace {
+        padding: 22px 16px;
+        border-radius: 22px;
+      }
+      .sl-box-card {
+        padding: 18px 16px;
+        border-radius: 18px;
+      }
+      .sl-input-item {
+        padding: 16px 14px;
+        border-radius: 16px;
+      }
+      .sl-stepper {
+        height: 40px;
+      }
+      .sl-stepper-btn {
+        width: 34px;
+        font-size: 17px;
+      }
+      .sl-input-num {
+        width: 78px;
+        font-size: 15px;
+      }
+      .sl-kpi-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .sl-kpi-card {
+        padding: 18px;
+      }
+      .sl-mini-footer {
+        padding: 18px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="sl-calc-stage" id="slReentryCalcStage">
+    <div class="sl-calc-wrap">
+      <div class="sl-calc-head">
+        <span class="sl-calc-tag">SkyLabs · Re-Entry Heating Calculator</span>
+        <h1 class="sl-calc-title">Select your mode to begin</h1>
+        <p class="sl-calc-sub">
+          Choose Student, Teacher, or Scientist to explore atmospheric re-entry heating from simple astronomy concepts to mission-grade thermal estimates.
+        </p>
+      </div>
+
+      <!-- 3 Mode Panels: Student | Teacher | Scientist -->
+      <div class="sl-track-grid" role="region" aria-label="Calculator modes">
+        <article class="sl-track-panel" data-mode="student">
+          <div>
+            <div class="sl-track-top">
+              <span class="sl-track-level">Mode 01</span>
+              <span class="sl-track-chip">Aerospace &amp; Astronomy</span>
+            </div>
+            <h2 class="sl-track-name">Student</h2>
+            <p class="sl-track-desc">
+              Simple, clear English for students learning aerospace and astronomy—see how speed, entry angle, and shield shape affect heat.
+            </p>
+          </div>
+          <button type="button" class="sl-track-btn" data-open-mode="student">
+            <span>Open Student Calculator</span>
+            <span aria-hidden="true">&#8594;</span>
+          </button>
+        </article>
+
+        <article class="sl-track-panel" data-mode="teacher">
+          <div>
+            <div class="sl-track-top">
+              <span class="sl-track-level">Mode 02</span>
+              <span class="sl-track-chip">Classroom &amp; Guided</span>
+            </div>
+            <h2 class="sl-track-name">Teacher</h2>
+            <p class="sl-track-desc">
+              Step-by-step physics breakdowns, mission presets, and clear comparisons built for classroom lessons and guided labs.
+            </p>
+          </div>
+          <button type="button" class="sl-track-btn" data-open-mode="teacher">
+            <span>Open Teacher Calculator</span>
+            <span aria-hidden="true">&#8594;</span>
+          </button>
+        </article>
+
+        <article class="sl-track-panel" data-mode="scientist">
+          <div>
+            <div class="sl-track-top">
+              <span class="sl-track-level">Mode 03</span>
+              <span class="sl-track-chip">NASA / SpaceX Level</span>
+            </div>
+            <h2 class="sl-track-name">Scientist</h2>
+            <p class="sl-track-desc">
+              Stagnation heat flux scaling, altitude-density models, nose radius effects, dynamic pressure, and thermal shield margins.
+            </p>
+          </div>
+          <button type="button" class="sl-track-btn" data-open-mode="scientist">
+            <span>Open Scientist Calculator</span>
+            <span aria-hidden="true">&#8594;</span>
+          </button>
+        </article>
+      </div>
+
+      <!-- Active Mode Workspace -->
+      <section class="sl-calc-workspace" id="slCalcWorkspace" aria-live="polite">
+        <div class="sl-ws-head">
+          <div>
+            <span class="sl-ws-badge" id="slWsBadge">Active Mode</span>
+            <h2 class="sl-ws-title" id="slWsTitle">Calculator</h2>
+            <p class="sl-ws-sub" id="slWsSub"></p>
+          </div>
+          <div class="sl-ws-controls-top">
+            <button type="button" class="sl-ws-btn" id="slWsResetInputsBtn">Reset Values</button>
+            <button type="button" class="sl-ws-btn" id="slWsCloseBtn">Hide Panel</button>
+          </div>
+        </div>
+
+        <div id="slModeBody"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Small Footer: Small SkyLabs Logo + Go Back -->
+  <footer class="sl-mini-footer" aria-label="Calculator Footer">
+    <div class="sl-mini-footer-inner">
+      <a href="index.html" class="sl-mini-brand">
+        <img
+          src="Favicon.png"
+          onerror="this.onerror=null; this.src='Logo.jpg';"
+          alt="SkyLabs"
+        />
+        <span>SkyLabs</span>
+      </a>
+
+      <button type="button" class="sl-back-btn" id="slGoBackBtn">
+        <span aria-hidden="true">&#8592;</span>
+        <span>Go Back</span>
+      </button>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const stage = document.getElementById('slReentryCalcStage');
+      const panels = document.querySelectorAll('.sl-track-panel');
+      const openBtns = document.querySelectorAll('[data-open-mode]');
+      const workspace = document.getElementById('slCalcWorkspace');
+      const wsBadge = document.getElementById('slWsBadge');
+      const wsTitle = document.getElementById('slWsTitle');
+      const wsSub = document.getElementById('slWsSub');
+      const modeBody = document.getElementById('slModeBody');
+      const resetInputsBtn = document.getElementById('slWsResetInputsBtn');
+      const closeBtn = document.getElementById('slWsCloseBtn');
+      const backBtn = document.getElementById('slGoBackBtn');
+
+      let activeMode = null;
+
+      function clamp(num, min, max) {
+        const parsed = Number(num);
+        if (!Number.isFinite(parsed)) return min;
+        return Math.min(max, Math.max(min, parsed));
+      }
+
+      function stepDecimals(stepVal) {
+        const str = String(stepVal);
+        const idx = str.indexOf('.');
+        return idx === -1 ? 0 : str.length - idx - 1;
+      }
+
+      function formatNum(num, decimals) {
+        const n = Number(num);
+        if (!Number.isFinite(n)) return '0';
+        return n.toLocaleString('en-US', {
+          minimumFractionDigits: decimals || 0,
+          maximumFractionDigits: decimals || 0
+        });
+      }
+
+      function bindSyncedInput(numEl, rangeEl, onChange) {
+        const min = Number(numEl.min);
+        const max = Number(numEl.max);
+        const step = Number(numEl.step) || 1;
+        const dec = stepDecimals(step);
+        const decBtn = document.querySelector('[data-step-dec="' + numEl.id + '"]');
+        const incBtn = document.querySelector('[data-step-inc="' + numEl.id + '"]');
+
+        function commitValue(rawVal) {
+          const clamped = clamp(rawVal, min, max);
+          const rounded = Number(clamped.toFixed(dec));
+          numEl.value = rounded;
+          rangeEl.value = rounded;
+          onChange();
+        }
+
+        if (decBtn) {
+          decBtn.addEventListener('click', () => {
+            const current = Number(numEl.value);
+            commitValue((Number.isFinite(current) ? current : min) - step);
+          });
+        }
+
+        if (incBtn) {
+          incBtn.addEventListener('click', () => {
+            const current = Number(numEl.value);
+            commitValue((Number.isFinite(current) ? current : min) + step);
+          });
+        }
+
+        rangeEl.addEventListener('input', () => {
+          numEl.value = rangeEl.value;
+          onChange();
+        });
+
+        numEl.addEventListener('input', () => {
+          if (numEl.value === '' || numEl.value === '-') return;
+          const parsed = Number(numEl.value);
+          if (!Number.isFinite(parsed)) return;
+          rangeEl.value = clamp(parsed, min, max);
+          onChange();
+        });
+
+        numEl.addEventListener('change', () => {
+          commitValue(numEl.value);
+        });
+      }
+
+      function renderStepperMarkup(id, label, min, max, step, val, hint) {
+        return `
+          <div class="sl-input-item">
+            <div class="sl-input-label-row">
+              <label for="${id}" class="sl-input-label">${label}</label>
+              <div class="sl-stepper">
+                <button type="button" class="sl-stepper-btn" data-step-dec="${id}" aria-label="Decrease ${label}">&#8722;</button>
+                <input type="number" id="${id}" class="sl-input-num" min="${min}" max="${max}" step="${step}" value="${val}" />
+                <button type="button" class="sl-stepper-btn" data-step-inc="${id}" aria-label="Increase ${label}">&#43;</button>
+              </div>
+            </div>
+            <input type="range" id="${id}Range" class="sl-range" min="${min}" max="${max}" step="${step}" value="${val}" />
+            ${hint ? `<p class="sl-input-hint">${hint}</p>` : ''}
+          </div>
+        `;
+      }
+
+      // ============================================================
+      // 1. STUDENT CALCULATOR (SIMPLE ENGLISH FOR AEROSPACE & ASTRO)
+      // ============================================================
+      const studentState = {
+        world: 'earth',
+        speedKmS: 7.8,
+        angleDeg: 4.5,
+        bluntness: 75
+      };
+
+      const studentWorlds = {
+        earth: { label: 'Earth', airFactor: 1.0, note: 'Thick air gives strong braking and noticeable entry glow.' },
+        mars: { label: 'Mars', airFactor: 0.14, note: 'Thin air means less braking heat, but landing needs extra care.' },
+        venus: { label: 'Venus', airFactor: 2.6, note: 'Very dense atmosphere creates heavy braking and intense heat.' }
+      };
+
+      function renderStudentMode() {
+        modeBody.innerHTML = `
+          <div class="sl-engine-grid">
+            <div class="sl-box-card">
+              <h3 class="sl-box-title">Adjust Flight Inputs</h3>
+
+              <div class="sl-pill-group" id="stuWorldPills">
+                <button type="button" class="sl-choice-pill ${studentState.world === 'earth' ? 'is-active' : ''}" data-world="earth">Earth</button>
+                <button type="button" class="sl-choice-pill ${studentState.world === 'mars' ? 'is-active' : ''}" data-world="mars">Mars</button>
+                <button type="button" class="sl-choice-pill ${studentState.world === 'venus' ? 'is-active' : ''}" data-world="venus">Venus</button>
+              </div>
+
+              ${renderStepperMarkup(
+                'stuSpeedNum',
+                'Entry Speed (km/s)',
+                2,
+                15,
+                0.1,
+                studentState.speedKmS,
+                'Low Earth orbit is around 7.8 km/s. Faster speeds carry much more energy.'
+              )}
+
+              ${renderStepperMarkup(
+                'stuAngleNum',
+                'Entry Angle Steepness (°)',
+                1,
+                20,
+                0.5,
+                studentState.angleDeg,
+                'Shallow angles brake gently; steep angles dive fast into thicker air.'
+              )}
+
+              ${renderStepperMarkup(
+                'stuBluntNum',
+                'Heat Shield Bluntness (%)',
+                10,
+                100,
+                5,
+                studentState.bluntness,
+                'A wider, blunt shield pushes hot air away from the spacecraft body.'
+              )}
+            </div>
+
+            <div class="sl-box-card">
+              <h3 class="sl-box-title">What Happens During Entry</h3>
+
+              <div class="sl-kpi-grid">
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Heating Level</span>
+                  <span class="sl-kpi-val" id="stuHeatLevel">Moderate</span>
+                  <span class="sl-kpi-note" id="stuHeatScore">Index: 0</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Estimated Skin Heat</span>
+                  <span class="sl-kpi-val" id="stuTempC">1,450 °C</span>
+                  <span class="sl-kpi-note">Outer shield surface</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Braking Feel (G-Load)</span>
+                  <span class="sl-kpi-val" id="stuGLoad">3.8 G</span>
+                  <span class="sl-kpi-note">Slowing push</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Shield Protection</span>
+                  <span class="sl-kpi-val" id="stuShieldStatus">Strong</span>
+                  <span class="sl-kpi-note" id="stuShieldSub">Blunt shock layer active</span>
+                </div>
+              </div>
+
+              <div class="sl-meter-box">
+                <div class="sl-meter-head">
+                  <span>Entry Heat Intensity</span>
+                  <span id="stuMeterPct">45%</span>
+                </div>
+                <div class="sl-meter-track">
+                  <div class="sl-meter-fill" id="stuMeterFill"></div>
+                </div>
+              </div>
+
+              <div class="sl-explain-box">
+                <h4 class="sl-explain-title" id="stuPlainTitle">Simple Takeaway</h4>
+                <p class="sl-explain-text" id="stuPlainCopy"></p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const speedNum = document.getElementById('stuSpeedNum');
+        const speedRange = document.getElementById('stuSpeedNumRange');
+        const angleNum = document.getElementById('stuAngleNum');
+        const angleRange = document.getElementById('stuAngleNumRange');
+        const bluntNum = document.getElementById('stuBluntNum');
+        const bluntRange = document.getElementById('stuBluntNumRange');
+        const worldPills = document.querySelectorAll('#stuWorldPills .sl-choice-pill');
+
+        function updateStudent() {
+          studentState.speedKmS = clamp(speedNum.value, 2, 15);
+          studentState.angleDeg = clamp(angleNum.value, 1, 20);
+          studentState.bluntness = clamp(bluntNum.value, 10, 100);
+
+          const w = studentWorlds[studentState.world] || studentWorlds.earth;
+          const vRatio = studentState.speedKmS / 7.8;
+          const angleFactor = 0.55 + (studentState.angleDeg / 10);
+          const bluntRelief = 1.25 - (studentState.bluntness / 100) * 0.45;
+
+          const rawIndex = Math.pow(vRatio, 2.6) * w.airFactor * angleFactor * bluntRelief * 42;
+          const pct = Math.min(100, Math.max(6, Math.round(rawIndex)));
+          const tempC = Math.round(220 + pct * 24);
+          const gLoad = Number((Math.pow(vRatio, 1.5) * angleFactor * (0.7 + w.airFactor * 0.35) * 1.9).toFixed(1));
+
+          let levelText = 'Gentle';
+          let levelClass = 'sl-status-good';
+          if (pct >= 72) {
+            levelText = 'Very High';
+            levelClass = 'sl-status-high';
+          } else if (pct >= 38) {
+            levelText = 'Moderate';
+            levelClass = 'sl-status-warn';
+          }
+
+          const heatLevelEl = document.getElementById('stuHeatLevel');
+          heatLevelEl.textContent = levelText;
+          heatLevelEl.className = 'sl-kpi-val ' + levelClass;
+
+          document.getElementById('stuHeatScore').textContent = 'Heat Index: ' + pct + ' / 100';
+          document.getElementById('stuTempC').textContent = formatNum(tempC, 0) + ' °C';
+          document.getElementById('stuGLoad').textContent = formatNum(gLoad, 1) + ' G';
+
+          const shieldStatusEl = document.getElementById('stuShieldStatus');
+          const shieldSubEl = document.getElementById('stuShieldSub');
+          if (studentState.bluntness >= 65) {
+            shieldStatusEl.textContent = 'Strong';
+            shieldStatusEl.className = 'sl-kpi-val sl-status-good';
+            shieldSubEl.textContent = 'Wide shield pushes heat outward';
+          } else if (studentState.bluntness >= 35) {
+            shieldStatusEl.textContent = 'Balanced';
+            shieldStatusEl.className = 'sl-kpi-val sl-status-warn';
+            shieldSubEl.textContent = 'Moderate shock standoff';
+          } else {
+            shieldStatusEl.textContent = 'Pointed Risk';
+            shieldStatusEl.className = 'sl-kpi-val sl-status-high';
+            shieldSubEl.textContent = 'Sharp nose takes direct heat';
+          }
+
+          document.getElementById('stuMeterPct').textContent = pct + '%';
+          document.getElementById('stuMeterFill').style.width = pct + '%';
+
+          document.getElementById('stuPlainTitle').textContent = w.label + ' Entry Summary';
+          document.getElementById('stuPlainCopy').textContent =
+            w.note + ' At ' + formatNum(studentState.speedKmS, 1) + ' km/s and a ' +
+            formatNum(studentState.angleDeg, 1) + '° entry angle, faster speed increases heating sharply because speed is cubed in heating energy.';
+        }
+
+        worldPills.forEach((pill) => {
+          pill.addEventListener('click', () => {
+            studentState.world = pill.getAttribute('data-world') || 'earth';
+            worldPills.forEach((p) => p.classList.toggle('is-active', p === pill));
+            updateStudent();
+          });
+        });
+
+        bindSyncedInput(speedNum, speedRange, updateStudent);
+        bindSyncedInput(angleNum, angleRange, updateStudent);
+        bindSyncedInput(bluntNum, bluntRange, updateStudent);
+
+        updateStudent();
+      }
+
+      // ============================================================
+      // 2. TEACHER CALCULATOR (CLASSROOM FORMULAS & PRESETS)
+      // ============================================================
+      const teacherState = {
+        preset: 'leo',
+        massKg: 5000,
+        velocityKmS: 7.8,
+        entryAngleDeg: 5.0
+      };
+
+      const teacherPresets = {
+        leo: { massKg: 5000, velocityKmS: 7.8, entryAngleDeg: 5.0 },
+        lunar: { massKg: 5800, velocityKmS: 11.0, entryAngleDeg: 6.2 },
+        mars: { massKg: 3200, velocityKmS: 5.8, entryAngleDeg: 12.0 }
+      };
+
+      function renderTeacherMode() {
+        modeBody.innerHTML = `
+          <div class="sl-engine-grid">
+            <div class="sl-box-card">
+              <h3 class="sl-box-title">Lesson Scenarios &amp; Parameters</h3>
+
+              <div class="sl-pill-group" id="teaPresetPills">
+                <button type="button" class="sl-choice-pill ${teacherState.preset === 'leo' ? 'is-active' : ''}" data-preset="leo">LEO Capsule</button>
+                <button type="button" class="sl-choice-pill ${teacherState.preset === 'lunar' ? 'is-active' : ''}" data-preset="lunar">Lunar Return</button>
+                <button type="button" class="sl-choice-pill ${teacherState.preset === 'mars' ? 'is-active' : ''}" data-preset="mars">Mars Entry</button>
+              </div>
+
+              ${renderStepperMarkup(
+                'teaMassNum',
+                'Craft Mass (kg)',
+                500,
+                50000,
+                100,
+                teacherState.massKg,
+                'Kinetic energy scales linearly with mass: KE = ½ m v².'
+              )}
+
+              ${renderStepperMarkup(
+                'teaVelNum',
+                'Entry Velocity (km/s)',
+                2,
+                16,
+                0.2,
+                teacherState.velocityKmS,
+                'Doubling velocity multiplies kinetic energy by 4×.'
+              )}
+
+              ${renderStepperMarkup(
+                'teaAngNum',
+                'Descent Angle (° below horizontal)',
+                1,
+                25,
+                0.5,
+                teacherState.entryAngleDeg,
+                'Steeper angle shortens braking time and raises peak heating rate.'
+              )}
+            </div>
+
+            <div class="sl-box-card">
+              <h3 class="sl-box-title">Classroom Physics &amp; Step Breakdown</h3>
+
+              <div class="sl-kpi-grid">
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Total Kinetic Energy</span>
+                  <span class="sl-kpi-val" id="teaKeGj">152.1 GJ</span>
+                  <span class="sl-kpi-note">Dissipated as heat &amp; drag</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Relative Heating Rate</span>
+                  <span class="sl-kpi-val" id="teaRate">1.00×</span>
+                  <span class="sl-kpi-note">Compared to 7.8 km/s baseline</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Peak Deceleration</span>
+                  <span class="sl-kpi-val" id="teaPeakG">4.2 G</span>
+                  <span class="sl-kpi-note">Estimated flight peak</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Est. Entry Duration</span>
+                  <span class="sl-kpi-val" id="teaDurSec">240 s</span>
+                  <span class="sl-kpi-note">High-heat braking window</span>
+                </div>
+              </div>
+
+              <div class="sl-meter-box">
+                <div class="sl-meter-head">
+                  <span>Thermal Load vs. Standard Capsule</span>
+                  <span id="teaBarLabel">100%</span>
+                </div>
+                <div class="sl-meter-track">
+                  <div class="sl-meter-fill" id="teaBarFill"></div>
+                </div>
+              </div>
+
+              <div class="sl-explain-box">
+                <h4 class="sl-explain-title">Step-by-Step Teaching Derivation</h4>
+                <ol class="sl-steps-list" id="teaStepsList"></ol>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const massNum = document.getElementById('teaMassNum');
+        const massRange = document.getElementById('teaMassNumRange');
+        const velNum = document.getElementById('teaVelNum');
+        const velRange = document.getElementById('teaVelNumRange');
+        const angNum = document.getElementById('teaAngNum');
+        const angRange = document.getElementById('teaAngNumRange');
+        const presetPills = document.querySelectorAll('#teaPresetPills .sl-choice-pill');
+
+        function updateTeacher() {
+          teacherState.massKg = clamp(massNum.value, 500, 50000);
+          teacherState.velocityKmS = clamp(velNum.value, 2, 16);
+          teacherState.entryAngleDeg = clamp(angNum.value, 1, 25);
+
+          const vMs = teacherState.velocityKmS * 1000;
+          const keJoules = 0.5 * teacherState.massKg * vMs * vMs;
+          const keGj = keJoules / 1e9;
+
+          const sinAngle = Math.max(0.02, Math.sin((teacherState.entryAngleDeg * Math.PI) / 180));
+          const relRate = Math.pow(teacherState.velocityKmS / 7.8, 3) * Math.sqrt(sinAngle / Math.sin((5 * Math.PI) / 180));
+          const peakG = (teacherState.velocityKmS / 7.8) * (teacherState.velocityKmS / 7.8) * (sinAngle / Math.sin((5 * Math.PI) / 180)) * 4.2;
+          const estSec = Math.max(35, Math.round(1200 / (sinAngle * 10 + 2.5)));
+
+          document.getElementById('teaKeGj').textContent = formatNum(keGj, 1) + ' GJ';
+          document.getElementById('teaRate').textContent = formatNum(relRate, 2) + '×';
+          document.getElementById('teaPeakG').textContent = formatNum(peakG, 1) + ' G';
+          document.getElementById('teaDurSec').textContent = formatNum(estSec, 0) + ' s';
+
+          const barPct = Math.min(100, Math.max(8, Math.round(relRate * 50)));
+          document.getElementById('teaBarLabel').textContent = formatNum(relRate * 100, 0) + '% of ref';
+          document.getElementById('teaBarFill').style.width = barPct + '%';
+
+          document.getElementById('teaStepsList').innerHTML = `
+            <li><strong>Step 1 — Speed in m/s:</strong> ${formatNum(teacherState.velocityKmS, 1)} km/s = ${formatNum(vMs, 0)} m/s.</li>
+            <li><strong>Step 2 — Kinetic Energy:</strong> ½ × ${formatNum(teacherState.massKg, 0)} kg × (${formatNum(vMs, 0)} m/s)² = <strong>${formatNum(keGj, 1)} GJ</strong>.</li>
+            <li><strong>Step 3 — Angle Effect:</strong> sin(${formatNum(teacherState.entryAngleDeg, 1)}°) = ${formatNum(sinAngle, 3)} gives a <strong>${formatNum(relRate, 2)}×</strong> relative heating rate.</li>
+          `;
+        }
+
+        presetPills.forEach((pill) => {
+          pill.addEventListener('click', () => {
+            const key = pill.getAttribute('data-preset');
+            const p = teacherPresets[key];
+            if (!p) return;
+            teacherState.preset = key;
+            teacherState.massKg = p.massKg;
+            teacherState.velocityKmS = p.velocityKmS;
+            teacherState.entryAngleDeg = p.entryAngleDeg;
+
+            massNum.value = p.massKg;
+            massRange.value = p.massKg;
+            velNum.value = p.velocityKmS;
+            velRange.value = p.velocityKmS;
+            angNum.value = p.entryAngleDeg;
+            angRange.value = p.entryAngleDeg;
+
+            presetPills.forEach((el) => el.classList.toggle('is-active', el === pill));
+            updateTeacher();
+          });
+        });
+
+        bindSyncedInput(massNum, massRange, updateTeacher);
+        bindSyncedInput(velNum, velRange, updateTeacher);
+        bindSyncedInput(angNum, angRange, updateTeacher);
+
+        updateTeacher();
+      }
+
+      // ============================================================
+      // 3. SCIENTIST CALCULATOR (NASA / SPACEX LEVEL SCALING)
+      // ============================================================
+      const scientistState = {
+        planet: 'earth',
+        altitudeKm: 75,
+        velocityKmS: 7.85,
+        noseRadiusM: 2.2,
+        gammaDeg: -5.5,
+        shieldLimitWcm2: 180
+      };
+
+      const planetModels = {
+        earth: {
+          name: 'Earth (Standard Exp. Model)',
+          surfaceRho: 1.225,
+          scaleHeightKm: 8.5,
+          suttonCoeff: 1.7415e-4
+        },
+        mars: {
+          name: 'Mars (CO2 Thin Atmosphere)',
+          surfaceRho: 0.020,
+          scaleHeightKm: 11.1,
+          suttonCoeff: 1.898e-4
+        },
+        venus: {
+          name: 'Venus (Dense CO2 Shell)',
+          surfaceRho: 65.0,
+          scaleHeightKm: 15.9,
+          suttonCoeff: 1.898e-4
+        }
+      };
+
+      function renderScientistMode() {
+        modeBody.innerHTML = `
+          <div class="sl-engine-grid">
+            <div class="sl-box-card">
+              <h3 class="sl-box-title">Mission Trajectory &amp; Vehicle Parameters</h3>
+
+              <div class="sl-pill-group" id="sciPlanetPills">
+                <button type="button" class="sl-choice-pill ${scientistState.planet === 'earth' ? 'is-active' : ''}" data-planet="earth">Earth</button>
+                <button type="button" class="sl-choice-pill ${scientistState.planet === 'mars' ? 'is-active' : ''}" data-planet="mars">Mars</button>
+                <button type="button" class="sl-choice-pill ${scientistState.planet === 'venus' ? 'is-active' : ''}" data-planet="venus">Venus</button>
+              </div>
+
+              ${renderStepperMarkup('sciAltNum', 'Altitude (km)', 20, 120, 1, scientistState.altitudeKm, '')}
+              ${renderStepperMarkup('sciVelNum', 'Entry Velocity V∞ (km/s)', 3, 15, 0.05, scientistState.velocityKmS, '')}
+              ${renderStepperMarkup(
+                'sciNoseNum',
+                'Effective Nose Radius Rn (m)',
+                0.2,
+                10,
+                0.1,
+                scientistState.noseRadiusM,
+                'Stagnation convective heat flux scales inversely with √Rn.'
+              )}
+              ${renderStepperMarkup('sciGammaNum', 'Flight Path Angle γ (°)', -20, -0.5, 0.5, scientistState.gammaDeg, '')}
+              ${renderStepperMarkup('sciLimitNum', 'TPS Allowable Limit (W/cm²)', 25, 1200, 25, scientistState.shieldLimitWcm2, '')}
+            </div>
+
+            <div class="sl-box-card">
+              <h3 class="sl-box-title">Aero-Thermal Telemetry Readout</h3>
+
+              <div class="sl-kpi-grid">
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Stagnation Heat Flux (q̇s)</span>
+                  <span class="sl-kpi-val" id="sciHeatFlux">0.0 W/cm²</span>
+                  <span class="sl-kpi-note" id="sciMarginNote">TPS Margin: --</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Dynamic Pressure (q∞)</span>
+                  <span class="sl-kpi-val" id="sciDynPress">0.0 kPa</span>
+                  <span class="sl-kpi-note">½ · ρ · V∞²</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Air Density (ρ)</span>
+                  <span class="sl-kpi-val" id="sciRho">0.0000 kg/m³</span>
+                  <span class="sl-kpi-note" id="sciAltNote">At 75 km</span>
+                </div>
+                <div class="sl-kpi-card">
+                  <span class="sl-kpi-label">Equilibrium Wall Temp</span>
+                  <span class="sl-kpi-val" id="sciWallTemp">0 K</span>
+                  <span class="sl-kpi-note">Radiative balance (ε = 0.85)</span>
+                </div>
+              </div>
+
+              <div class="sl-meter-box">
+                <div class="sl-meter-head">
+                  <span>TPS Thermal Load Ratio</span>
+                  <span id="sciLoadRatio">0%</span>
+                </div>
+                <div class="sl-meter-track">
+                  <div class="sl-meter-fill" id="sciLoadFill"></div>
+                </div>
+              </div>
+
+              <div class="sl-explain-box">
+                <h4 class="sl-explain-title" id="sciModelTitle">Sutton–Graves Convective Model</h4>
+                <p class="sl-explain-text" id="sciModelCopy"></p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        const altNum = document.getElementById('sciAltNum');
+        const altRange = document.getElementById('sciAltNumRange');
+        const velNum = document.getElementById('sciVelNum');
+        const velRange = document.getElementById('sciVelNumRange');
+        const noseNum = document.getElementById('sciNoseNum');
+        const noseRange = document.getElementById('sciNoseNumRange');
+        const gammaNum = document.getElementById('sciGammaNum');
+        const gammaRange = document.getElementById('sciGammaNumRange');
+        const limitNum = document.getElementById('sciLimitNum');
+        const limitRange = document.getElementById('sciLimitNumRange');
+        const planetPills = document.querySelectorAll('#sciPlanetPills .sl-choice-pill');
+
+        function updateScientist() {
+          scientistState.altitudeKm = clamp(altNum.value, 20, 120);
+          scientistState.velocityKmS = clamp(velNum.value, 3, 15);
+          scientistState.noseRadiusM = clamp(noseNum.value, 0.2, 10);
+          scientistState.gammaDeg = clamp(gammaNum.value, -20, -0.5);
+          scientistState.shieldLimitWcm2 = clamp(limitNum.value, 25, 1200);
+
+          const model = planetModels[scientistState.planet] || planetModels.earth;
+          const rho = model.surfaceRho * Math.exp(-scientistState.altitudeKm / model.scaleHeightKm);
+          const vMs = scientistState.velocityKmS * 1000;
+
+          const qStag = model.suttonCoeff * Math.sqrt(rho / scientistState.noseRadiusM) * Math.pow(vMs, 3);
+          const qDynKpa = (0.5 * rho * vMs * vMs) / 1000;
+
+          const sigma = 5.670374419e-8;
+          const eps = 0.85;
+          const qWm2 = Math.max(0, qStag * 10000);
+          const wallTempK = Math.pow(qWm2 / (eps * sigma), 0.25);
+
+          const ratioPct = Math.round((qStag / Math.max(1, scientistState.shieldLimitWcm2)) * 100);
+          const barPct = Math.min(100, Math.max(4, ratioPct));
+
+          const fluxEl = document.getElementById('sciHeatFlux');
+          fluxEl.textContent = formatNum(qStag, 1) + ' W/cm²';
+          fluxEl.className = 'sl-kpi-val ' + (ratioPct > 100 ? 'sl-status-high' : ratioPct > 75 ? 'sl-status-warn' : 'sl-status-good');
+
+          document.getElementById('sciMarginNote').textContent =
+            ratioPct <= 100
+              ? 'TPS Margin: +' + formatNum(scientistState.shieldLimitWcm2 - qStag, 1) + ' W/cm²'
+              : 'Exceeds TPS by ' + formatNum(qStag - scientistState.shieldLimitWcm2, 1) + ' W/cm²';
+
+          document.getElementById('sciDynPress').textContent = formatNum(qDynKpa, 2) + ' kPa';
+          document.getElementById('sciRho').textContent = rho < 0.001 ? rho.toExponential(2) + ' kg/m³' : formatNum(rho, 4) + ' kg/m³';
+          document.getElementById('sciAltNote').textContent = 'At ' + scientistState.altitudeKm + ' km · γ ' + formatNum(scientistState.gammaDeg, 1) + '°';
+          document.getElementById('sciWallTemp').textContent = formatNum(wallTempK, 0) + ' K';
+
+          document.getElementById('sciLoadRatio').textContent = ratioPct + '% of TPS limit';
+          document.getElementById('sciLoadFill').style.width = barPct + '%';
+
+          document.getElementById('sciModelTitle').textContent = model.name;
+          document.getElementById('sciModelCopy').textContent =
+            'At ' + scientistState.altitudeKm + ' km altitude and flight path angle γ = ' + formatNum(scientistState.gammaDeg, 1) +
+            '°, increasing Rn reduces peak stagnation heating while steeper γ accelerates entry into denser strata.';
+        }
+
+        planetPills.forEach((pill) => {
+          pill.addEventListener('click', () => {
+            scientistState.planet = pill.getAttribute('data-planet') || 'earth';
+            planetPills.forEach((el) => el.classList.toggle('is-active', el === pill));
+            updateScientist();
+          });
+        });
+
+        [
+          [altNum, altRange],
+          [velNum, velRange],
+          [noseNum, noseRange],
+          [gammaNum, gammaRange],
+          [limitNum, limitRange]
+        ].forEach(([num, rng]) => bindSyncedInput(num, rng, updateScientist));
+
+        updateScientist();
+      }
+
+      // ============================================================
+      // MODE SWITCHING & WORKSPACE CONTROLS
+      // ============================================================
+      const modeMeta = {
+        student: {
+          badge: 'Mode 01 · Student',
+          title: 'Student Re-Entry Heating Calculator',
+          sub: 'Simple English for aerospace and astronomy learners—explore how speed, angle, and heat shield shape affect re-entry.'
+        },
+        teacher: {
+          badge: 'Mode 02 · Teacher',
+          title: 'Teacher Re-Entry Physics & Lesson Calculator',
+          sub: 'Compare mission profiles, kinetic energy dissipation, and step-by-step calculations for class teaching.'
+        },
+        scientist: {
+          badge: 'Mode 03 · Scientist (NASA / SpaceX Level)',
+          title: 'Scientist Aero-Thermal Stagnation Calculator',
+          sub: 'Evaluate convective stagnation heat flux, atmospheric density, dynamic pressure, and TPS thermal margin.'
+        }
+      };
+
+      function selectMode(mode) {
+        const meta = modeMeta[mode];
+        if (!meta || !workspace) return;
+        activeMode = mode;
+
+        panels.forEach((p) => {
+          p.classList.toggle('is-selected', p.getAttribute('data-mode') === mode);
+        });
+
+        wsBadge.textContent = meta.badge;
+        wsTitle.textContent = meta.title;
+        wsSub.textContent = meta.sub;
+
+        if (mode === 'student') renderStudentMode();
+        else if (mode === 'teacher') renderTeacherMode();
+        else if (mode === 'scientist') renderScientistMode();
+
+        workspace.classList.add('is-visible');
+        workspace.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function resetActiveModeDefaults() {
+        if (!activeMode) return;
+        if (activeMode === 'student') {
+          studentState.world = 'earth';
+          studentState.speedKmS = 7.8;
+          studentState.angleDeg = 4.5;
+          studentState.bluntness = 75;
+          renderStudentMode();
+        } else if (activeMode === 'teacher') {
+          teacherState.preset = 'leo';
+          teacherState.massKg = 5000;
+          teacherState.velocityKmS = 7.8;
+          teacherState.entryAngleDeg = 5.0;
+          renderTeacherMode();
+        } else if (activeMode === 'scientist') {
+          scientistState.planet = 'earth';
+          scientistState.altitudeKm = 75;
+          scientistState.velocityKmS = 7.85;
+          scientistState.noseRadiusM = 2.2;
+          scientistState.gammaDeg = -5.5;
+          scientistState.shieldLimitWcm2 = 180;
+          renderScientistMode();
+        }
+      }
+
+      openBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const mode = btn.getAttribute('data-open-mode');
+          selectMode(mode);
+        });
+      });
+
+      if (resetInputsBtn) {
+        resetInputsBtn.addEventListener('click', resetActiveModeDefaults);
+      }
+
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+          workspace.classList.remove('is-visible');
+          panels.forEach((p) => p.classList.remove('is-selected'));
+          activeMode = null;
+        });
+      }
+
+      if (backBtn) {
+        backBtn.addEventListener('click', () => {
+          if (window.history.length > 1) {
+            window.history.back();
+          } else {
+            window.location.href = 'reentry-read.html';
+          }
+        });
+      }
+
+      if (stage) {
+        requestAnimationFrame(() => {
+          stage.classList.add('is-ready');
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
