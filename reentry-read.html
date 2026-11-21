@@ -2797,7 +2797,423 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     SIXTH SECTION: TARGET PLANET & RE-ENTRIES (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slReentrySixthSection" aria-labelledby="slReentrySixthHeading">
+  <style>
+    #slReentrySixthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 20% 22%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 82% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #slReentrySixthSection .sl-re6-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentrySixthSection .sl-re6-head {
+      max-width: 780px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentrySixthSection.is-revealed .sl-re6-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySixthSection .sl-re6-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentrySixthSection .sl-re6-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentrySixthSection .sl-re6-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* 4-Planet Selector Row */
+    #slReentrySixthSection .sl-re6-planets {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.76s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+    }
+
+    #slReentrySixthSection.is-revealed .sl-re6-planets {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySixthSection .sl-re6-planet-btn {
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      color: #f5f7fb;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition:
+        background-color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    #slReentrySixthSection .sl-re6-planet-btn:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.26);
+      transform: translateY(-2px);
+    }
+
+    #slReentrySixthSection .sl-re6-planet-btn.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slReentrySixthSection .sl-re6-planet-kicker {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+    }
+
+    #slReentrySixthSection .sl-re6-planet-btn.is-active .sl-re6-planet-kicker {
+      color: rgba(8, 11, 16, 0.62);
+    }
+
+    #slReentrySixthSection .sl-re6-planet-name {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+    }
+
+    #slReentrySixthSection .sl-re6-planet-tag {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    #slReentrySixthSection .sl-re6-planet-btn.is-active .sl-re6-planet-tag {
+      color: rgba(8, 11, 16, 0.78);
+    }
+
+    /* Main Planetary Entry Dossier Card */
+    #slReentrySixthSection .sl-re6-dossier {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 36px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.16s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
+    }
+
+    #slReentrySixthSection.is-revealed .sl-re6-dossier {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentrySixthSection .sl-re6-dos-label {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 10px;
+    }
+
+    #slReentrySixthSection .sl-re6-dos-title {
+      font-size: clamp(26px, 2.8vw, 36px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slReentrySixthSection .sl-re6-dos-copy {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    /* 2x2 Planetary Telemetry Mini Grid */
+    #slReentrySixthSection .sl-re6-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    #slReentrySixthSection .sl-re6-stat {
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slReentrySixthSection .sl-re6-stat-label {
+      display: block;
+      font-size: 13px;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 6px;
+    }
+
+    #slReentrySixthSection .sl-re6-stat-val {
+      font-size: 17.5px;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    @media (max-width: 980px) {
+      #slReentrySixthSection {
+        padding: 92px 22px;
+      }
+      #slReentrySixthSection .sl-re6-planets {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      #slReentrySixthSection .sl-re6-dossier {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      #slReentrySixthSection .sl-re6-planets {
+        grid-template-columns: 1fr;
+      }
+      #slReentrySixthSection .sl-re6-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="sl-re6-wrap">
+    <div class="sl-re6-head">
+      <span class="sl-re6-tag">06 · Target Planet &amp; Re-Entries</span>
+      <h2 class="sl-re6-title" id="slReentrySixthHeading">Every world changes how a craft lands</h2>
+      <p class="sl-re6-sub">
+        Atmosphere density, gravity, and entry speed vary across planets and moons. Compare four destinations to see how engineers adapt re-entry.
+      </p>
+    </div>
+
+    <div class="sl-re6-planets" role="tablist" aria-label="Target planets and moons">
+      <button type="button" class="sl-re6-planet-btn is-active" data-world="0" role="tab" aria-selected="true">
+        <span class="sl-re6-planet-kicker">01 · Home World</span>
+        <span class="sl-re6-planet-name">Earth</span>
+        <span class="sl-re6-planet-tag">Balanced air &amp; parachutes</span>
+      </button>
+
+      <button type="button" class="sl-re6-planet-btn" data-world="1" role="tab" aria-selected="false">
+        <span class="sl-re6-planet-kicker">02 · Thin Air</span>
+        <span class="sl-re6-planet-name">Mars</span>
+        <span class="sl-re6-planet-tag">Supersonic chutes + thrusters</span>
+      </button>
+
+      <button type="button" class="sl-re6-planet-btn" data-world="2" role="tab" aria-selected="false">
+        <span class="sl-re6-planet-kicker">03 · Dense &amp; Hot</span>
+        <span class="sl-re6-planet-name">Venus</span>
+        <span class="sl-re6-planet-tag">Extreme pressure &amp; heat</span>
+      </button>
+
+      <button type="button" class="sl-re6-planet-btn" data-world="3" role="tab" aria-selected="false">
+        <span class="sl-re6-planet-kicker">04 · Thick &amp; Cold</span>
+        <span class="sl-re6-planet-name">Titan</span>
+        <span class="sl-re6-planet-tag">Low gravity, gentle fall</span>
+      </button>
+    </div>
+
+    <div class="sl-re6-dossier">
+      <div>
+        <span class="sl-re6-dos-label" id="slRe6DosLabel">Destination Profile · Earth</span>
+        <h3 class="sl-re6-dos-title" id="slRe6DosTitle">Dense air slows capsules reliably before splashdown</h3>
+        <p class="sl-re6-dos-copy" id="slRe6DosCopy">
+          Earth's nitrogen-oxygen atmosphere is thick enough to remove almost all orbital speed through drag and parachutes, making ocean splashdowns and cushioned land recoveries dependable.
+        </p>
+      </div>
+
+      <div class="sl-re6-stats">
+        <div class="sl-re6-stat">
+          <span class="sl-re6-stat-label">Atmosphere</span>
+          <span class="sl-re6-stat-val" id="slRe6StatAtm">1.0 bar · Dense</span>
+        </div>
+        <div class="sl-re6-stat">
+          <span class="sl-re6-stat-label">Entry Speed</span>
+          <span class="sl-re6-stat-val" id="slRe6StatSpeed">~7.8–11 km/s</span>
+        </div>
+        <div class="sl-re6-stat">
+          <span class="sl-re6-stat-label">Main Challenge</span>
+          <span class="sl-re6-stat-val" id="slRe6StatChallenge">High Peak Heating</span>
+        </div>
+        <div class="sl-re6-stat">
+          <span class="sl-re6-stat-label">Landing Method</span>
+          <span class="sl-re6-stat-val" id="slRe6StatLand">Heat Shield + Chutes</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentrySixthSection');
+      if (!section) return;
+
+      const buttons = section.querySelectorAll('.sl-re6-planet-btn');
+      const labelEl = document.getElementById('slRe6DosLabel');
+      const titleEl = document.getElementById('slRe6DosTitle');
+      const copyEl = document.getElementById('slRe6DosCopy');
+      const atmEl = document.getElementById('slRe6StatAtm');
+      const speedEl = document.getElementById('slRe6StatSpeed');
+      const challengeEl = document.getElementById('slRe6StatChallenge');
+      const landEl = document.getElementById('slRe6StatLand');
+
+      const worlds = [
+        {
+          label: 'Destination Profile · Earth',
+          title: 'Dense air slows capsules reliably before splashdown',
+          copy: "Earth's nitrogen-oxygen atmosphere is thick enough to remove almost all orbital speed through drag and parachutes, making ocean splashdowns and cushioned land recoveries dependable.",
+          atm: '1.0 bar · Dense',
+          speed: '~7.8–11 km/s',
+          challenge: 'High Peak Heating',
+          land: 'Heat Shield + Chutes'
+        },
+        {
+          label: 'Destination Profile · Mars',
+          title: 'Thin air forces rockets to finish the landing',
+          copy: 'Mars has less than 1% of Earth’s surface air pressure—enough to create entry heat, yet too thin for parachutes alone to bring heavy landers to a stop without retrorockets or airbags.',
+          atm: '~0.006 bar · Very Thin',
+          speed: '~5.5–7.5 km/s',
+          challenge: 'Not Enough Air Drag',
+          land: 'Chutes + Retro-Burn'
+        },
+        {
+          label: 'Destination Profile · Venus',
+          title: 'Crushing pressure and intense heat require armored shells',
+          copy: 'Venus’s thick carbon dioxide atmosphere slows probes quickly high up, so landers jettison parachutes early and fall the last kilometers through scorching, high-pressure air.',
+          atm: '~92 bar · Ultra Dense',
+          speed: '~11.5 km/s',
+          challenge: 'Extreme Heat & Pressure',
+          land: 'Heavy Shield + Drag Plate'
+        },
+        {
+          label: 'Destination Profile · Titan',
+          title: 'Thick cold nitrogen and low gravity create a slow glide',
+          copy: 'Saturn’s moon Titan pairs an atmosphere denser than Earth’s with low gravity, letting probes and rotorcraft descend gently with modest heat shielding.',
+          atm: '~1.45 bar · Thick & Cold',
+          speed: '~5.6 km/s',
+          challenge: 'Cryogenic Cold (-179 °C)',
+          land: 'Gentle Chute Descent'
+        }
+      ];
+
+      buttons.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const item = worlds[idx];
+          if (!item) return;
+
+          buttons.forEach((b, bIdx) => {
+            const active = bIdx === idx;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', String(active));
+          });
+
+          if (labelEl) labelEl.textContent = item.label;
+          if (titleEl) titleEl.textContent = item.title;
+          if (copyEl) copyEl.textContent = item.copy;
+          if (atmEl) atmEl.textContent = item.atm;
+          if (speedEl) speedEl.textContent = item.speed;
+          if (challengeEl) challengeEl.textContent = item.challenge;
+          if (landEl) landEl.textContent = item.land;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 </body>
 </html>
