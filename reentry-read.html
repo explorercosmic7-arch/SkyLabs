@@ -2183,6 +2183,272 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     FOURTH SECTION: COMMON MISTAKES & TRADE-OFFS (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slReentryFourthSection" aria-labelledby="slReentryFourthHeading">
+  <style>
+    #slReentryFourthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 22% 25%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 82% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentryFourthSection .sl-re4-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentryFourthSection .sl-re4-head {
+      max-width: 780px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentryFourthSection.is-revealed .sl-re4-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFourthSection .sl-re4-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentryFourthSection .sl-re4-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slReentryFourthSection .sl-re4-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* Two-Column Side-by-Side Comparison Pairs */
+    #slReentryFourthSection .sl-re4-pairs {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #slReentryFourthSection .sl-re4-pair {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 18px;
+      padding: 24px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slReentryFourthSection .sl-re4-pair:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slReentryFourthSection .sl-re4-pair:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slReentryFourthSection.is-revealed .sl-re4-pair {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFourthSection .sl-re4-pair:hover {
+      background: rgba(16, 22, 35, 0.88);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    #slReentryFourthSection .sl-re4-col-bad {
+      padding: 20px 22px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    #slReentryFourthSection .sl-re4-col-good {
+      padding: 20px 24px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentryFourthSection .sl-re4-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 8px;
+    }
+
+    #slReentryFourthSection .sl-re4-heading {
+      font-size: 20.5px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    #slReentryFourthSection .sl-re4-text {
+      font-size: 15.8px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    @media (max-width: 960px) {
+      #slReentryFourthSection {
+        padding: 92px 22px;
+      }
+      #slReentryFourthSection .sl-re4-pair {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 20px;
+      }
+      #slReentryFourthSection .sl-re4-col-bad,
+      #slReentryFourthSection .sl-re4-col-good {
+        padding: 16px 18px;
+        border-radius: 14px;
+      }
+    }
+  </style>
+
+  <div class="sl-re4-wrap">
+    <div class="sl-re4-head">
+      <span class="sl-re4-tag">04 · Trade-Offs &amp; Pitfalls</span>
+      <h2 class="sl-re4-title" id="slReentryFourthHeading">Avoid common entry mistakes</h2>
+      <p class="sl-re4-sub">
+        Small changes in angle, speed, or timing can turn a smooth descent into a tough recovery. Here is how each trade-off plays out.
+      </p>
+    </div>
+
+    <div class="sl-re4-pairs">
+      <div class="sl-re4-pair">
+        <div class="sl-re4-col-bad">
+          <span class="sl-re4-label">Too Steep</span>
+          <h3 class="sl-re4-heading">Diving straight into dense air</h3>
+          <p class="sl-re4-text">
+            A sharp plunge slows the craft too fast, causing intense G-loads and high peak heating in a short time.
+          </p>
+        </div>
+        <div class="sl-re4-col-good">
+          <span class="sl-re4-label">Better Approach</span>
+          <h3 class="sl-re4-heading">Use a gradual entry corridor</h3>
+          <p class="sl-re4-text">
+            Entering at a measured angle lets upper air brake the spacecraft steadily while keeping stress and heat within limits.
+          </p>
+        </div>
+      </div>
+
+      <div class="sl-re4-pair">
+        <div class="sl-re4-col-bad">
+          <span class="sl-re4-label">Too Shallow</span>
+          <h3 class="sl-re4-heading">Skipping off the top of the air</h3>
+          <p class="sl-re4-text">
+            If the entry angle is too flat, the spacecraft can bounce back toward space instead of capturing into a landing path.
+          </p>
+        </div>
+        <div class="sl-re4-col-good">
+          <span class="sl-re4-label">Better Approach</span>
+          <h3 class="sl-re4-heading">Confirm de-orbit burn precision</h3>
+          <p class="sl-re4-text">
+            A clean de-orbit burn lowers perigee low enough into the atmosphere so drag holds the craft on a reliable descent.
+          </p>
+        </div>
+      </div>
+
+      <div class="sl-re4-pair">
+        <div class="sl-re4-col-bad">
+          <span class="sl-re4-label">Too Early</span>
+          <h3 class="sl-re4-heading">Opening chutes at high speed</h3>
+          <p class="sl-re4-text">
+            Deploying parachutes while moving too fast creates extreme fabric loads and can tear the canopy.
+          </p>
+        </div>
+        <div class="sl-re4-col-good">
+          <span class="sl-re4-label">Better Approach</span>
+          <h3 class="sl-re4-heading">Wait for safe subsonic speed</h3>
+          <p class="sl-re4-text">
+            Let air drag and drogue stages bring speed down first so main parachutes open smoothly and safely.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentryFourthSection');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
