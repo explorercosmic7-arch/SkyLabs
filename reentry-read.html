@@ -4114,6 +4114,334 @@
     })();
   </script>
 </section>
+<hr>
+<!-- ============================================================
+     FOOTER SECTION — GOOGLE-CLEAN MINIMALIST (HTML + CSS + JS)
+     ============================================================ -->
+<footer id="slReentryFooterSection" aria-label="SkyLabs Footer">
+  <style>
+    #slReentryFooterSection {
+      position: relative;
+      width: 100%;
+      padding: 88px 36px 44px;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 45%),
+        linear-gradient(180deg, #05070c 0%, #04060a 100%);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slReentryFooterSection .sl-ft-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(20px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.78s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentryFooterSection.is-revealed .sl-ft-wrap {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFooterSection .sl-ft-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+      padding-bottom: 44px;
+      margin-bottom: 48px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slReentryFooterSection .sl-ft-brand-group {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    #slReentryFooterSection .sl-ft-brand-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    #slReentryFooterSection .sl-ft-icon {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      display: block;
+      border-radius: 10px;
+    }
+
+    #slReentryFooterSection .sl-ft-word {
+      font-size: 26px;
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    #slReentryFooterSection .sl-ft-tagline {
+      font-size: 16px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.68);
+      line-height: 1.5;
+    }
+
+    #slReentryFooterSection .sl-ft-top-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 11px 22px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-size: 15.5px;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    #slReentryFooterSection .sl-ft-top-btn:hover {
+      background: #ffffff;
+      color: #080b10;
+      transform: translateY(-1px);
+    }
+
+    #slReentryFooterSection .sl-ft-cols {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 36px;
+      padding-bottom: 52px;
+    }
+
+    #slReentryFooterSection .sl-ft-col-title {
+      font-size: 15px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      margin-bottom: 18px;
+    }
+
+    #slReentryFooterSection .sl-ft-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #slReentryFooterSection .sl-ft-links a {
+      display: inline-block;
+      font-size: 15.5px;
+      font-weight: 300;
+      line-height: 1.45;
+      color: rgba(245, 247, 251, 0.72);
+      text-decoration: none;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    #slReentryFooterSection .sl-ft-links a:hover {
+      color: #ffffff;
+      transform: translateX(3px);
+    }
+
+    #slReentryFooterSection .sl-ft-bottom {
+      padding-top: 26px;
+      border-top: 1px solid rgba(255, 255, 255, 0.09);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    #slReentryFooterSection .sl-ft-copy {
+      font-size: 14.5px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.58);
+    }
+
+    #slReentryFooterSection .sl-ft-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    #slReentryFooterSection .sl-ft-meta-link,
+    #slReentryFooterSection .sl-ft-top-trigger {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.68);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    #slReentryFooterSection .sl-ft-meta-link:hover,
+    #slReentryFooterSection .sl-ft-top-trigger:hover {
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      #slReentryFooterSection {
+        padding: 72px 22px 36px;
+      }
+      #slReentryFooterSection .sl-ft-cols {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 20px;
+        padding-bottom: 40px;
+      }
+      #slReentryFooterSection .sl-ft-top {
+        padding-bottom: 32px;
+        margin-bottom: 36px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      #slReentryFooterSection .sl-ft-cols {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      #slReentryFooterSection .sl-ft-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+
+  <div class="sl-ft-wrap">
+    <div class="sl-ft-top">
+      <div class="sl-ft-brand-group">
+        <a href="index.html" class="sl-ft-brand-link" aria-label="SkyLabs Home">
+          <img
+            src="Favicon.png"
+            onerror="this.onerror=null; this.src='Logo.jpg';"
+            alt="SkyLabs Logo"
+            class="sl-ft-icon"
+          />
+          <span class="sl-ft-word">SkyLabs</span>
+        </a>
+        <span class="sl-ft-tagline">Visual space labs, orbits, and cloud classrooms.</span>
+      </div>
+
+      <a href="reentry.html" class="sl-ft-top-btn">Re-Entry Labs</a>
+    </div>
+
+    <div class="sl-ft-cols">
+      <div>
+        <h3 class="sl-ft-col-title">Re-Entry Guide</h3>
+        <ul class="sl-ft-links">
+          <li><a href="#slReentryFirstSection">01 · The Basics</a></li>
+          <li><a href="#slReentrySecondSection">02 · Heat Shields</a></li>
+          <li><a href="#slReentryThirdSection">03 · Descent Stages</a></li>
+          <li><a href="#slReentryFourthSection">04 · Trade-Offs</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="sl-ft-col-title">Deep Topics</h3>
+        <ul class="sl-ft-links">
+          <li><a href="#slReentryFifthSection">05 · Heat Shield Metal</a></li>
+          <li><a href="#slReentrySixthSection">06 · Target Planets</a></li>
+          <li><a href="#slReentrySeventhSection">07 · Flight Path Angle</a></li>
+          <li><a href="#slReentryEighthSection">08 · Velocity</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="sl-ft-col-title">Space Labs</h3>
+        <ul class="sl-ft-links">
+          <li><a href="reentry.html">Re-Entry Labs</a></li>
+          <li><a href="rocketlabs.html">Rocket Labs</a></li>
+          <li><a href="orbital-labs.html">Orbital Mechanics</a></li>
+          <li><a href="exoplanetlabs.html">Exoplanet Lab</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="sl-ft-col-title">SkyLabs</h3>
+        <ul class="sl-ft-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="join.html">Join with PIN</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="Start.html">Start guide</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sl-ft-bottom">
+      <p class="sl-ft-copy" id="slReentryFooterCopy">SkyLabs</p>
+      <div class="sl-ft-meta">
+        <a href="reentry.html" class="sl-ft-meta-link">Re-Entry Labs</a>
+        <a href="Class-PIN" class="sl-ft-meta-link">Class PIN</a>
+        <button type="button" class="sl-ft-top-trigger" id="slReentryBackToTop">Back to top &#8593;</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const footer = document.getElementById('slReentryFooterSection');
+      if (!footer) return;
+
+      const copyEl = document.getElementById('slReentryFooterCopy');
+      const backTopBtn = document.getElementById('slReentryBackToTop');
+
+      if (copyEl) {
+        const year = new Date().getFullYear();
+        copyEl.textContent = '\u00A9 ' + year + ' SkyLabs. All rights reserved.';
+      }
+
+      if (backTopBtn) {
+        backTopBtn.addEventListener('click', function () {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        footer.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              footer.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -50px 0px',
+          threshold: 0.08
+        }
+      );
+
+      observer.observe(footer);
+    })();
+  </script>
+</footer>
 
 </body>
 </html>
