@@ -2449,7 +2449,354 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     FIFTH SECTION: HEAT SHIELD METAL (HTML + INLINE CSS + JS)
+     ============================================================ -->
+<section id="slReentryFifthSection" aria-labelledby="slReentryFifthHeading">
+  <style>
+    #slReentryFifthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 80% 24%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(120, 165, 255, 0.06) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #slReentryFifthSection .sl-re5-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slReentryFifthSection .sl-re5-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slReentryFifthSection.is-revealed .sl-re5-top {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFifthSection .sl-re5-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slReentryFifthSection .sl-re5-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slReentryFifthSection .sl-re5-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 620px;
+    }
+
+    #slReentryFifthSection .sl-re5-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    #slReentryFifthSection .sl-re5-tab {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 0;
+      background: transparent;
+      color: rgba(245, 247, 251, 0.78);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slReentryFifthSection .sl-re5-tab:hover {
+      color: #ffffff;
+    }
+
+    #slReentryFifthSection .sl-re5-tab.is-active {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    /* Main Inspector Box */
+    #slReentryFifthSection .sl-re5-board {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    #slReentryFifthSection.is-revealed .sl-re5-board {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slReentryFifthSection .sl-re5-board-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    #slReentryFifthSection .sl-re5-mat-code {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    #slReentryFifthSection .sl-re5-mat-name {
+      font-size: clamp(26px, 2.8vw, 36px);
+      font-weight: 400;
+      line-height: 1.14;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slReentryFifthSection .sl-re5-mat-desc {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    /* 3 Trait Rows */
+    #slReentryFifthSection .sl-re5-specs {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #slReentryFifthSection .sl-re5-spec {
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    #slReentryFifthSection .sl-re5-spec-label {
+      font-size: 14.5px;
+      color: rgba(245, 247, 251, 0.64);
+    }
+
+    #slReentryFifthSection .sl-re5-spec-val {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+      text-align: right;
+    }
+
+    @media (max-width: 960px) {
+      #slReentryFifthSection {
+        padding: 92px 22px;
+      }
+      #slReentryFifthSection .sl-re5-board {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slReentryFifthSection .sl-re5-board-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      #slReentryFifthSection .sl-re5-tabs {
+        border-radius: 20px;
+        width: 100%;
+      }
+      #slReentryFifthSection .sl-re5-tab {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+    }
+  </style>
+
+  <div class="sl-re5-wrap">
+    <div class="sl-re5-top">
+      <div>
+        <span class="sl-re5-tag">05 · Heat Shield Metal</span>
+        <h2 class="sl-re5-title" id="slReentryFifthHeading">Metals and thermal materials</h2>
+        <p class="sl-re5-sub">
+          Strong metals give heat shields structural shape and load strength, while specialized thermal layers protect against extreme heat.
+        </p>
+      </div>
+
+      <div class="sl-re5-tabs" role="tablist" aria-label="Heat shield metal choices">
+        <button type="button" class="sl-re5-tab is-active" data-metal="0" role="tab" aria-selected="true">Titanium Alloy</button>
+        <button type="button" class="sl-re5-tab" data-metal="1" role="tab" aria-selected="false">Inconel Superalloy</button>
+        <button type="button" class="sl-re5-tab" data-metal="2" role="tab" aria-selected="false">Metal + Ablative</button>
+      </div>
+    </div>
+
+    <div class="sl-re5-board">
+      <div class="sl-re5-board-grid">
+        <div>
+          <span class="sl-re5-mat-code" id="slRe5Code">Alloy Profile · 01</span>
+          <h3 class="sl-re5-mat-name" id="slRe5Name">Titanium Alloy Structures</h3>
+          <p class="sl-re5-mat-desc" id="slRe5Desc">
+            Titanium alloys combine high strength with lower weight than many heavier metals and resist corrosion well. On their own, bare metals still need thermal tiles or shielding for severe orbital re-entry heat.
+          </p>
+        </div>
+
+        <div class="sl-re5-specs">
+          <div class="sl-re5-spec">
+            <span class="sl-re5-spec-label">Primary Role</span>
+            <span class="sl-re5-spec-val" id="slRe5Role">Light Strong Frame</span>
+          </div>
+          <div class="sl-re5-spec">
+            <span class="sl-re5-spec-label">Heat Behavior</span>
+            <span class="sl-re5-spec-val" id="slRe5Heat">Needs Thermal Tiles</span>
+          </div>
+          <div class="sl-re5-spec">
+            <span class="sl-re5-spec-label">Key Advantage</span>
+            <span class="sl-re5-spec-val" id="slRe5Adv">High Strength-to-Weight</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slReentryFifthSection');
+      if (!section) return;
+
+      const tabs = section.querySelectorAll('.sl-re5-tab');
+      const codeEl = document.getElementById('slRe5Code');
+      const nameEl = document.getElementById('slRe5Name');
+      const descEl = document.getElementById('slRe5Desc');
+      const roleEl = document.getElementById('slRe5Role');
+      const heatEl = document.getElementById('slRe5Heat');
+      const advEl = document.getElementById('slRe5Adv');
+
+      const metals = [
+        {
+          code: 'Alloy Profile · 01',
+          name: 'Titanium Alloy Structures',
+          desc: 'Titanium alloys combine high strength with lower weight than many heavier metals and resist corrosion well. On their own, bare metals still need thermal tiles or shielding for severe orbital re-entry heat.',
+          role: 'Light Strong Frame',
+          heat: 'Needs Thermal Tiles',
+          adv: 'High Strength-to-Weight'
+        },
+        {
+          code: 'Alloy Profile · 02',
+          name: 'Nickel Superalloys (Inconel)',
+          desc: 'Nickel-based superalloys hold their mechanical strength at high temperatures where ordinary metals soften. Engineers use them in hot structural zones, flaps, and propulsion hardware.',
+          role: 'High-Heat Structural Parts',
+          heat: 'Retains Strength When Hot',
+          adv: 'Thermal & Oxidation Toughness'
+        },
+        {
+          code: 'Alloy Profile · 03',
+          name: 'Metal Backing + Thermal Shield',
+          desc: 'Spacecraft shields often pair a tough metal backing structure with heat-absorbing or insulating outer layers so surface heat is blocked before reaching sensitive parts.',
+          role: 'Complete Shield System',
+          heat: 'Blocks & Sheds Heat',
+          adv: 'Balanced Safety & Mass'
+        }
+      ];
+
+      tabs.forEach((tab, idx) => {
+        tab.addEventListener('click', () => {
+          const item = metals[idx];
+          if (!item) return;
+
+          tabs.forEach((t, tIdx) => {
+            const active = tIdx === idx;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', String(active));
+          });
+
+          if (codeEl) codeEl.textContent = item.code;
+          if (nameEl) nameEl.textContent = item.name;
+          if (descEl) descEl.textContent = item.desc;
+          if (roleEl) roleEl.textContent = item.role;
+          if (heatEl) heatEl.textContent = item.heat;
+          if (advEl) advEl.textContent = item.adv;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 </body>
