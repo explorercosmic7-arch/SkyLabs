@@ -1084,6 +1084,305 @@
     })();
   </script>
 <hr>
+<!-- ============================================================
+     #READING-GUIDES SECTION — RE-ENTRY READING GUIDE (SINGLE CARD)
+     ============================================================ -->
+<section id="reading-guides" aria-labelledby="slJourneyGuidesHeading">
+  <style>
+    #reading-guides {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #reading-guides .sl-jg-wrap {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #reading-guides .sl-jg-head {
+      max-width: 820px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #reading-guides.is-revealed .sl-jg-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #reading-guides .sl-jg-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #reading-guides .sl-jg-title {
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #reading-guides .sl-jg-sub {
+      font-size: clamp(17.5px, 1.45vw, 21px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #reading-guides .sl-jg-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    #reading-guides .sl-jg-card {
+      position: relative;
+      border-radius: 28px;
+      padding: 16px 16px 24px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #reading-guides.is-revealed .sl-jg-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #reading-guides .sl-jg-card:hover {
+      background: rgba(16, 22, 36, 0.94);
+      border-color: rgba(255, 255, 255, 0.32);
+      transform: translateY(-4px);
+    }
+
+    /* Curved Upper Image Box */
+    #reading-guides .sl-jg-media {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(5, 7, 12, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    #reading-guides .sl-jg-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #reading-guides .sl-jg-card:hover .sl-jg-media img {
+      transform: scale(1.05);
+    }
+
+    #reading-guides .sl-jg-badge {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      z-index: 3;
+      padding: 6px 13px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-size: 12.5px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+    }
+
+    /* Below Media: Title, Paragraph, Button */
+    #reading-guides .sl-jg-body {
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+
+    #reading-guides .sl-jg-index {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.52);
+      margin-bottom: 6px;
+    }
+
+    #reading-guides .sl-jg-card-title {
+      font-size: clamp(24px, 2.1vw, 30px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #reading-guides .sl-jg-card-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.76);
+      margin-bottom: 22px;
+    }
+
+    #reading-guides .sl-jg-btn {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 400;
+      text-decoration: none;
+      background: #ffffff;
+      color: #080b10;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    #reading-guides .sl-jg-btn:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 1080px) {
+      #reading-guides .sl-jg-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #reading-guides {
+        padding: 92px 20px;
+      }
+      #reading-guides .sl-jg-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      #reading-guides .sl-jg-card {
+        padding: 14px 14px 20px;
+        border-radius: 24px;
+      }
+      #reading-guides .sl-jg-media {
+        height: 190px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+
+  <div class="sl-jg-wrap">
+    <div class="sl-jg-head">
+      <span class="sl-jg-tag">Select Guide · Reading Library</span>
+      <h2 class="sl-jg-title" id="slJourneyGuidesHeading">Reading Guides</h2>
+      <p class="sl-jg-sub">
+        Select a guide below to explore core aerospace physics, thermal protection, and flight fundamentals.
+      </p>
+    </div>
+
+    <div class="sl-jg-grid">
+      <article class="sl-jg-card">
+        <div class="sl-jg-media">
+          <span class="sl-jg-badge">Rocket Lab</span>
+          <img
+            src="https://images.unsplash.com/photo-1644426358812-879f02d1d867?q=80&w=1228&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+            alt="Re-Entry Reading Guide"
+            loading="lazy"
+          />
+        </div>
+        <div class="sl-jg-body">
+          <span class="sl-jg-index">Guide 01</span>
+          <h3 class="sl-jg-card-title">Re-Entry Reading Guide</h3>
+          <p class="sl-jg-card-desc">
+            Learn how spacecraft decelerate through Earth’s upper atmosphere, manage peak thermal loads, and rely on heat shields for safe return.
+          </p>
+          <a href="reentry-read.html" class="sl-jg-btn">
+            <span>Read Guide</span>
+            <span aria-hidden="true">&#8594;</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('reading-guides');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -60px 0px',
+          threshold: 0.08
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
