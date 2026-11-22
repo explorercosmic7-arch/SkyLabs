@@ -1084,7 +1084,482 @@
     })();
   </script>
 <hr>
+<!-- ============================================================
+     #SELECTLAB SECTION — 3D WORLD & SPACE FLIGHT EXPLORER (19 CARDS)
+     ============================================================ -->
+<section id="selectlab" aria-labelledby="slExoSelectLabHeading">
+  <style>
+    #selectlab {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #selectlab .sl-lab-wrap {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #selectlab .sl-lab-head {
+      max-width: 840px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #selectlab.is-revealed .sl-lab-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #selectlab .sl-lab-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #selectlab .sl-lab-title {
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #selectlab .sl-lab-sub {
+      font-size: clamp(17.5px, 1.45vw, 21px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* 3-Column Card Grid */
+    #selectlab .sl-lab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    #selectlab .sl-lab-card {
+      position: relative;
+      border-radius: 28px;
+      padding: 16px 16px 24px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #selectlab.is-revealed .sl-lab-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #selectlab .sl-lab-card.is-open-lab:hover {
+      background: rgba(16, 22, 36, 0.94);
+      border-color: rgba(255, 255, 255, 0.32);
+      transform: translateY(-4px);
+    }
+
+    /* Curved Upper Image Box */
+    #selectlab .sl-lab-media {
+      position: relative;
+      width: 100%;
+      height: 210px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(5, 7, 12, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    #selectlab .sl-lab-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #selectlab .sl-lab-card.is-open-lab:hover .sl-lab-media img {
+      transform: scale(1.05);
+    }
+
+    #selectlab .sl-lab-lock-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgba(5, 7, 12, 0.72);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    #selectlab .sl-lab-lock-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #selectlab .sl-lab-lock-sub {
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    /* Below Media: Title, Paragraph, Button */
+    #selectlab .sl-lab-body {
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+
+    #selectlab .sl-lab-index {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.52);
+      margin-bottom: 6px;
+    }
+
+    #selectlab .sl-lab-card-title {
+      font-size: clamp(24px, 2.1vw, 30px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #selectlab .sl-lab-card-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.76);
+      margin-bottom: 22px;
+    }
+
+    #selectlab .sl-lab-btn {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    }
+
+    #selectlab .sl-lab-btn-active {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #selectlab .sl-lab-btn-active:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #selectlab .sl-lab-btn-locked {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(245, 247, 251, 0.52);
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 1080px) {
+      #selectlab .sl-lab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #selectlab {
+        padding: 92px 20px;
+      }
+      #selectlab .sl-lab-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      #selectlab .sl-lab-card {
+        padding: 14px 14px 20px;
+        border-radius: 24px;
+      }
+      #selectlab .sl-lab-media {
+        height: 185px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+
+  <div class="sl-lab-wrap">
+    <div class="sl-lab-head">
+      <span class="sl-lab-tag">Select Lab · 3D Flight Explorer</span>
+      <h2 class="sl-lab-title" id="slExoSelectLabHeading">Worlds, Galaxies &amp; Deep Space</h2>
+      <p class="sl-lab-sub">
+        Fly around 3D globes in outer space and inspect world data without landing, or jump straight into the full interactive map.
+      </p>
+    </div>
+
+    <div class="sl-lab-grid" id="slExoplanetLabsGrid"></div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('selectlab');
+      const grid = document.getElementById('slExoplanetLabsGrid');
+      if (!section || !grid) return;
+
+      const worlds = [
+        // Main 9 Planets / Worlds
+        {
+          num: '01',
+          title: 'Mercury Globe',
+          desc: 'Fly past cratered basins and sunlit cliffs close to the Sun while checking outer-orbit data.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '02',
+          title: 'Venus Globe',
+          desc: 'Cruise above thick sulfuric cloud decks and inspect planetary data from outer orbit.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '03',
+          title: 'Earth Globe',
+          desc: 'Orbit continents, oceans, and cloud systems in 3D with live outer-space telemetry.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '04',
+          title: 'Mars Globe',
+          desc: 'Fly around canyons, volcanoes, and polar caps while viewing planetary facts from orbit.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '05',
+          title: 'Jupiter Globe',
+          desc: 'Sweep past banded storms and the Great Red Spot from safe outer-space flight.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '06',
+          title: 'Saturn Globe',
+          desc: 'Glide alongside iconic ring bands and outer moons while inspecting world details.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '07',
+          title: 'Uranus Globe',
+          desc: 'Explore the tilted ice giant and its ring plane from a high outer-space vantage point.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '08',
+          title: 'Neptune Globe',
+          desc: 'Fly through deep blue outer-system space around high-wind ice giant weather bands.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '09',
+          title: 'Pluto Globe',
+          desc: 'Cruise past icy plains and distant Kuiper space while checking outer-world info.',
+          img: '',
+          unlocked: false
+        },
+
+        // Main 3 Galaxies
+        {
+          num: '10',
+          title: 'Milky Way Galaxy',
+          desc: 'Fly out into galactic scale and explore spiral arms, star fields, and cosmic structure.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '11',
+          title: 'Andromeda Galaxy',
+          desc: 'Navigate toward our nearest major spiral neighbor and inspect galactic scale data.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '12',
+          title: 'Triangulum Galaxy',
+          desc: 'Cruise through a compact spiral galaxy rich in star-forming regions and deep-space views.',
+          img: '',
+          unlocked: false
+        },
+
+        // Asteroid Belt
+        {
+          num: '13',
+          title: 'Asteroid Belt',
+          desc: 'Weave through rocky main-belt orbits between Mars and Jupiter in free-flight mode.',
+          img: '',
+          unlocked: false
+        },
+
+        // Other Main 5 Bodies
+        {
+          num: '14',
+          title: 'The Sun',
+          desc: 'Observe solar surface activity, corona scale, and inner-system reach from safe distance.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '15',
+          title: 'The Moon',
+          desc: 'Fly around lunar craters and maria in 3D and inspect satellite info from outer orbit.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '16',
+          title: 'Europa',
+          desc: 'Circle Jupiter’s icy moon in 3D and view outer-orbit details on its crust and ocean.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '17',
+          title: 'Titan',
+          desc: 'Fly around Saturn’s hazy giant moon and inspect atmospheric data from outer space.',
+          img: '',
+          unlocked: false
+        },
+        {
+          num: '18',
+          title: 'Kuiper Belt',
+          desc: 'Push past Neptune into icy outer-system frontier space and inspect distant bodies.',
+          img: '',
+          unlocked: false
+        },
+
+        // Final Card: Explore Whole Map
+        {
+          num: '19',
+          title: 'Explore Whole Map',
+          desc: 'Open the full 3D space map to fly freely across the entire simulation and jump between worlds.',
+          img: '',
+          href: 'exoplanet-map.html',
+          unlocked: true
+        }
+      ];
+
+      grid.innerHTML = worlds.map((item, idx) => {
+        const delay = Math.min(idx % 3, 2) * 0.08;
+        const lockHtml = item.unlocked
+          ? ''
+          : '<div class="sl-lab-lock-overlay"><span class="sl-lab-lock-pill">Locked · Under Update</span><span class="sl-lab-lock-sub">Coming soon in SkyLabs</span></div>';
+
+        const ctaHtml = item.unlocked
+          ? `<a href="${item.href}" class="sl-lab-btn sl-lab-btn-active">Explore Whole Map &#8594;</a>`
+          : `<button type="button" class="sl-lab-btn sl-lab-btn-locked" disabled aria-disabled="true">Under Update</button>`;
+
+        return `
+          <article class="sl-lab-card ${item.unlocked ? 'is-open-lab' : ''}" style="transition-delay: ${delay}s;">
+            <div class="sl-lab-media">
+              <img src="${item.img}" alt="${item.title}" loading="lazy" />
+              ${lockHtml}
+            </div>
+            <div class="sl-lab-body">
+              <span class="sl-lab-index">Sector ${item.num}</span>
+              <h3 class="sl-lab-card-title">${item.title}</h3>
+              <p class="sl-lab-card-desc">${item.desc}</p>
+              ${ctaHtml}
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -60px 0px',
+          threshold: 0.06
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
 
 
 
