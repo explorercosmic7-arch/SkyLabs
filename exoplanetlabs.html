@@ -1560,6 +1560,538 @@
     })();
   </script>
 </section>
+<hr>
+<!-- ============================================================
+     EXOPLANET LAB LAUNCH NOTIFY (GMAIL + MAILTO FALLBACK)
+     ============================================================ -->
+<section id="exoplanet-notify" aria-labelledby="slExoplanetNotifyHeading">
+  <style>
+    #exoplanet-notify,
+    #exoplanet-notify *,
+    #exoplanet-notify *::before,
+    #exoplanet-notify *::after {
+      box-sizing: border-box;
+    }
+
+    #exoplanet-notify {
+      position: relative;
+      width: 100%;
+      padding: 120px 36px;
+      background:
+        radial-gradient(circle at 78% 24%, rgba(120, 165, 255, 0.08) 0%, transparent 48%),
+        radial-gradient(circle at 22% 78%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #exoplanet-notify .sl-en-wrap {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    #exoplanet-notify .sl-en-head {
+      max-width: 820px;
+      margin-bottom: 44px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #exoplanet-notify.is-revealed .sl-en-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #exoplanet-notify .sl-en-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #exoplanet-notify .sl-en-title {
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin: 0 0 14px;
+    }
+
+    #exoplanet-notify .sl-en-sub {
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+      margin: 0;
+    }
+
+    #exoplanet-notify .sl-en-card {
+      padding: 34px 32px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        border-color 0.24s ease;
+    }
+
+    #exoplanet-notify.is-revealed .sl-en-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #exoplanet-notify .sl-en-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: end;
+    }
+
+    #exoplanet-notify .sl-en-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    #exoplanet-notify .sl-en-label {
+      font-size: 13.5px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    #exoplanet-notify .sl-en-input {
+      width: 100%;
+      height: 52px;
+      padding: 0 18px;
+      border-radius: 16px;
+      background: rgba(5, 7, 12, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    #exoplanet-notify .sl-en-input::placeholder {
+      color: rgba(245, 247, 251, 0.42);
+    }
+
+    #exoplanet-notify .sl-en-input:focus {
+      border-color: rgba(145, 185, 255, 0.65);
+      background: rgba(9, 13, 22, 0.94);
+    }
+
+    #exoplanet-notify .sl-en-submit {
+      height: 52px;
+      padding: 0 28px;
+      border-radius: 999px;
+      border: 1px solid #ffffff;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 400;
+      white-space: nowrap;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    #exoplanet-notify .sl-en-submit:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #exoplanet-notify .sl-en-note {
+      margin-top: 16px;
+      font-size: 14px;
+      color: rgba(245, 247, 251, 0.62);
+      line-height: 1.5;
+    }
+
+    #exoplanet-notify .sl-en-status {
+      margin-top: 10px;
+      font-size: 14.5px;
+      color: #dce8ff;
+      min-height: 20px;
+      line-height: 1.5;
+    }
+
+    #exoplanet-notify .sl-en-actions {
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    #exoplanet-notify .sl-en-actions.is-visible {
+      display: flex;
+    }
+
+    #exoplanet-notify .sl-en-link,
+    #exoplanet-notify .sl-en-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #f5f7fb;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #exoplanet-notify .sl-en-link:hover,
+    #exoplanet-notify .sl-en-copy:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(145, 185, 255, 0.55);
+    }
+
+    @media (max-width: 1020px) {
+      #exoplanet-notify {
+        padding: 92px 22px;
+      }
+      #exoplanet-notify .sl-en-card {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #exoplanet-notify .sl-en-form {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      #exoplanet-notify .sl-en-submit {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="sl-en-wrap">
+    <div class="sl-en-head">
+      <span class="sl-en-tag">Launch Alert · Exoplanet Lab</span>
+      <h2 class="sl-en-title" id="slExoplanetNotifyHeading">Get notified when new worlds unlock</h2>
+      <p class="sl-en-sub">
+        Enter your email to open Gmail with a pre-filled notification message ready to send.
+      </p>
+    </div>
+
+    <div class="sl-en-card">
+      <form class="sl-en-form" id="slExoplanetNotifyForm">
+        <div class="sl-en-field">
+          <label for="slExoNotifyEmail" class="sl-en-label">Your Email</label>
+          <input
+            type="email"
+            id="slExoNotifyEmail"
+            name="email"
+            class="sl-en-input"
+            placeholder="you@example.com"
+            required
+          />
+        </div>
+
+        <div class="sl-en-field">
+          <label for="slExoNotifyRole" class="sl-en-label">Role or Focus (Optional)</label>
+          <input
+            type="text"
+            id="slExoNotifyRole"
+            name="role"
+            class="sl-en-input"
+            placeholder="Student, Teacher, 3D Space Explorer"
+          />
+        </div>
+
+        <button type="submit" class="sl-en-submit">
+          <span>Notify Me</span>
+          <span aria-hidden="true">&#8594;</span>
+        </button>
+      </form>
+
+      <p class="sl-en-note">
+        Clicking <strong>Notify Me</strong> opens Gmail compose in a new tab addressed to <strong>SkyLabs Team</strong>.
+      </p>
+      <div class="sl-en-status" id="slExoplanetNotifyStatus" role="status" aria-live="polite"></div>
+      <div class="sl-en-actions" id="slExoplanetNotifyActions">
+        <a id="slExoGmailDirectLink" class="sl-en-link" target="_blank" rel="noopener noreferrer">
+          Open Gmail Compose
+        </a>
+        <a id="slExoMailtoDirectLink" class="sl-en-link">
+          Open Default Mail App
+        </a>
+        <button type="button" id="slExoCopyMessageBtn" class="sl-en-copy">
+          Copy Message
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('exoplanet-notify');
+      const form = document.getElementById('slExoplanetNotifyForm');
+      const emailInput = document.getElementById('slExoNotifyEmail');
+      const roleInput = document.getElementById('slExoNotifyRole');
+      const statusEl = document.getElementById('slExoplanetNotifyStatus');
+      const actionsEl = document.getElementById('slExoplanetNotifyActions');
+      const gmailLink = document.getElementById('slExoGmailDirectLink');
+      const mailtoLink = document.getElementById('slExoMailtoDirectLink');
+      const copyBtn = document.getElementById('slExoCopyMessageBtn');
+
+      if (!section) return;
+
+      const recipient = 'binulnethaka297@gmail.com';
+      let latestCopyPayload = '';
+
+      if (form && emailInput) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const subscriberEmail = emailInput.value.trim();
+          if (!subscriberEmail) return;
+
+          const roleText = roleInput && roleInput.value.trim()
+            ? roleInput.value.trim()
+            : 'SkyLabs Learner';
+
+          const subject = 'Exoplanet Lab Launch Notification — SkyLabs';
+          const body = [
+            'Hello SkyLabs Team,',
+            '',
+            'Please notify me when new worlds and updates launch in Exoplanet Lab on SkyLabs.',
+            '',
+            'Subscriber Email: ' + subscriberEmail,
+            'Role / Focus: ' + roleText,
+            'Page: Exoplanet Lab.'
+          ].join('\n');
+
+          const gmailUrl =
+            'https://mail.google.com/mail/?view=cm&fs=1' +
+            '&to=' + encodeURIComponent(recipient) +
+            '&su=' + encodeURIComponent(subject) +
+            '&body=' + encodeURIComponent(body);
+
+          const mailtoUrl =
+            'mailto:' + encodeURIComponent(recipient) +
+            '?subject=' + encodeURIComponent(subject) +
+            '&body=' + encodeURIComponent(body);
+
+          latestCopyPayload = 'To: ' + recipient + '\nSubject: ' + subject + '\n\n' + body;
+
+          if (gmailLink) gmailLink.href = gmailUrl;
+          if (mailtoLink) mailtoLink.href = mailtoUrl;
+          if (actionsEl) actionsEl.classList.add('is-visible');
+
+          const popup = window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+
+          if (popup) {
+            if (statusEl) {
+              statusEl.textContent = 'Opened Gmail compose in a new tab. If it was blocked, use the buttons below.';
+            }
+          } else {
+            if (statusEl) {
+              statusEl.textContent = 'Popup was blocked—click "Open Gmail Compose" or "Open Default Mail App" below.';
+            }
+            try {
+              window.location.href = mailtoUrl;
+            } catch (_) {
+              // Ignore if blocked by environment
+            }
+          }
+        });
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          if (!latestCopyPayload) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(latestCopyPayload).then(function () {
+              if (statusEl) {
+                statusEl.textContent = 'Copied recipient, subject, and message to clipboard.';
+              }
+            }).catch(function () {
+              if (statusEl) {
+                statusEl.textContent = 'Could not copy automatically—select and copy from Gmail.';
+              }
+            });
+          }
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: '0px 0px -75px 0px', threshold: 0.12 }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+
+<!-- ============================================================
+     SIMPLE FOOTER WITH LOGO (HTML + CSS + JS)
+     ============================================================ -->
+<footer class="sl-footer" id="slFooter">
+  <style>
+    .sl-footer {
+      position: relative;
+      width: 100%;
+      padding: 44px 36px;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        linear-gradient(180deg, #05070c 0%, #040609 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+    }
+
+    .sl-footer-inner {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .sl-footer-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .sl-footer-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+      transition: transform 0.24s ease;
+    }
+
+    .sl-footer-brand:hover .sl-footer-logo {
+      transform: scale(1.05);
+    }
+
+    .sl-footer-copy {
+      color: rgba(245, 247, 251, 0.68);
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+
+    .sl-footer-links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+    }
+
+    .sl-footer-links a {
+      color: rgba(245, 247, 251, 0.78);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 300;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sl-footer-links a:hover,
+    .sl-footer-links a:focus-visible {
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .sl-footer {
+        padding: 36px 22px;
+      }
+      .sl-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+      }
+    }
+  </style>
+
+  <div class="sl-footer-inner">
+    <a href="index.html" class="sl-footer-brand" aria-label="SkyLabs Home">
+      <img
+        src="Favicon.png"
+        onerror="this.onerror=null; this.src='Logo.jpg';"
+        alt="SkyLabs Logo"
+        class="sl-footer-logo"
+      />
+      <p id="slContactFooterCopy" class="sl-footer-copy">&copy; SkyLabs</p>
+    </a>
+
+    <nav class="sl-footer-links" aria-label="Footer Navigation">
+      <a href="index.html">Home</a>
+      <a href="join.html">Join Now</a>
+      <a href="Labs.html">Labs</a>
+      <a href="Telemetry.html">Telemetry</a>
+      <a href="Journey.html">Journey</a>
+    </nav>
+  </div>
+
+  <script>
+    (function () {
+      const copyEl = document.getElementById('slContactFooterCopy');
+      if (copyEl && copyEl.textContent.trim() === '© SkyLabs') {
+        const year = new Date().getFullYear();
+        copyEl.innerHTML = `&copy; SkyLabs &middot; ${year}`;
+      }
+    })();
+  </script>
+</footer>
+
 
 
 
