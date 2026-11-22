@@ -1796,7 +1796,341 @@
   </script>
 </section>
 <hr>
+<!-- ============================================================
+     SECTION 3: STARTER GUIDE — STEP 03: LABS PORTAL (HTML + CSS + JS)
+     ============================================================ -->
+<section id="starter-step-3" aria-labelledby="slStartSec3Heading">
+  <style>
+    #starter-step-3 {
+      position: relative;
+      width: 100%;
+      padding: 120px 36px;
+      background:
+        radial-gradient(circle at 80% 24%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 20% 78%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #starter-step-3 .sl-st3-wrap {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    #starter-step-3 .sl-st3-head {
+      max-width: 840px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #starter-step-3.is-revealed .sl-st3-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-step-3 .sl-st3-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #starter-step-3 .sl-st3-title {
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #starter-step-3 .sl-st3-sub {
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #starter-step-3 .sl-st3-card {
+      padding: 32px 30px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr);
+      gap: 32px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #starter-step-3.is-revealed .sl-st3-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-step-3 .sl-st3-card:hover {
+      background: rgba(16, 22, 36, 0.95);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    #starter-step-3 .sl-st3-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    #starter-step-3 .sl-st3-path {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.62);
+    }
+
+    #starter-step-3 .sl-st3-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    #starter-step-3 .sl-st3-name {
+      font-size: clamp(26px, 2.4vw, 36px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #starter-step-3 .sl-st3-info {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.8);
+      margin-bottom: 22px;
+      max-width: 720px;
+    }
+
+    #starter-step-3 .sl-st3-links {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    #starter-step-3 .sl-st3-portal-link {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(6, 9, 15, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      text-decoration: none;
+      color: #f5f7fb;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+      transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    #starter-step-3 .sl-st3-portal-link:hover {
+      background: rgba(20, 28, 45, 0.92);
+      border-color: rgba(145, 185, 255, 0.42);
+      transform: translateY(-2px);
+    }
+
+    #starter-step-3 .sl-st3-link-title {
+      font-size: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    #starter-step-3 .sl-st3-link-sub {
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.68);
+      line-height: 1.45;
+    }
+
+    #starter-step-3 .sl-st3-link-go {
+      font-size: 13px;
+      color: #dce8ff;
+      margin-top: 4px;
+    }
+
+    #starter-step-3 .sl-st3-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #starter-step-3 .sl-st3-btn {
+      width: 100%;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #starter-step-3 .sl-st3-btn-primary {
+      background: #ffffff;
+      color: #080b10;
+      border: 1px solid #ffffff;
+    }
+
+    #starter-step-3 .sl-st3-btn-primary:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #starter-step-3 .sl-st3-btn-more {
+      background: rgba(120, 165, 255, 0.1);
+      color: #dce8ff;
+      border: 1px solid rgba(145, 185, 255, 0.28);
+    }
+
+    #starter-step-3 .sl-st3-btn-more:hover {
+      background: rgba(145, 185, 255, 0.2);
+      border-color: rgba(145, 185, 255, 0.52);
+      color: #ffffff;
+    }
+
+    @media (max-width: 1020px) {
+      #starter-step-3 {
+        padding: 92px 22px;
+      }
+      #starter-step-3 .sl-st3-card {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #starter-step-3 .sl-st3-links {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+  </style>
+
+  <div class="sl-st3-wrap">
+    <div class="sl-st3-head">
+      <span class="sl-st3-tag">Step 03 · Labs Starting Portal</span>
+      <h2 class="sl-st3-title" id="slStartSec3Heading">Navigation: About &rarr; Labs</h2>
+      <p class="sl-st3-sub">
+        Use <strong>About &rarr; Labs</strong>, as your starting portal to jump straight into Orbital Labs, Rocket Labs, and Exoplanet Lab.
+      </p>
+    </div>
+
+    <article class="sl-st3-card">
+      <div>
+        <div class="sl-st3-meta">
+          <span class="sl-st3-path">Nav Path · About &rarr; Labs</span>
+          <span class="sl-st3-pill">Step 03</span>
+        </div>
+        <h3 class="sl-st3-name">SkyLabs Starting Portal</h3>
+        <p class="sl-st3-info">
+          From the Labs starting portal, branch directly into orbital trajectory sandboxes, rocket flight and re-entry labs, or exoplanet environments.
+        </p>
+
+        <div class="sl-st3-links">
+          <a href="orbital-labs.html" class="sl-st3-portal-link">
+            <span class="sl-st3-link-title">Orbital Labs</span>
+            <span class="sl-st3-link-sub">Orbits, transfers, and celestial mechanics.</span>
+            <span class="sl-st3-link-go">Launch &rarr;</span>
+          </a>
+
+          <a href="rocketlabs.html" class="sl-st3-portal-link">
+            <span class="sl-st3-link-title">Rocket Labs</span>
+            <span class="sl-st3-link-sub">Launch profiles, propulsion, and re-entry.</span>
+            <span class="sl-st3-link-go">Launch &rarr;</span>
+          </a>
+
+          <a href="exoplanetlabs.html" class="sl-st3-portal-link">
+            <span class="sl-st3-link-title">Exoplanet Lab</span>
+            <span class="sl-st3-link-sub">Planetary worlds, orbits, and atmospheres.</span>
+            <span class="sl-st3-link-go">Launch &rarr;</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="sl-st3-actions">
+        <a href="Labs.html" class="sl-st3-btn sl-st3-btn-primary">
+          <span>Open Labs Portal</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+        <a href="Docs.html" class="sl-st3-btn sl-st3-btn-more">
+          <span>More</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('starter-step-3');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: '0px 0px -75px 0px', threshold: 0.12 }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
 
 </body>
 </html>
