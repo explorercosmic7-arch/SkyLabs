@@ -2685,6 +2685,251 @@
     })();
   </script>
 </section>
+<hr>
+<!-- ============================================================
+     SECTION 6: STARTER GUIDE — LAB SAFETY & RULES (HTML + CSS + JS)
+     ============================================================ -->
+<section id="starter-step-6" aria-labelledby="slStartSec6Heading">
+  <style>
+    #starter-step-6 {
+      position: relative;
+      width: 100%;
+      padding: 120px 36px;
+      background:
+        radial-gradient(circle at 20% 22%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #starter-step-6 .sl-st6-wrap {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    #starter-step-6 .sl-st6-head {
+      max-width: 860px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #starter-step-6.is-revealed .sl-st6-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-step-6 .sl-st6-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #starter-step-6 .sl-st6-title {
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #starter-step-6 .sl-st6-sub {
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #starter-step-6 .sl-st6-card {
+      padding: 32px 30px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr);
+      gap: 32px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #starter-step-6.is-revealed .sl-st6-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-step-6 .sl-st6-card:hover {
+      background: rgba(16, 22, 36, 0.96);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    #starter-step-6 .sl-st6-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    #starter-step-6 .sl-st6-path {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.62);
+    }
+
+    #starter-step-6 .sl-st6-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    #starter-step-6 .sl-st6-name {
+      font-size: clamp(26px, 2.4vw, 36px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #starter-step-6 .sl-st6-info {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.8);
+      max-width: 740px;
+    }
+
+    #starter-step-6 .sl-st6-btn {
+      width: 100%;
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #ffffff;
+      color: #080b10;
+      border: 1px solid #ffffff;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    #starter-step-6 .sl-st6-btn:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 1020px) {
+      #starter-step-6 {
+        padding: 92px 22px;
+      }
+      #starter-step-6 .sl-st6-card {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+
+  <div class="sl-st6-wrap">
+    <div class="sl-st6-head">
+      <span class="sl-st6-tag">Lab Safety &amp; Rules</span>
+      <h2 class="sl-st6-title" id="slStartSec6Heading">Navigation: Docs &rarr; Lab Safety &amp; Rules</h2>
+      <p class="sl-st6-sub">
+        Review full operating guidelines on how to use a rocket lab safely, read telemetry indicators, and operate control panels accurately.
+      </p>
+    </div>
+
+    <article class="sl-st6-card">
+      <div>
+        <div class="sl-st6-meta">
+          <span class="sl-st6-path">Nav Path · Docs &rarr; Lab Safety &amp; Rules</span>
+          <span class="sl-st6-pill">Safety &amp; Rules</span>
+        </div>
+        <h3 class="sl-st6-name">Rocket Lab Operation &amp; Control Panels</h3>
+        <p class="sl-st6-info">
+          Find complete rules and procedures for running rocket lab tests, adjusting throttle and pitch controls, monitoring thermal and flight limits, and following safe operating practices across every control panel.
+        </p>
+      </div>
+
+      <div>
+        <a href="Safe.html" class="sl-st6-btn">
+          <span>Open Lab Safety &amp; Rules</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('starter-step-6');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: '0px 0px -75px 0px', threshold: 0.12 }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+
+
 
 
 </body>
