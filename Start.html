@@ -80,7 +80,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
-  <style>
+<style>
     :root {
       --sl-nav-height: 92px;
       --sl-glass-bg: rgba(8, 10, 14, 0.72);
@@ -632,9 +632,8 @@
       inset: -6%;
       z-index: -2;
       background:
-        radial-gradient(circle at 76% 28%, rgba(110, 162, 255, 0.22) 0%, rgba(45, 78, 145, 0.08) 38%, transparent 66%),
-        radial-gradient(circle at 22% 76%, rgba(255, 255, 255, 0.08) 0%, transparent 52%),
-        linear-gradient(135deg, #05070c 0%, #09101e 50%, #05070c 100%);
+        linear-gradient(135deg, rgba(5, 7, 12, 0.82) 0%, rgba(9, 16, 30, 0.68) 52%, rgba(5, 7, 12, 0.88) 100%),
+        url("https://images.unsplash.com/photo-1460186136353-977e9d6085a1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D") center / cover no-repeat;
       transform: translate3d(0, 0, 0) scale(1.04);
       transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
       will-change: transform;
@@ -644,12 +643,7 @@
       position: absolute;
       inset: 0;
       z-index: -1;
-      background-image:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-      background-size: 64px 64px;
-      mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 0.85) 0%, transparent 78%);
-      -webkit-mask-image: radial-gradient(circle at 50% 45%, rgba(0, 0, 0, 0.85) 0%, transparent 78%);
+      background: radial-gradient(circle at 74% 30%, rgba(110, 162, 255, 0.16) 0%, transparent 56%);
     }
 
     .sl-start-hero-inner {
@@ -1070,7 +1064,422 @@
     })();
   </script>
 <hr>
+<!-- ============================================================
+     SECTION 1: STARTER GUIDE — STEP 01: FIND YOUR LAB
+     ============================================================ -->
+<section id="starter-steps" aria-labelledby="slStartSec1Heading">
+  <style>
+    #starter-steps {
+      position: relative;
+      width: 100%;
+      padding: 120px 36px;
+      background:
+        radial-gradient(circle at 82% 20%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #starter-steps .sl-st1-wrap {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    #starter-steps .sl-st1-head {
+      max-width: 820px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #starter-steps.is-revealed .sl-st1-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-steps .sl-st1-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #starter-steps .sl-st1-title {
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #starter-steps .sl-st1-sub {
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #starter-steps .sl-st1-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 26px;
+    }
+
+    #starter-steps .sl-st1-card {
+      padding: 30px 26px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 24px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #starter-steps .sl-st1-card:nth-child(2) {
+      transition-delay: 0.08s;
+    }
+
+    #starter-steps .sl-st1-card:nth-child(3) {
+      transition-delay: 0.16s;
+    }
+
+    #starter-steps.is-revealed .sl-st1-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-steps .sl-st1-card:hover {
+      background: rgba(16, 22, 36, 0.95);
+      border-color: rgba(255, 255, 255, 0.28);
+      transform: translateY(-3px);
+    }
+
+    #starter-steps .sl-st1-card.is-picked {
+      background: rgba(18, 26, 44, 0.98);
+      border-color: rgba(145, 185, 255, 0.6);
+      box-shadow: 0 26px 72px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(145, 185, 255, 0.24);
+    }
+
+    #starter-steps .sl-st1-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    #starter-steps .sl-st1-code {
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+    }
+
+    #starter-steps .sl-st1-badge {
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    #starter-steps .sl-st1-card.is-picked .sl-st1-badge {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #starter-steps .sl-st1-name {
+      font-size: clamp(25px, 2.2vw, 32px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #starter-steps .sl-st1-info {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.6;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #starter-steps .sl-st1-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    #starter-steps .sl-st1-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    #starter-steps .sl-st1-btn {
+      width: 100%;
+      height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #starter-steps .sl-st1-btn-link {
+      background: #ffffff;
+      color: #080b10;
+      border: 1px solid #ffffff;
+    }
+
+    #starter-steps .sl-st1-btn-link:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #starter-steps .sl-st1-btn-select {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    #starter-steps .sl-st1-btn-select:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.34);
+    }
+
+    #starter-steps .sl-st1-btn-more {
+      background: rgba(120, 165, 255, 0.1);
+      color: #dce8ff;
+      border: 1px solid rgba(145, 185, 255, 0.28);
+    }
+
+    #starter-steps .sl-st1-btn-more:hover {
+      background: rgba(145, 185, 255, 0.2);
+      border-color: rgba(145, 185, 255, 0.52);
+      color: #ffffff;
+    }
+
+    @media (max-width: 1020px) {
+      #starter-steps {
+        padding: 92px 22px;
+      }
+      #starter-steps .sl-st1-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      #starter-steps .sl-st1-card {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+
+  <div class="sl-st1-wrap">
+    <div class="sl-st1-head">
+      <span class="sl-st1-tag">Step 01 · Find Your Lab</span>
+      <h2 class="sl-st1-title" id="slStartSec1Heading">Select a lab to start</h2>
+      <p class="sl-st1-sub">
+        Pick a lab below to open it directly, mark it as your selected lab, or click More to move to the next step or open Docs.
+      </p>
+    </div>
+
+    <div class="sl-st1-grid" id="slStartLabGrid">
+      <!-- Card 1: Rocket Labs -->
+      <article class="sl-st1-card" data-lab="rocket">
+        <div>
+          <div class="sl-st1-meta">
+            <span class="sl-st1-code">Lab 01 · Propulsion</span>
+            <span class="sl-st1-badge" data-lab-status>Available</span>
+          </div>
+          <h3 class="sl-st1-name">Rocket Labs</h3>
+          <p class="sl-st1-info">
+            Test thrust-to-weight ratios, gravity turns, staging, and atmospheric re-entry heating in interactive flight labs.
+          </p>
+        </div>
+
+        <div class="sl-st1-actions">
+          <a href="rocketlabs.html" class="sl-st1-btn sl-st1-btn-link">
+            <span>Open Rocket Labs</span>
+            <span aria-hidden="true">&#8594;</span>
+          </a>
+          <div class="sl-st1-row">
+            <button type="button" class="sl-st1-btn sl-st1-btn-select" data-select-lab="rocket" data-lab-name="Rocket Labs">
+              Select a Lab
+            </button>
+            <button type="button" class="sl-st1-btn sl-st1-btn-more" data-more-action="next" data-target="starter-next-step">
+              More
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 2: Orbital Mechanics -->
+      <article class="sl-st1-card" data-lab="orbital">
+        <div>
+          <div class="sl-st1-meta">
+            <span class="sl-st1-code">Lab 02 · Astrodynamics</span>
+            <span class="sl-st1-badge" data-lab-status>Available</span>
+          </div>
+          <h3 class="sl-st1-name">Orbital Mechanics</h3>
+          <p class="sl-st1-info">
+            Explore orbital velocity, inclination, Hohmann transfers, and trajectory stability around planets and moons.
+          </p>
+        </div>
+
+        <div class="sl-st1-actions">
+          <a href="orbital-labs.html" class="sl-st1-btn sl-st1-btn-link">
+            <span>Open Orbital Lab</span>
+            <span aria-hidden="true">&#8594;</span>
+          </a>
+          <div class="sl-st1-row">
+            <button type="button" class="sl-st1-btn sl-st1-btn-select" data-select-lab="orbital" data-lab-name="Orbital Mechanics">
+              Select a Lab
+            </button>
+            <button type="button" class="sl-st1-btn sl-st1-btn-more" data-more-action="next" data-target="starter-next-step">
+              More
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Card 3: Exoplanet Lab -->
+      <article class="sl-st1-card" data-lab="exoplanet">
+        <div>
+          <div class="sl-st1-meta">
+            <span class="sl-st1-code">Lab 03 · Planetary Science</span>
+            <span class="sl-st1-badge" data-lab-status>Available</span>
+          </div>
+          <h3 class="sl-st1-name">Exoplanet Lab</h3>
+          <p class="sl-st1-info">
+            Investigate habitable zones, atmospheres, transit signals, and planetary environments across distant star systems.
+          </p>
+        </div>
+
+        <div class="sl-st1-actions">
+          <a href="exoplanetlabs.html" class="sl-st1-btn sl-st1-btn-link">
+            <span>Open Exoplanet Lab</span>
+            <span aria-hidden="true">&#8594;</span>
+          </a>
+          <div class="sl-st1-row">
+            <button type="button" class="sl-st1-btn sl-st1-btn-select" data-select-lab="exoplanet" data-lab-name="Exoplanet Lab">
+              Select a Lab
+            </button>
+            <button type="button" class="sl-st1-btn sl-st1-btn-more" data-more-action="docs" data-href="Docs.html">
+              More
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('starter-steps');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                section.classList.add('is-revealed');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { rootMargin: '0px 0px -75px 0px', threshold: 0.12 }
+        );
+        observer.observe(section);
+      }
+
+      const cards = section.querySelectorAll('.sl-st1-card');
+      const selectBtns = section.querySelectorAll('[data-select-lab]');
+      const moreBtns = section.querySelectorAll('[data-more-action]');
+
+      selectBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const labKey = btn.getAttribute('data-select-lab');
+          const labName = btn.getAttribute('data-lab-name') || labKey;
+
+          cards.forEach((card) => {
+            const isMatch = card.getAttribute('data-lab') === labKey;
+            card.classList.toggle('is-picked', isMatch);
+            const badge = card.querySelector('[data-lab-status]');
+            const selBtn = card.querySelector('[data-select-lab]');
+            if (badge) badge.textContent = isMatch ? 'Selected' : 'Available';
+            if (selBtn) selBtn.textContent = isMatch ? 'Selected Lab' : 'Select a Lab';
+          });
+
+          section.dispatchEvent(new CustomEvent('skylabs:labSelected', {
+            bubbles: true,
+            detail: { lab: labKey, name: labName }
+          }));
+        });
+      });
+
+      moreBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const action = btn.getAttribute('data-more-action');
+          if (action === 'docs') {
+            window.location.href = btn.getAttribute('data-href') || 'Docs.html';
+            return;
+          }
+          const targetId = btn.getAttribute('data-target') || 'starter-next-step';
+          const nextEl = document.getElementById(targetId);
+          if (nextEl) {
+            nextEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          } else {
+            window.location.href = 'Docs.html';
+          }
+        });
+      });
+    })();
+  </script>
+</section>
 
 
 </body>
