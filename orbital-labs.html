@@ -1084,7 +1084,369 @@
     })();
   </script>
 <hr>
+<!-- ============================================================
+     #SELECTLAB SECTION — 10 ORBITAL LABS (ALL UNDER UPDATE)
+     ============================================================ -->
+<section id="selectlab" aria-labelledby="slOrbitalSelectLabHeading">
+  <style>
+    #selectlab {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #selectlab .sl-lab-wrap {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    #selectlab .sl-lab-head {
+      max-width: 820px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #selectlab.is-revealed .sl-lab-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #selectlab .sl-lab-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #selectlab .sl-lab-title {
+      font-size: clamp(40px, 5vw, 68px);
+      font-weight: 400;
+      line-height: 1.05;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #selectlab .sl-lab-sub {
+      font-size: clamp(17.5px, 1.45vw, 21px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* 3-Column Card Grid */
+    #selectlab .sl-lab-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 28px;
+    }
+
+    #selectlab .sl-lab-card {
+      position: relative;
+      border-radius: 28px;
+      padding: 16px 16px 24px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 22px 56px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #selectlab.is-revealed .sl-lab-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Curved Upper Image Box */
+    #selectlab .sl-lab-media {
+      position: relative;
+      width: 100%;
+      height: 210px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(5, 7, 12, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 20px;
+    }
+
+    #selectlab .sl-lab-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #selectlab .sl-lab-lock-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: rgba(5, 7, 12, 0.72);
+      backdrop-filter: blur(3px);
+      -webkit-backdrop-filter: blur(3px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    #selectlab .sl-lab-lock-pill {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #selectlab .sl-lab-lock-sub {
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    /* Below Media: Title, Paragraph, Button */
+    #selectlab .sl-lab-body {
+      padding: 0 8px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+
+    #selectlab .sl-lab-index {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.52);
+      margin-bottom: 6px;
+    }
+
+    #selectlab .sl-lab-card-title {
+      font-size: clamp(24px, 2.1vw, 30px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+
+    #selectlab .sl-lab-card-desc {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.76);
+      margin-bottom: 22px;
+    }
+
+    #selectlab .sl-lab-btn {
+      margin-top: auto;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 400;
+      text-decoration: none;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: rgba(245, 247, 251, 0.52);
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 1080px) {
+      #selectlab .sl-lab-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      #selectlab {
+        padding: 92px 20px;
+      }
+      #selectlab .sl-lab-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      #selectlab .sl-lab-card {
+        padding: 14px 14px 20px;
+        border-radius: 24px;
+      }
+      #selectlab .sl-lab-media {
+        height: 185px;
+        border-radius: 16px;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+
+  <div class="sl-lab-wrap">
+    <div class="sl-lab-head">
+      <span class="sl-lab-tag">Select Lab · 10 Orbital Labs</span>
+      <h2 class="sl-lab-title" id="slOrbitalSelectLabHeading">Orbital Mechanics Labs</h2>
+      <p class="sl-lab-sub">
+        Explore all 10 orbital labs in SkyLabs. Lanch and test your own space mission in space.(Coming soon...)
+      </p>
+    </div>
+
+    <div class="sl-lab-grid" id="slOrbitalLabsGrid"></div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('selectlab');
+      const grid = document.getElementById('slOrbitalLabsGrid');
+      if (!section || !grid) return;
+
+      const labs = [
+        {
+          num: '01',
+          title: 'Circular Orbit & Velocity',
+          desc: 'See how orbital speed and gravity balance to keep spacecraft in a steady circular path.',
+          img: 'https://images.unsplash.com/photo-1761429528505-e153940c62a1?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '02',
+          title: 'Elliptical Orbits',
+          desc: 'Explore apoapsis, periapsis, and how speed changes along stretched orbital paths.',
+          img: 'https://images.unsplash.com/photo-1783703330840-c5757fb77888?q=80&w=694&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '03',
+          title: 'Hohmann Transfer',
+          desc: 'Plan two-burn transfers to move smoothly between lower and higher orbits.',
+          img: 'https://plus.unsplash.com/premium_photo-1761163018816-cc5e6d9c975f?q=80&w=713&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '04',
+          title: 'Kepler’s Laws',
+          desc: 'Observe equal areas swept in equal times and how orbital period scales with orbit size.',
+          img: 'https://plus.unsplash.com/premium_photo-1671751034483-cc47a62e9de1?q=80&w=1112&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '05',
+          title: 'Orbital Inclination',
+          desc: 'Tilt orbital planes and see how latitude coverage changes over a rotating planet.',
+          img: 'https://plus.unsplash.com/premium_photo-1725809545834-a945ec3d5bb1?q=80&w=671&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '06',
+          title: 'Geostationary Orbit',
+          desc: 'Match orbital period to planetary rotation so a satellite stays above one point.',
+          img: 'https://images.unsplash.com/photo-1655694774003-69c69d7ee5bb?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '07',
+          title: 'Rendezvous & Phasing',
+          desc: 'Adjust orbit timing and catch-up spacing to line up with an orbiting target.',
+          img: 'https://images.unsplash.com/photo-1672009190560-12e7bade8d09?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '08',
+          title: 'Escape Velocity',
+          desc: 'Test the speed needed to break free from a planet’s gravitational pull.',
+          img: 'https://images.unsplash.com/photo-1673526759327-54f1f5b27322?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '09',
+          title: 'Gravity Assists',
+          desc: 'Use a planet’s gravity and motion to bend trajectories and gain or lose speed.',
+          img: 'https://images.unsplash.com/photo-1790519350165-d5f54edc555c?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        },
+        {
+          num: '10',
+          title: 'Lagrange Points',
+          desc: 'Explore gravitational balance points where objects can hold steady relative positions.',
+          img: 'https://images.unsplash.com/photo-1792143273196-8d47d9236a0c?q=80&w=1332&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D'
+        }
+      ];
+
+      grid.innerHTML = labs.map((lab, idx) => {
+        const delay = Math.min(idx % 3, 2) * 0.08;
+        return `
+          <article class="sl-lab-card" style="transition-delay: ${delay}s;">
+            <div class="sl-lab-media">
+              <img src="${lab.img}" alt="${lab.title}" loading="lazy" />
+              <div class="sl-lab-lock-overlay">
+                <span class="sl-lab-lock-pill">Locked · Under Update</span>
+                <span class="sl-lab-lock-sub">Coming soon in SkyLabs</span>
+              </div>
+            </div>
+            <div class="sl-lab-body">
+              <span class="sl-lab-index">Lab ${lab.num}</span>
+              <h3 class="sl-lab-card-title">${lab.title}</h3>
+              <p class="sl-lab-card-desc">${lab.desc}</p>
+              <button type="button" class="sl-lab-btn" disabled aria-disabled="true">Under Update</button>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -60px 0px',
+          threshold: 0.06
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
 
 
 </body>
