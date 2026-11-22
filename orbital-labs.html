@@ -1858,6 +1858,128 @@
     })();
   </script>
 </section>
+<hr>
+<!-- ============================================================
+     SIMPLE FOOTER WITH LOGO (HTML + CSS + JS)
+     ============================================================ -->
+<footer class="sl-footer" id="slFooter">
+  <style>
+    .sl-footer {
+      position: relative;
+      width: 100%;
+      padding: 44px 36px;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        linear-gradient(180deg, #05070c 0%, #040609 100%);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+    }
+
+    .sl-footer-inner {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .sl-footer-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: #ffffff;
+    }
+
+    .sl-footer-logo {
+      width: 42px;
+      height: 42px;
+      object-fit: contain;
+      display: block;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+      transition: transform 0.24s ease;
+    }
+
+    .sl-footer-brand:hover .sl-footer-logo {
+      transform: scale(1.05);
+    }
+
+    .sl-footer-copy {
+      color: rgba(245, 247, 251, 0.68);
+      font-size: 14.5px;
+      font-weight: 300;
+      line-height: 1.4;
+    }
+
+    .sl-footer-links {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+    }
+
+    .sl-footer-links a {
+      color: rgba(245, 247, 251, 0.78);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 300;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .sl-footer-links a:hover,
+    .sl-footer-links a:focus-visible {
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    @media (max-width: 768px) {
+      .sl-footer {
+        padding: 36px 22px;
+      }
+      .sl-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 18px;
+      }
+    }
+  </style>
+
+  <div class="sl-footer-inner">
+    <a href="index.html" class="sl-footer-brand" aria-label="SkyLabs Home">
+      <img
+        src="Favicon.png"
+        onerror="this.onerror=null; this.src='Logo.jpg';"
+        alt="SkyLabs Logo"
+        class="sl-footer-logo"
+      />
+      <p id="slContactFooterCopy" class="sl-footer-copy">&copy; SkyLabs</p>
+    </a>
+
+    <nav class="sl-footer-links" aria-label="Footer Navigation">
+      <a href="index.html">Home</a>
+      <a href="join.html">Join Now</a>
+      <a href="Labs.html">Labs</a>
+      <a href="Telemetry.html">Telemetry</a>
+      <a href="Journey.html">Journey</a>
+    </nav>
+  </div>
+
+  <script>
+    (function () {
+      const copyEl = document.getElementById('slContactFooterCopy');
+      if (copyEl && copyEl.textContent.trim() === '© SkyLabs') {
+        const year = new Date().getFullYear();
+        copyEl.innerHTML = `&copy; SkyLabs &middot; ${year}`;
+      }
+    })();
+  </script>
+</footer>
 
 
 </body>
