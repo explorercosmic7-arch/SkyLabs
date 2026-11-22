@@ -1348,83 +1348,633 @@
     </div>
   </section>
 <hr>
-  <!-- Section 3: Message form & quick info -->
-  <section class="sl-section" id="contact-message" aria-labelledby="slFormHeading">
-    <div class="sl-section-inner">
-      <div class="sl-sec-head">
-        <span class="sl-sec-tag">Message Desk</span>
-        <h2 class="sl-sec-title" id="slFormHeading">Send us a message</h2>
-        <p class="sl-sec-sub">
-          Fill out the short form below and open your mail app cleanly with your message ready.
-        </p>
-      </div>
+<!-- ============================================================
+     SECTION 3: MESSAGE FORM & QUICK INFO (GMAIL + MAILTO FALLBACK)
+     ============================================================ -->
+<section class="sl-section" id="contact-message" aria-labelledby="slFormHeading">
+  <style>
+    #contact-message,
+    #contact-message *,
+    #contact-message *::before,
+    #contact-message *::after {
+      box-sizing: border-box;
+    }
 
-      <div class="sl-form-grid">
-        <form class="sl-form-card" id="slContactForm" novalidate>
-          <div class="sl-form-row">
-            <div class="sl-field">
-              <label class="sl-label" for="slContactName">Your name</label>
-              <input type="text" class="sl-input" id="slContactName" name="name" placeholder="Your name or nickname" />
-            </div>
-            <div class="sl-field">
-              <label class="sl-label" for="slContactEmail">Your email</label>
-              <input type="email" class="sl-input" id="slContactEmail" name="email" placeholder="name@example.com" />
-            </div>
+    #contact-message {
+      position: relative;
+      width: 100%;
+      padding: 112px 36px;
+      background:
+        radial-gradient(circle at 18% 22%, rgba(120, 165, 255, 0.08) 0%, transparent 48%),
+        radial-gradient(circle at 82% 78%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: visible;
+      isolation: isolate;
+    }
+
+    #contact-message .sl-section-inner {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    #contact-message .sl-sec-head {
+      max-width: 780px;
+      margin-bottom: 44px;
+    }
+
+    #contact-message .sl-sec-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #contact-message .sl-sec-title {
+      font-size: clamp(34px, 4.2vw, 56px);
+      font-weight: 400;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin: 0 0 14px;
+    }
+
+    #contact-message .sl-sec-sub {
+      font-size: clamp(16.5px, 1.35vw, 19.5px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+      margin: 0;
+    }
+
+    #contact-message .sl-form-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+
+    #contact-message .sl-form-card {
+      padding: 34px 32px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #contact-message .sl-form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    #contact-message .sl-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    #contact-message .sl-label {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    #contact-message .sl-input,
+    #contact-message .sl-textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 16px;
+      background: rgba(5, 7, 12, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 300;
+      outline: none;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    #contact-message .sl-input {
+      height: 52px;
+      padding: 0 18px;
+    }
+
+    #contact-message .sl-textarea {
+      min-height: 136px;
+      resize: vertical;
+      line-height: 1.55;
+    }
+
+    #contact-message .sl-input::placeholder,
+    #contact-message .sl-textarea::placeholder {
+      color: rgba(245, 247, 251, 0.42);
+    }
+
+    #contact-message .sl-input:focus,
+    #contact-message .sl-textarea:focus {
+      border-color: rgba(145, 185, 255, 0.65);
+      background: rgba(9, 13, 22, 0.94);
+    }
+
+    /* Custom Dropdown (#slRoleDD & #slTopicDD) */
+    #contact-message .sl-dd {
+      position: relative;
+      width: 100%;
+    }
+
+    #contact-message .sl-dd-btn {
+      width: 100%;
+      height: 52px;
+      padding: 0 18px;
+      border-radius: 16px;
+      background: rgba(5, 7, 12, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 300;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    #contact-message .sl-dd-btn:hover,
+    #contact-message .sl-dd.is-open .sl-dd-btn {
+      border-color: rgba(145, 185, 255, 0.65);
+      background: rgba(9, 13, 22, 0.94);
+    }
+
+    #contact-message .sl-dd-arrow {
+      font-size: 12px;
+      opacity: 0.75;
+      transition: transform 0.2s ease;
+    }
+
+    #contact-message .sl-dd.is-open .sl-dd-arrow {
+      transform: rotate(180deg);
+    }
+
+    #contact-message .sl-dd-menu {
+      display: none;
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      right: 0;
+      z-index: 40;
+      padding: 6px;
+      border-radius: 16px;
+      background: rgba(10, 14, 23, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.82);
+    }
+
+    #contact-message .sl-dd.is-open .sl-dd-menu {
+      display: block;
+    }
+
+    #contact-message .sl-dd-option {
+      width: 100%;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 11px;
+      background: transparent;
+      color: #f5f7fb;
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 300;
+      text-align: left;
+      cursor: pointer;
+      display: block;
+      transition: background-color 0.16s ease, color 0.16s ease;
+    }
+
+    #contact-message .sl-dd-option:hover,
+    #contact-message .sl-dd-option.is-selected {
+      background: rgba(145, 185, 255, 0.16);
+      color: #ffffff;
+    }
+
+    #contact-message .sl-submit-btn {
+      height: 52px;
+      padding: 0 28px;
+      border-radius: 999px;
+      border: 1px solid #ffffff;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 400;
+      cursor: pointer;
+      align-self: flex-start;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    #contact-message .sl-submit-btn:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #contact-message .sl-status {
+      margin: 0;
+      font-size: 14px;
+      color: #dce8ff;
+      line-height: 1.5;
+    }
+
+    #contact-message .sl-status.is-error {
+      color: #ffb4b4;
+    }
+
+    #contact-message .sl-actions {
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #contact-message .sl-actions.is-visible {
+      display: flex;
+    }
+
+    #contact-message .sl-action-link,
+    #contact-message .sl-action-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #f5f7fb;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #contact-message .sl-action-link:hover,
+    #contact-message .sl-action-copy:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(145, 185, 255, 0.55);
+    }
+
+    #contact-message .sl-aside-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    #contact-message .sl-info-box {
+      padding: 24px 26px;
+      border-radius: 22px;
+      background: rgba(11, 15, 24, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    #contact-message .sl-info-box h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    #contact-message .sl-info-box p {
+      margin: 0;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: rgba(245, 247, 251, 0.74);
+    }
+
+    @media (max-width: 960px) {
+      #contact-message {
+        padding: 88px 22px;
+      }
+      #contact-message .sl-form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #contact-message .sl-form-card {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #contact-message .sl-form-row {
+        grid-template-columns: 1fr;
+      }
+      #contact-message .sl-submit-btn {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+
+  <div class="sl-section-inner">
+    <div class="sl-sec-head">
+      <span class="sl-sec-tag">Message Desk</span>
+      <h2 class="sl-sec-title" id="slFormHeading">Send us a message</h2>
+      <p class="sl-sec-sub">
+        Fill out the short form below and open Gmail cleanly with your message ready to send.
+      </p>
+    </div>
+
+    <div class="sl-form-grid">
+      <form class="sl-form-card" id="slContactForm" novalidate>
+        <div class="sl-form-row">
+          <div class="sl-field">
+            <label class="sl-label" for="slContactName">Your name</label>
+            <input type="text" class="sl-input" id="slContactName" name="name" placeholder="Your name or nickname" />
           </div>
+          <div class="sl-field">
+            <label class="sl-label" for="slContactEmail">Your email</label>
+            <input type="email" class="sl-input" id="slContactEmail" name="email" placeholder="name@example.com" />
+          </div>
+        </div>
 
-          <div class="sl-form-row">
-            <div class="sl-field">
-              <span class="sl-label" id="slRoleLabel">I am a</span>
-              <div class="sl-dd" id="slRoleDD" aria-labelledby="slRoleLabel"></div>
-            </div>
-
-            <div class="sl-field">
-              <span class="sl-label" id="slTopicLabel">Topic</span>
-              <div class="sl-dd" id="slTopicDD" aria-labelledby="slTopicLabel"></div>
-            </div>
+        <div class="sl-form-row">
+          <div class="sl-field">
+            <span class="sl-label" id="slRoleLabel">I am a</span>
+            <div class="sl-dd" id="slRoleDD" aria-labelledby="slRoleLabel"></div>
           </div>
 
           <div class="sl-field">
-            <label class="sl-label" for="slContactMessage">Message</label>
-            <textarea
-              class="sl-textarea"
-              id="slContactMessage"
-              name="message"
-              placeholder="Write your question, classroom note, or feedback here..."
-            ></textarea>
+            <span class="sl-label" id="slTopicLabel">Topic</span>
+            <div class="sl-dd" id="slTopicDD" aria-labelledby="slTopicLabel"></div>
           </div>
+        </div>
 
-          <button type="submit" class="sl-submit-btn">Send Message</button>
-          <p class="sl-status" id="slContactStatus" role="status" aria-live="polite">
-            No account required — prepares your email message cleanly when submitted.
+        <div class="sl-field">
+          <label class="sl-label" for="slContactMessage">Message</label>
+          <textarea
+            class="sl-textarea"
+            id="slContactMessage"
+            name="message"
+            placeholder="Write your question, classroom note, or feedback here..."
+          ></textarea>
+        </div>
+
+        <button type="submit" class="sl-submit-btn">Send Message</button>
+        <p class="sl-status" id="slContactStatus" role="status" aria-live="polite">
+          No account required — opens Gmail compose cleanly with your message ready.
+        </p>
+        <div class="sl-actions" id="slContactActions">
+          <a id="slContactGmailLink" class="sl-action-link" target="_blank" rel="noopener noreferrer">
+            Open Gmail Compose
+          </a>
+          <a id="slContactMailtoLink" class="sl-action-link">
+            Open Default Mail App
+          </a>
+          <button type="button" id="slContactCopyBtn" class="sl-action-copy">
+            Copy Message
+          </button>
+        </div>
+      </form>
+
+      <aside class="sl-aside-stack" aria-label="Helpful contact details">
+        <div class="sl-info-box">
+          <h3>No account needed to reach out</h3>
+          <p>
+            Students and teachers never need a password or profile to use SkyLabs or ask questions about a session.
           </p>
-        </form>
+        </div>
 
-        <aside class="sl-aside-stack" aria-label="Helpful contact details">
-          <div class="sl-info-box">
-            <h3>No account needed to reach out</h3>
-            <p>
-              Students and teachers never need a password or profile to use SkyLabs or ask questions about a session.
-            </p>
-          </div>
+        <div class="sl-info-box">
+          <h3>Classroom &amp; club friendly</h3>
+          <p>
+            Mention your class size, topic (orbits, rockets, or exoplanets), and when your session is planned so we can give clear guidance.
+          </p>
+        </div>
 
-          <div class="sl-info-box">
-            <h3>Classroom &amp; club friendly</h3>
-            <p>
-              Mention your class size, topic (orbits, rockets, or exoplanets), and when your session is planned so we can give clear guidance.
-            </p>
-          </div>
-
-          <div class="sl-info-box">
-            <h3>Quick entry</h3>
-            <p>
-              Already have a class PIN? Head to the <a href="join.html" style="color:#ffffff;">Join page</a> to enter directly.
-            </p>
-          </div>
-        </aside>
-      </div>
+        <div class="sl-info-box">
+          <h3>Quick entry</h3>
+          <p>
+            Already have a class PIN? Head to the <a href="join.html" style="color:#ffffff;">Join page</a> to enter directly.
+          </p>
+        </div>
+      </aside>
     </div>
-  </section>
+  </div>
+
+  <script>
+    (function () {
+      const recipient = 'binulnethaka297@gmail.com';
+
+      function initDropdown(containerId, options, defaultValue) {
+        const container = document.getElementById(containerId);
+        if (!container) return { getValue: () => defaultValue };
+
+        let selectedValue = defaultValue || options[0];
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sl-dd-btn';
+        btn.setAttribute('aria-expanded', 'false');
+
+        const labelSpan = document.createElement('span');
+        labelSpan.textContent = selectedValue;
+
+        const arrowSpan = document.createElement('span');
+        arrowSpan.className = 'sl-dd-arrow';
+        arrowSpan.setAttribute('aria-hidden', 'true');
+        arrowSpan.textContent = '▾';
+
+        btn.appendChild(labelSpan);
+        btn.appendChild(arrowSpan);
+
+        const menu = document.createElement('div');
+        menu.className = 'sl-dd-menu';
+        menu.setAttribute('role', 'listbox');
+
+        options.forEach((opt) => {
+          const item = document.createElement('button');
+          item.type = 'button';
+          item.className = 'sl-dd-option' + (opt === selectedValue ? ' is-selected' : '');
+          item.setAttribute('role', 'option');
+          item.setAttribute('aria-selected', opt === selectedValue ? 'true' : 'false');
+          item.textContent = opt;
+
+          item.addEventListener('click', function () {
+            selectedValue = opt;
+            labelSpan.textContent = opt;
+
+            menu.querySelectorAll('.sl-dd-option').forEach((el) => {
+              const isMatch = el.textContent === opt;
+              el.classList.toggle('is-selected', isMatch);
+              el.setAttribute('aria-selected', isMatch ? 'true' : 'false');
+            });
+
+            container.classList.remove('is-open');
+            btn.setAttribute('aria-expanded', 'false');
+          });
+
+          menu.appendChild(item);
+        });
+
+        btn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          const willOpen = !container.classList.contains('is-open');
+          document.querySelectorAll('#contact-message .sl-dd.is-open').forEach((openDd) => {
+            openDd.classList.remove('is-open');
+            const openBtn = openDd.querySelector('.sl-dd-btn');
+            if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+          });
+          if (willOpen) {
+            container.classList.add('is-open');
+            btn.setAttribute('aria-expanded', 'true');
+          }
+        });
+
+        container.appendChild(btn);
+        container.appendChild(menu);
+
+        return {
+          getValue: () => selectedValue
+        };
+      }
+
+      document.addEventListener('click', function () {
+        document.querySelectorAll('#contact-message .sl-dd.is-open').forEach((openDd) => {
+          openDd.classList.remove('is-open');
+          const openBtn = openDd.querySelector('.sl-dd-btn');
+          if (openBtn) openBtn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      const roleDD = initDropdown(
+        'slRoleDD',
+        ['Student', 'Teacher', 'Astronomy Club Lead', 'Parent / Guardian', 'Visitor'],
+        'Student'
+      );
+
+      const topicDD = initDropdown(
+        'slTopicDD',
+        ['Classroom Session', 'Orbital Labs', 'Rocket & Reentry Sims', 'Exoplanets & Orbits', 'Bug / Feedback'],
+        'Classroom Session'
+      );
+
+      const form = document.getElementById('slContactForm');
+      const nameInput = document.getElementById('slContactName');
+      const emailInput = document.getElementById('slContactEmail');
+      const messageInput = document.getElementById('slContactMessage');
+      const statusEl = document.getElementById('slContactStatus');
+      const actionsEl = document.getElementById('slContactActions');
+      const gmailLink = document.getElementById('slContactGmailLink');
+      const mailtoLink = document.getElementById('slContactMailtoLink');
+      const copyBtn = document.getElementById('slContactCopyBtn');
+
+      let latestPayload = '';
+
+      function setStatus(text, isError) {
+        if (!statusEl) return;
+        statusEl.textContent = text;
+        statusEl.classList.toggle('is-error', Boolean(isError));
+      }
+
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const senderName = nameInput && nameInput.value.trim() ? nameInput.value.trim() : 'SkyLabs User';
+          const senderEmail = emailInput ? emailInput.value.trim() : '';
+          const messageBody = messageInput ? messageInput.value.trim() : '';
+          const roleVal = roleDD.getValue();
+          const topicVal = topicDD.getValue();
+
+          if (!senderEmail || !senderEmail.includes('@')) {
+            setStatus('Please enter a valid email address so we can reply.', true);
+            if (emailInput) emailInput.focus();
+            return;
+          }
+
+          if (!messageBody) {
+            setStatus('Please write a short message before sending.', true);
+            if (messageInput) messageInput.focus();
+            return;
+          }
+
+          const subject = '[SkyLabs ' + topicVal + '] Message from ' + senderName;
+          const fullBody = [
+            'Hello SkyLabs Team,',
+            '',
+            messageBody,
+            '',
+            '---',
+            'Name: ' + senderName,
+            'Email: ' + senderEmail,
+            'Role: ' + roleVal,
+            'Topic: ' + topicVal
+          ].join('\n');
+
+          const gmailUrl =
+            'https://mail.google.com/mail/?view=cm&fs=1' +
+            '&to=' + encodeURIComponent(recipient) +
+            '&su=' + encodeURIComponent(subject) +
+            '&body=' + encodeURIComponent(fullBody);
+
+          const mailtoUrl =
+            'mailto:' + encodeURIComponent(recipient) +
+            '?subject=' + encodeURIComponent(subject) +
+            '&body=' + encodeURIComponent(fullBody);
+
+          latestPayload = 'To: ' + recipient + '\nSubject: ' + subject + '\n\n' + fullBody;
+
+          if (gmailLink) gmailLink.href = gmailUrl;
+          if (mailtoLink) mailtoLink.href = mailtoUrl;
+          if (actionsEl) actionsEl.classList.add('is-visible');
+
+          const popup = window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+          if (popup) {
+            setStatus('Opened Gmail compose in a new tab with your message pre-filled.', false);
+          } else {
+            setStatus('Popup blocked — use "Open Gmail Compose", "Open Default Mail App", or "Copy Message" below.', false);
+            try {
+              window.location.href = mailtoUrl;
+            } catch (_) {
+              // Ignore environment restrictions
+            }
+          }
+        });
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          if (!latestPayload) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(latestPayload).then(function () {
+              setStatus('Copied recipient, subject, and message to your clipboard.', false);
+            }).catch(function () {
+              setStatus('Clipboard access was blocked — you can copy directly inside Gmail.', true);
+            });
+          }
+        });
+      }
+    })();
+  </script>
+</section>
 <hr>
   <!-- Section 4: FAQ -->
   <section class="sl-section" id="contact-faq" aria-labelledby="slFaqHeading">
@@ -1625,14 +2175,16 @@
     </div>
   </footer>
 
-  <script>
+ <script>
     const glassNav = document.getElementById('slGlassNav');
     const hamburger = document.getElementById('slHamburger');
     const mobilePanel = document.getElementById('slMobilePanel');
     const navItems = document.querySelectorAll('.sl-nav-item');
 
     window.addEventListener('scroll', () => {
-      glassNav.classList.toggle('is-scrolled', window.scrollY > 10);
+      if (glassNav) {
+        glassNav.classList.toggle('is-scrolled', window.scrollY > 10);
+      }
     }, { passive: true });
 
     // PC dropdown behavior preserved from attached index.html
@@ -1665,11 +2217,13 @@
     });
 
     // Mobile 2-line hamburger -> slow close + top panel drop/spread
-    hamburger.addEventListener('click', () => {
-      const isOpen = mobilePanel.classList.toggle('is-open');
-      hamburger.classList.toggle('is-open', isOpen);
-      hamburger.setAttribute('aria-expanded', String(isOpen));
-    });
+    if (hamburger && mobilePanel) {
+      hamburger.addEventListener('click', () => {
+        const isOpen = mobilePanel.classList.toggle('is-open');
+        hamburger.classList.toggle('is-open', isOpen);
+        hamburger.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
 
     // Mobile main buttons: arrow rotates, dropdown opens, others auto-close
     const mobileButtons = document.querySelectorAll('.sl-mobile-main-btn[data-mobile-target]');
@@ -1723,6 +2277,13 @@
       const ddRegistry = [];
 
       function createDropdown(container, options, placeholder) {
+        if (!container) {
+          return {
+            get: () => '',
+            set: () => {}
+          };
+        }
+
         const listId = container.id + '-list';
         const trigger = document.createElement('button');
         trigger.type = 'button';
@@ -1917,68 +2478,17 @@
         });
       });
 
-      // Expose selected values for the mailto builder
+      // Expose selected values for form handlers
       window.slDropdownValues = () => ({
         role: roleDD.get(),
         topic: topicDD.get()
       });
     })();
 
-    // JS mailto form handler
-    (function initContactForm() {
-      const form = document.getElementById('slContactForm');
-      const nameInput = document.getElementById('slContactName');
-      const emailInput = document.getElementById('slContactEmail');
-      const msgInput = document.getElementById('slContactMessage');
-      const statusEl = document.getElementById('slContactStatus');
+    (function initPageUi() {
       const copyEl = document.getElementById('slContactFooterCopy');
-
       if (copyEl) {
         copyEl.textContent = '\u00A9 ' + new Date().getFullYear() + ' SkyLabs. All rights reserved.';
-      }
-
-      function getRecipientAddress() {
-        const user = ['binulnethaka', '297'].join('');
-        const domain = ['gmail', 'com'].join('.');
-        return user + '@' + domain;
-      }
-
-      function buildMailto(name, senderEmail, role, topic, message) {
-        const proto = ['mail', 'to'].join('');
-        const to = getRecipientAddress();
-        const subject = encodeURIComponent('SkyLabs Contact: ' + topic);
-        const body = encodeURIComponent(
-          'Name: ' + (name || 'Not provided') + '\n' +
-          'Email: ' + (senderEmail || 'Not provided') + '\n' +
-          'Role: ' + (role || 'Not provided') + '\n' +
-          'Topic: ' + topic + '\n\n' +
-          message
-        );
-        return proto + ':' + to + '?subject=' + subject + '&body=' + body;
-      }
-
-      if (form) {
-        form.addEventListener('submit', (e) => {
-          e.preventDefault();
-          const name = nameInput ? nameInput.value.trim() : '';
-          const email = emailInput ? emailInput.value.trim() : '';
-          const message = msgInput ? msgInput.value.trim() : '';
-          const vals = window.slDropdownValues ? window.slDropdownValues() : { role: '', topic: '' };
-          const role = vals.role;
-          const topic = vals.topic || 'General Question';
-
-          if (!message) {
-            if (statusEl) statusEl.textContent = 'Please write a short message before sending.';
-            if (msgInput) msgInput.focus();
-            return;
-          }
-
-          if (statusEl) {
-            statusEl.textContent = 'Opening your email app with your message ready...';
-          }
-
-          window.location.href = buildMailto(name, email, role, topic, message);
-        });
       }
 
       // FAQ accordion toggles
