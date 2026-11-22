@@ -1449,10 +1449,17 @@
 </section>
 <hr>
 <!-- ============================================================
-     ORBITAL LABS LAUNCH NOTIFY (MAILTO SECTION)
+     ORBITAL LABS LAUNCH NOTIFY (GMAIL + MAILTO FALLBACK)
      ============================================================ -->
 <section id="orbital-notify" aria-labelledby="slOrbitalNotifyHeading">
   <style>
+    #orbital-notify,
+    #orbital-notify *,
+    #orbital-notify *::before,
+    #orbital-notify *::after {
+      box-sizing: border-box;
+    }
+
     #orbital-notify {
       position: relative;
       width: 100%;
@@ -1510,7 +1517,7 @@
       line-height: 1.08;
       letter-spacing: -0.025em;
       color: #ffffff;
-      margin-bottom: 14px;
+      margin: 0 0 14px;
     }
 
     #orbital-notify .sl-on-sub {
@@ -1518,6 +1525,7 @@
       font-weight: 300;
       line-height: 1.62;
       color: rgba(245, 247, 251, 0.78);
+      margin: 0;
     }
 
     #orbital-notify .sl-on-card {
@@ -1622,6 +1630,41 @@
       font-size: 14.5px;
       color: #dce8ff;
       min-height: 20px;
+      line-height: 1.5;
+    }
+
+    #orbital-notify .sl-on-actions {
+      display: none;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    #orbital-notify .sl-on-actions.is-visible {
+      display: flex;
+    }
+
+    #orbital-notify .sl-on-link,
+    #orbital-notify .sl-on-copy {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-family: inherit;
+      color: #f5f7fb;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      text-decoration: none;
+      cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #orbital-notify .sl-on-link:hover,
+    #orbital-notify .sl-on-copy:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(145, 185, 255, 0.55);
     }
 
     @media (max-width: 1020px) {
@@ -1647,7 +1690,7 @@
       <span class="sl-on-tag">Launch Alert · Orbital Labs</span>
       <h2 class="sl-on-title" id="slOrbitalNotifyHeading">Get notified when Orbital Labs launches</h2>
       <p class="sl-on-sub">
-        Enter your email to prepare a launch notification request and open your mail app with a pre-filled message ready to send.
+        Enter your email to open Gmail with a pre-filled launch notification message ready to send.
       </p>
     </div>
 
@@ -1683,9 +1726,20 @@
       </form>
 
       <p class="sl-on-note">
-        Clicking <strong>Notify Me</strong> opens your email app with a pre-prepared message addressed to <strong>SkyLabs Team</strong>.
+        Clicking <strong>Notify Me</strong> opens Gmail compose in a new tab addressed to <strong>SkyLabs Team</strong>.
       </p>
       <div class="sl-on-status" id="slOrbitalNotifyStatus" role="status" aria-live="polite"></div>
+      <div class="sl-on-actions" id="slOrbitalNotifyActions">
+        <a id="slGmailDirectLink" class="sl-on-link" target="_blank" rel="noopener noreferrer">
+          Open Gmail Compose
+        </a>
+        <a id="slMailtoDirectLink" class="sl-on-link">
+          Open Default Mail App
+        </a>
+        <button type="button" id="slCopyMessageBtn" class="sl-on-copy">
+          Copy Message
+        </button>
+      </div>
     </div>
   </div>
 
@@ -1696,11 +1750,20 @@
       const emailInput = document.getElementById('slNotifyEmail');
       const roleInput = document.getElementById('slNotifyRole');
       const statusEl = document.getElementById('slOrbitalNotifyStatus');
+      const actionsEl = document.getElementById('slOrbitalNotifyActions');
+      const gmailLink = document.getElementById('slGmailDirectLink');
+      const mailtoLink = document.getElementById('slMailtoDirectLink');
+      const copyBtn = document.getElementById('slCopyMessageBtn');
+
       if (!section) return;
+
+      const recipient = 'binulnethaka297@gmail.com';
+      let latestCopyPayload = '';
 
       if (form && emailInput) {
         form.addEventListener('submit', function (e) {
           e.preventDefault();
+
           const subscriberEmail = emailInput.value.trim();
           if (!subscriberEmail) return;
 
@@ -1719,16 +1782,58 @@
             'Page: Orbital Labs.'
           ].join('\n');
 
+          const gmailUrl =
+            'https://mail.google.com/mail/?view=cm&fs=1' +
+            '&to=' + encodeURIComponent(recipient) +
+            '&su=' + encodeURIComponent(subject) +
+            '&body=' + encodeURIComponent(body);
+
           const mailtoUrl =
-            'mailto:binulnethaka297@gmail.com' +
+            'mailto:' + encodeURIComponent(recipient) +
             '?subject=' + encodeURIComponent(subject) +
             '&body=' + encodeURIComponent(body);
 
-          if (statusEl) {
-            statusEl.textContent = 'Opening your email app with a pre-prepared message to SkyLabs...';
-          }
+          latestCopyPayload = 'To: ' + recipient + '\nSubject: ' + subject + '\n\n' + body;
 
-          window.location.href = mailtoUrl;
+          if (gmailLink) gmailLink.href = gmailUrl;
+          if (mailtoLink) mailtoLink.href = mailtoUrl;
+          if (actionsEl) actionsEl.classList.add('is-visible');
+
+          // Try opening Gmail compose in a new tab first
+          const popup = window.open(gmailUrl, '_blank', 'noopener,noreferrer');
+
+          if (popup) {
+            if (statusEl) {
+              statusEl.textContent = 'Opened Gmail compose in a new tab. If it was blocked, use the buttons below.';
+            }
+          } else {
+            // Fallback if popups are blocked by browser/embed
+            if (statusEl) {
+              statusEl.textContent = 'Popup was blocked—click "Open Gmail Compose" or "Open Default Mail App" below.';
+            }
+            try {
+              window.location.href = mailtoUrl;
+            } catch (_) {
+              // Ignore if blocked by environment
+            }
+          }
+        });
+      }
+
+      if (copyBtn) {
+        copyBtn.addEventListener('click', function () {
+          if (!latestCopyPayload) return;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(latestCopyPayload).then(function () {
+              if (statusEl) {
+                statusEl.textContent = 'Copied recipient, subject, and message to clipboard.';
+              }
+            }).catch(function () {
+              if (statusEl) {
+                statusEl.textContent = 'Could not copy automatically—select and copy from Gmail.';
+              }
+            });
+          }
         });
       }
 
@@ -1753,7 +1858,6 @@
     })();
   </script>
 </section>
-
 
 
 </body>
