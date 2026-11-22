@@ -1480,6 +1480,322 @@
     })();
   </script>
 </section>
+<hr>
+<!-- ============================================================
+     SECTION 2: STARTER GUIDE — STEP 02: TELEMETRY PAGE (HTML + CSS + JS)
+     ============================================================ -->
+<section id="starter-next-step" aria-labelledby="slStartSec2Heading">
+  <style>
+    #starter-next-step {
+      position: relative;
+      width: 100%;
+      padding: 120px 36px;
+      background:
+        radial-gradient(circle at 20% 22%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 82% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #starter-next-step .sl-st2-wrap {
+      width: 100%;
+      max-width: 1380px;
+      margin: 0 auto;
+    }
+
+    #starter-next-step .sl-st2-head {
+      max-width: 840px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #starter-next-step.is-revealed .sl-st2-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-next-step .sl-st2-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #starter-next-step .sl-st2-title {
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #starter-next-step .sl-st2-sub {
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #starter-next-step .sl-st2-card {
+      padding: 32px 30px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr);
+      gap: 32px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        border-color 0.24s ease,
+        background-color 0.24s ease;
+    }
+
+    #starter-next-step.is-revealed .sl-st2-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #starter-next-step .sl-st2-card:hover {
+      background: rgba(16, 22, 36, 0.95);
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    #starter-next-step .sl-st2-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    #starter-next-step .sl-st2-path {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.62);
+    }
+
+    #starter-next-step .sl-st2-pill {
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    #starter-next-step .sl-st2-name {
+      font-size: clamp(26px, 2.4vw, 36px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #starter-next-step .sl-st2-info {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.8);
+      margin-bottom: 20px;
+      max-width: 720px;
+    }
+
+    #starter-next-step .sl-st2-items {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    #starter-next-step .sl-st2-item {
+      padding: 16px 18px;
+      border-radius: 18px;
+      background: rgba(6, 9, 15, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    #starter-next-step .sl-st2-item-title {
+      display: block;
+      font-size: 15.5px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 5px;
+    }
+
+    #starter-next-step .sl-st2-item-desc {
+      display: block;
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.68);
+      line-height: 1.48;
+    }
+
+    #starter-next-step .sl-st2-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    #starter-next-step .sl-st2-btn {
+      width: 100%;
+      height: 48px;
+      padding: 0 20px;
+      border-radius: 999px;
+      font-family: inherit;
+      font-size: 15.5px;
+      font-weight: 400;
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #starter-next-step .sl-st2-btn-primary {
+      background: #ffffff;
+      color: #080b10;
+      border: 1px solid #ffffff;
+    }
+
+    #starter-next-step .sl-st2-btn-primary:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #starter-next-step .sl-st2-btn-more {
+      background: rgba(120, 165, 255, 0.1);
+      color: #dce8ff;
+      border: 1px solid rgba(145, 185, 255, 0.28);
+    }
+
+    #starter-next-step .sl-st2-btn-more:hover {
+      background: rgba(145, 185, 255, 0.2);
+      border-color: rgba(145, 185, 255, 0.52);
+      color: #ffffff;
+    }
+
+    @media (max-width: 1020px) {
+      #starter-next-step {
+        padding: 92px 22px;
+      }
+      #starter-next-step .sl-st2-card {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #starter-next-step .sl-st2-items {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+  </style>
+
+  <div class="sl-st2-wrap">
+    <div class="sl-st2-head">
+      <span class="sl-st2-tag">Step 02 · Telemetry Page</span>
+      <h2 class="sl-st2-title" id="slStartSec2Heading">Navigation: About &rarr; Telemetry</h2>
+      <p class="sl-st2-sub">
+        Open Telemetry from the top menu under <strong>About &rarr; Telemetry</strong> to access all Rocket Labs testing labs, reading guides, and calculators.
+      </p>
+    </div>
+
+    <article class="sl-st2-card">
+      <div>
+        <div class="sl-st2-meta">
+          <span class="sl-st2-path">Nav Path · About &rarr; Telemetry</span>
+          <span class="sl-st2-pill">Step 02</span>
+        </div>
+        <h3 class="sl-st2-name">Rocket Labs Telemetry Hub</h3>
+        <p class="sl-st2-info">
+          Telemetry brings together every Rocket Labs resource in one place so you can test flight simulations, read concept guides, and run calculations without hunting across pages.
+        </p>
+
+        <div class="sl-st2-items">
+          <div class="sl-st2-item">
+            <span class="sl-st2-item-title">Testing Labs</span>
+            <span class="sl-st2-item-desc">Interactive re-entry and rocket flight test environments.</span>
+          </div>
+          <div class="sl-st2-item">
+            <span class="sl-st2-item-title">Reading Guides</span>
+            <span class="sl-st2-item-desc">Clear explanations and guides for each aerospace topic.</span>
+          </div>
+          <div class="sl-st2-item">
+            <span class="sl-st2-item-title">Calculators</span>
+            <span class="sl-st2-item-desc">Dedicated heating and flight calculators by level.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sl-st2-actions">
+        <a href="Telemetry.html" class="sl-st2-btn sl-st2-btn-primary">
+          <span>Open Telemetry</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+        <a href="Docs.html" class="sl-st2-btn sl-st2-btn-more">
+          <span>More</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('starter-next-step');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { rootMargin: '0px 0px -75px 0px', threshold: 0.12 }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 </body>
