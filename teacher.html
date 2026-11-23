@@ -305,6 +305,15 @@
     .tile.mission-fail {
       background: linear-gradient(160deg, #3c1010 0%, #a50e0e 55%, #d93025 100%);
       box-shadow: 0 0 0 2px rgba(217,48,37,.45), 0 8px 28px rgba(217,48,37,.22);
+      animation: failPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes failPulse {
+      0%, 100% { filter: brightness(1); opacity: 1; }
+      50% { filter: brightness(0.78); opacity: 0.88; }
+    }
+    /* After flash window, tile returns to normal active look */
+    .tile.mission-done {
+      animation: none !important;
     }
     .tile-avatar {
       position: absolute;
@@ -3095,6 +3104,36 @@ let teams = {};
 let teamCount = 0;
 let copilots = {};
 let telemetryMap = {};
+/** Mission pass/fail flash: show once then clear so tile returns to active */
+let missionFlash = {}; // sid -> { outcome, until, reason }
+const MISSION_FLASH_MS = 14000;
+function noteMissionOutcome(sid, outcome, reason) {
+  if (!sid || (outcome !== "pass" && outcome !== "fail")) return;
+  const prev = missionFlash[sid];
+  // Don't re-trigger the same outcome while still flashing or recently shown
+  if (prev && prev.outcome === outcome && Date.now() < (prev.until + 8000)) return;
+  missionFlash[sid] = {
+    outcome: outcome,
+    reason: reason || "",
+    until: Date.now() + MISSION_FLASH_MS
+  };
+  // Auto re-render when flash ends so tile goes back to active
+  setTimeout(() => {
+    if (missionFlash[sid] && Date.now() >= missionFlash[sid].until) {
+      delete missionFlash[sid];
+      if (view === "class" && typeof renderStage === "function") renderStage(true);
+    }
+  }, MISSION_FLASH_MS + 50);
+}
+function activeMissionFlash(sid) {
+  const f = missionFlash[sid];
+  if (!f) return null;
+  if (Date.now() >= f.until) {
+    delete missionFlash[sid];
+    return null;
+  }
+  return f;
+}
 let pulseLive = null;
 let ws = null;
 let wsTimer = null;
@@ -3846,7 +3885,12 @@ function renderStage(force) {
       const role = copilots[s.sid] ? "<span class='role-tag'>Co-Pilot</span>" : "";
       const hasLive = !!(window._uplinkStreams && window._uplinkStreams[s.sid]);
       const t = telemetryMap[s.sid] || (window._tele && window._tele[s.sid]) || null;
-      const outcome = t && t.outcome ? String(t.outcome) : "";
+      // Show pass/fail only during flash window, then tile returns to active
+      if (t && (t.outcome === "pass" || t.outcome === "fail")) {
+        noteMissionOutcome(s.sid, t.outcome, t.reason || "");
+      }
+      const flash = activeMissionFlash(s.sid);
+      const outcome = flash ? flash.outcome : "";
       const missionCls = outcome === "pass" ? " mission-pass" : (outcome === "fail" ? " mission-fail" : "");
       const labLabel = labOn ? (labPillLabel(t) || (typeof lastLab !== "undefined" && lastLab && lastLab.name) || "Lab live") : "";
       const labCls = labPillClass((t && t.labId) || (labOn ? "reentry" : ""));
@@ -3859,7 +3903,9 @@ function renderStage(force) {
             : "<div class='wait'><span class='material-symbols-outlined'>desktop_windows</span>In class<br>" + esc(s.nick) + "</div>"));
       const badgeIcon = outcome === "fail" ? "close" : "check";
       const badgeTitle = outcome === "fail" ? "Fail" : (outcome === "pass" ? "Pass" : "");
-      const badgeSub = outcome === "fail" ? esc(String((t && t.reason) || "Mission failed").slice(0, 40)) : (outcome === "pass" ? esc(s.nick) + " · clear" : "");
+      const badgeSub = outcome === "fail"
+        ? esc(String((flash && flash.reason) || (t && t.reason) || "Mission failed").slice(0, 40))
+        : (outcome === "pass" ? esc(s.nick) + " · clear" : "");
       return "<div class='tile" + (labOn ? " lab-mode" : "") + (s.sid === spotlight ? " pinned" : "") + (lost ? " focus-lost" : "") + (copilots[s.sid] ? " copilot" : "") + missionCls + "' data-sid='" + esc(s.sid) + "' data-nick='" + esc(s.nick) + "'>" +
         (labOn ? "" : "<div class='tile-avatar'>" + esc(avatarLetter(s.nick)) + "</div>") +
         "<div class='screen' data-screen='" + esc(s.sid) + "'>" + (labOn ? telemetryHtml(s.sid) : "") + screenInner +
@@ -4184,8 +4230,30 @@ function connectWs() {
       startPresentToStudent(msg.sid);
     }
     if (msg.type === "telemetry" && msg.data && msg.data.sid) {
-      telemetryMap[msg.data.sid] = Object.assign({}, telemetryMap[msg.data.sid] || {}, msg.data, { at: Date.now() });
+      const prevT = telemetryMap[msg.data.sid] || {};
+      telemetryMap[msg.data.sid] = Object.assign({}, prevT, msg.data, { at: Date.now() });
       window._tele = telemetryMap;
+      const oc = String(msg.data.outcome || "").toLowerCase();
+      if (oc === "pass" || oc === "fail") {
+        noteMissionOutcome(msg.data.sid, oc, msg.data.reason || "");
+        // Collect into class reports once per transition
+        if (prevT.outcome !== oc) {
+          answerReports.push({
+            sid: msg.data.sid,
+            nick: msg.data.nick || (students.find((x) => x.sid === msg.data.sid) || {}).nick || "Student",
+            correct: oc === "pass",
+            choice: oc === "pass" ? "PASS" : ("FAIL" + (msg.data.reason ? ": " + String(msg.data.reason).slice(0, 60) : "")),
+            score: null,
+            labId: msg.data.labId || "",
+            labQuiz: true,
+            done: true,
+            at: Date.now()
+          });
+          answerReports = answerReports.slice(-80);
+          if (typeof renderReports === "function") renderReports();
+          addNote((msg.data.nick || "Student") + (oc === "pass" ? " · mission PASS" : " · mission FAIL"));
+        }
+      }
       // Batch paint every 5s (not every packet) so the whole grid refreshes together
       return;
     }
