@@ -417,7 +417,7 @@
       60% { transform: scale(1.08) rotate(0deg); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    /* Lab-open: edge-to-edge 6 cells — LIGHT Google colors */
+    /* Lab-open: unified aerospace blue grid + heat accent */
     .tile.lab-mode .screen { background: transparent; }
     .tile.lab-mode .screen .wait { display: none; }
     .tile.lab-mode .tile-avatar { display: none; }
@@ -434,7 +434,7 @@
       border: none;
       box-sizing: border-box;
       overflow: hidden;
-      background: #e8eaed;
+      background: #0b0f17;
     }
     .lab-box {
       border-radius: 0;
@@ -446,12 +446,10 @@
       padding: 10px 6px;
       min-height: 0;
       border: none;
-      border-right: 1px solid rgba(32,33,36,.14);
-      border-bottom: 1px solid rgba(32,33,36,.14);
-    }
-    body.dark .lab-box {
-      border-right-color: rgba(255,255,255,.18);
-      border-bottom-color: rgba(255,255,255,.18);
+      /* black separators between cells */
+      border-right: 2px solid #0b0f17;
+      border-bottom: 2px solid #0b0f17;
+      background: #2563eb; /* pure professional blue */
     }
     .lab-box:nth-child(3n) { border-right: none; }
     .lab-box:nth-child(n+4) { border-bottom: none; }
@@ -459,14 +457,14 @@
       font-size: 17px;
       font-weight: 600;
       color: #202124 !important;
-      background: rgba(255,255,255,.92);
-      padding: 4px 11px;
+      background: #fff;
+      padding: 4px 12px;
       border-radius: 999px;
       font-variant-numeric: tabular-nums;
       line-height: 1.2;
       text-align: center;
       min-width: 2.6em;
-      box-shadow: 0 1px 3px rgba(0,0,0,.12);
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
       letter-spacing: -0.2px;
     }
     .lab-box .lb-lbl {
@@ -475,29 +473,28 @@
       letter-spacing: 0.4px;
       text-transform: uppercase;
       opacity: 1;
-      color: #3c4043 !important;
+      color: rgba(255,255,255,.95) !important;
     }
-    /* LIGHT fills — Google Classroom style */
-    .lab-box.b-alt { background: #d2e3fc; }
-    .lab-box.b-vel { background: #ceead6; }
-    .lab-box.b-g { background: #fef7e0; }
-    .lab-box.b-heat { background: #fad2cf; }
-    .lab-box.b-phase { background: #e9d2fd; }
-    .lab-box.b-out { background: #e8eaed; }
-    .lab-box.b-out.ok { background: #ceead6; }
-    .lab-box.b-out.bad { background: #fad2cf; }
-    /* Dark mode: still readable soft tones (not black) */
-    body.dark .lab-metrics { background: #202124; }
-    body.dark .lab-box.b-alt { background: #8ab4f8; }
-    body.dark .lab-box.b-vel { background: #81c995; }
-    body.dark .lab-box.b-g { background: #fdd663; }
-    body.dark .lab-box.b-heat { background: #f28b82; }
-    body.dark .lab-box.b-phase { background: #d7aefb; }
-    body.dark .lab-box.b-out { background: #9aa0a6; }
-    body.dark .lab-box.b-out.ok { background: #81c995; }
-    body.dark .lab-box.b-out.bad { background: #f28b82; }
-    body.dark .lab-box .lb-val { color: #202124 !important; background: rgba(255,255,255,.95); }
-    body.dark .lab-box .lb-lbl { color: #202124 !important; }
+    /* Heat flux accent — light orange by default */
+    .lab-box.b-heat { background: #fb923c; }
+    /* Hazard: heat >500 MW or G >8 — deep red + pulse */
+    .lab-box.is-hazard {
+      background: #ef4444 !important;
+      animation: hazardPulse 1.4s ease-in-out infinite;
+    }
+    @keyframes hazardPulse {
+      0%, 100% { box-shadow: inset 0 0 0 0 rgba(239,68,68,0); }
+      50% { box-shadow: inset 0 0 24px 4px rgba(255,255,255,.22); }
+    }
+    /* Mission outcomes */
+    .lab-box.b-out { background: #2563eb; }
+    .lab-box.b-out.is-active { background: #2563eb; }
+    .lab-box.b-out.ok { background: #16a34a; }
+    .lab-box.b-out.bad { background: #ef4444; }
+    body.dark .lab-box { background: #2563eb; border-right-color: #0b0f17; border-bottom-color: #0b0f17; }
+    body.dark .lab-box.b-heat { background: #fb923c; }
+    body.dark .lab-box.b-out.ok { background: #16a34a; }
+    body.dark .lab-box.b-out.bad { background: #ef4444; }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
@@ -3591,12 +3588,21 @@ function metricSnapshot(t) {
   const g = t ? formatG(t.g) : "—";
   const heat = t ? formatHeat(t.heat) : "—";
   const phase = phaseLabel(t);
-  let outVal = "—";
-  let outCls = "b-out";
-  if (t && t.outcome === "pass") { outVal = "PASS"; outCls = "b-out ok"; }
-  else if (t && t.outcome === "fail") { outVal = (t.reason ? String(t.reason).slice(0, 12) : "FAIL"); outCls = "b-out bad"; }
-  else if (t && t.status) { outVal = "LIVE"; }
-  return { alt, vel, g, heat, phase, outVal, outCls };
+  const gNum = t && t.g != null ? Number(t.g) : NaN;
+  const heatNum = t && t.heat != null ? Number(t.heat) : NaN;
+  // Hazard thresholds: heat > 500 MW or G > 8
+  const gHazard = !isNaN(gNum) && gNum > 8;
+  const heatHazard = !isNaN(heatNum) && heatNum > 500;
+  let outVal = "ACTIVE";
+  let outCls = "b-out is-active";
+  if (t && t.outcome === "pass") { outVal = "PASS ✓"; outCls = "b-out ok"; }
+  else if (t && t.outcome === "fail") { outVal = "FAIL ✕"; outCls = "b-out bad"; }
+  else if (t && (t.status === "SUCCESS" || t.status === "TOUCHDOWN")) { outVal = "PASS ✓"; outCls = "b-out ok"; }
+  else if (t && t.status === "FAILED") { outVal = "FAIL ✕"; outCls = "b-out bad"; }
+  return {
+    alt, vel, g, heat, phase, outVal, outCls,
+    gHazard, heatHazard
+  };
 }
 
 function updateLabMetricValues(tile, t) {
@@ -3610,10 +3616,14 @@ function updateLabMetricValues(tile, t) {
   if (vals[3] && vals[3].textContent !== m.heat) vals[3].textContent = m.heat;
   if (vals[4] && vals[4].textContent !== m.phase) vals[4].textContent = m.phase;
   if (vals[5] && vals[5].textContent !== m.outVal) vals[5].textContent = m.outVal;
-  const outBox = grid.querySelector(".lab-box.b-out, .lab-box.ok, .lab-box.bad") || grid.children[5];
-  if (outBox) {
-    outBox.className = "lab-box " + m.outCls;
-  }
+  // classes: unified blue + heat orange + hazard + mission
+  const boxes = grid.querySelectorAll(".lab-box");
+  if (boxes[0]) boxes[0].className = "lab-box b-alt";
+  if (boxes[1]) boxes[1].className = "lab-box b-vel";
+  if (boxes[2]) boxes[2].className = "lab-box b-g" + (m.gHazard ? " is-hazard" : "");
+  if (boxes[3]) boxes[3].className = "lab-box b-heat" + (m.heatHazard ? " is-hazard" : "");
+  if (boxes[4]) boxes[4].className = "lab-box b-phase";
+  if (boxes[5]) boxes[5].className = "lab-box " + m.outCls;
 }
 
 function telemetryHtml(sid) {
@@ -3625,8 +3635,8 @@ function telemetryHtml(sid) {
     "<div class='lab-metrics' data-sid='" + esc(sid) + "'>" +
       "<div class='lab-box b-alt'><div class='lb-val'>" + esc(m.alt) + "</div><div class='lb-lbl'>Altitude</div></div>" +
       "<div class='lab-box b-vel'><div class='lb-val'>" + esc(m.vel) + "</div><div class='lb-lbl'>Velocity</div></div>" +
-      "<div class='lab-box b-g'><div class='lb-val'>" + esc(m.g) + "</div><div class='lb-lbl'>G-force</div></div>" +
-      "<div class='lab-box b-heat'><div class='lb-val'>" + esc(m.heat) + "</div><div class='lb-lbl'>Heat flux</div></div>" +
+      "<div class='lab-box b-g" + (m.gHazard ? " is-hazard" : "") + "'><div class='lb-val'>" + esc(m.g) + "</div><div class='lb-lbl'>G-force</div></div>" +
+      "<div class='lab-box b-heat" + (m.heatHazard ? " is-hazard" : "") + "'><div class='lb-val'>" + esc(m.heat) + "</div><div class='lb-lbl'>Heat flux</div></div>" +
       "<div class='lab-box b-phase'><div class='lb-val'>" + esc(m.phase) + "</div><div class='lb-lbl'>Phase</div></div>" +
       "<div class='lab-box " + m.outCls + "'><div class='lb-val'>" + esc(m.outVal) + "</div><div class='lb-lbl'>Mission</div></div>" +
     "</div>"
