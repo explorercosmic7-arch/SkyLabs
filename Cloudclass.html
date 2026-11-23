@@ -958,7 +958,7 @@
         Run interactive labs, answer live quizzes and polls, collaborate with teams and co-pilots, and stay connected with your teacher in real time.
       </p>
       <div class="sl-cloudclass-hero-actions">
-        <a href="#what-cloudclass-is" class="sl-hero-btn sl-hero-btn-primary">Explore Cloud Class</a>
+        <a href="#what-cloudclass-is" class="sl-hero-btn sl-hero-btn-primary">Explore</a>
         <a href="join.html" class="sl-hero-btn sl-hero-btn-secondary">Enter Classroom</a>
       </div>
     </div>
@@ -2324,100 +2324,127 @@
     </div>
   </section>
 
-  <!-- ============================================================
-       FOOTER
+<!-- ============================================================
+       SIMPLE FOOTER WITH LOGO (HTML + CSS + JS)
        ============================================================ -->
-  <style>
-    .sl-footer {
-      width: 100%;
-      padding: 40px 36px;
-      background-color: #05070a;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--sl-text-muted);
-    }
-
-    .sl-footer-inner {
-      width: 100%;
-      max-width: 1320px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px 32px;
-    }
-
-    .sl-footer-brand {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .sl-footer-name {
-      font-family: 'Google Sans', sans-serif;
-      font-size: 20px;
-      font-weight: 400;
-      color: #ffffff;
-    }
-
-    .sl-footer-copy {
-      font-family: 'Google Sans', sans-serif;
-      font-size: 14px;
-      font-weight: 300;
-      color: rgba(245, 247, 251, 0.62);
-    }
-
-    .sl-footer-links {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 24px;
-    }
-
-    .sl-footer-links a {
-      font-family: 'Google Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--sl-text-muted);
-      text-decoration: none;
-      transition: color 0.2s ease;
-    }
-
-    .sl-footer-links a:hover {
-      color: #ffffff;
-    }
-
-    @media (max-width: 768px) {
+  <footer class="sl-footer" id="slFooter">
+    <style>
       .sl-footer {
-        padding: 32px 20px;
+        position: relative;
+        width: 100%;
+        padding: 44px 36px;
+        background:
+          radial-gradient(circle at 18% 20%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+          linear-gradient(180deg, #05070c 0%, #040609 100%);
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        color: #f5f7fb;
+        font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-weight: 300;
       }
+
       .sl-footer-inner {
-        flex-direction: column;
-        align-items: flex-start;
+        width: 100%;
+        max-width: 1380px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        flex-wrap: wrap;
       }
+
+      .sl-footer-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+        text-decoration: none;
+        color: #ffffff;
+      }
+
+      .sl-footer-logo {
+        width: 42px;
+        height: 42px;
+        object-fit: contain;
+        display: block;
+        flex-shrink: 0;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.55));
+        transition: transform 0.24s ease;
+      }
+
+      .sl-footer-brand:hover .sl-footer-logo {
+        transform: scale(1.05);
+      }
+
+      .sl-footer-copy {
+        color: rgba(245, 247, 251, 0.68);
+        font-size: 14.5px;
+        font-weight: 300;
+        line-height: 1.4;
+      }
+
       .sl-footer-links {
-        gap: 14px 20px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px 22px;
       }
-    }
-  </style>
 
-  <footer class="sl-footer" aria-label="Footer">
+      .sl-footer-links a {
+        color: rgba(245, 247, 251, 0.78);
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 300;
+        transition: color 0.2s ease, transform 0.2s ease;
+      }
+
+      .sl-footer-links a:hover,
+      .sl-footer-links a:focus-visible {
+        color: #ffffff;
+        transform: translateY(-1px);
+      }
+
+      @media (max-width: 768px) {
+        .sl-footer {
+          padding: 36px 22px;
+        }
+        .sl-footer-inner {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 18px;
+        }
+      }
+    </style>
+
     <div class="sl-footer-inner">
-      <div class="sl-footer-brand">
-        <span class="sl-footer-name">SkyLabs · Cloud Class</span>
-        <span class="sl-footer-copy">Interactive space labs and live classroom tools.</span>
-      </div>
+      <a href="index.html" class="sl-footer-brand" aria-label="SkyLabs Home">
+        <img
+          src="Favicon.png"
+          onerror="this.onerror=null; this.src='Logo.jpg';"
+          alt="SkyLabs Logo"
+          class="sl-footer-logo"
+        />
+        <p id="slCloudclassFooterCopy" class="sl-footer-copy">&copy; SkyLabs &middot; 2026</p>
+      </a>
 
-      <ul class="sl-footer-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="Labs.html">Labs</a></li>
-        <li><a href="Docs.html">Mission Guide</a></li>
-        <li><a href="Safe.html">Safety &amp; Rules</a></li>
-        <li><a href="Contact.html">Contact</a></li>
-        <li><a href="join.html">Join Now</a></li>
-      </ul>
+      <nav class="sl-footer-links" aria-label="Footer Navigation">
+        <a href="index.html">Home</a>
+        <a href="join.html">Join Now</a>
+        <a href="Labs.html">Labs</a>
+        <a href="Docs.html">Mission Guide</a>
+        <a href="Safe.html">Safety &amp; Rules</a>
+        <a href="Contact.html">Contact</a>
+      </nav>
     </div>
+
+    <script>
+      (function () {
+        const copyEl = document.getElementById('slCloudclassFooterCopy');
+        if (copyEl && copyEl.textContent.trim() === '© SkyLabs') {
+          const year = new Date().getFullYear();
+          copyEl.innerHTML = `&copy; SkyLabs &middot; ${year}`;
+        }
+      })();
+    </script>
   </footer>
     
 </body>
