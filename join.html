@@ -2343,18 +2343,65 @@ function wsUrl() {
     "&role=student&sid=" + encodeURIComponent(sid) +
     "&nick=" + encodeURIComponent(nick);
 }
-/* Teacher voice playback queue (low-latency chunk player) */
+/* Teacher voice — lobby + lab; fixed top pill; autoplay unlock */
 let _tvAudio = null;
 let _tvQueue = [];
 let _tvPlaying = false;
+let _tvUnlocked = false;
+function unlockTeacherVoiceAudio() {
+  if (_tvUnlocked) return;
+  try {
+    if (!_tvAudio) {
+      _tvAudio = new Audio();
+      _tvAudio.preload = "auto";
+    }
+    _tvAudio.muted = true;
+    const p = _tvAudio.play();
+    if (p && p.then) {
+      p.then(() => {
+        try { _tvAudio.pause(); } catch (e) {}
+        _tvAudio.muted = false;
+        _tvUnlocked = true;
+      }).catch(() => {});
+    } else {
+      _tvAudio.muted = false;
+      _tvUnlocked = true;
+    }
+  } catch (e) {}
+}
+document.addEventListener("pointerdown", unlockTeacherVoiceAudio, { passive: true });
+document.addEventListener("keydown", unlockTeacherVoiceAudio, { passive: true });
+
+function ensureTeacherVoiceChip(show) {
+  let chip = document.getElementById("teacherVoiceChip");
+  if (show) {
+    if (!chip) {
+      chip = document.createElement("div");
+      chip.id = "teacherVoiceChip";
+      chip.setAttribute("role", "status");
+      chip.style.cssText = "position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100000;background:#d93025;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.35);display:flex;align-items:center;gap:8px;pointer-events:none;font-family:Google Sans,Roboto,Arial,sans-serif;";
+      chip.innerHTML = "<span class='material-symbols-outlined' style='font-size:18px'>mic</span> Teacher is speaking";
+      document.body.appendChild(chip);
+    }
+    chip.style.display = "flex";
+  } else if (chip) {
+    chip.style.display = "none";
+  }
+}
+
 function playTeacherVoiceChunk(dataUrl) {
   if (!dataUrl || typeof dataUrl !== "string") return;
+  unlockTeacherVoiceAudio();
+  ensureTeacherVoiceChip(true);
   _tvQueue.push(dataUrl);
-  if (_tvQueue.length > 8) _tvQueue.shift(); // drop oldest if backlog
+  if (_tvQueue.length > 10) _tvQueue.shift();
   if (!_tvPlaying) drainTeacherVoiceQueue();
 }
 function drainTeacherVoiceQueue() {
-  if (!_tvQueue.length) { _tvPlaying = false; return; }
+  if (!_tvQueue.length) {
+    _tvPlaying = false;
+    return;
+  }
   _tvPlaying = true;
   const src = _tvQueue.shift();
   try {
@@ -2362,11 +2409,19 @@ function drainTeacherVoiceQueue() {
       _tvAudio = new Audio();
       _tvAudio.preload = "auto";
     }
+    _tvAudio.muted = false;
     _tvAudio.onended = () => drainTeacherVoiceQueue();
     _tvAudio.onerror = () => drainTeacherVoiceQueue();
     _tvAudio.src = src;
     const p = _tvAudio.play();
-    if (p && p.catch) p.catch(() => drainTeacherVoiceQueue());
+    if (p && p.catch) p.catch(() => {
+      unlockTeacherVoiceAudio();
+      setTimeout(() => {
+        try {
+          _tvAudio.play().catch(() => drainTeacherVoiceQueue());
+        } catch (e) { drainTeacherVoiceQueue(); }
+      }, 80);
+    });
   } catch (e) {
     _tvPlaying = false;
   }
@@ -2718,18 +2773,8 @@ function connectWs() {
         return;
       }
       if (msg.type === "teacher_voice_state") {
-        const live = !!msg.live;
-        let chip = document.getElementById("teacherVoiceChip");
-        if (live) {
-          if (!chip) {
-            chip = document.createElement("div");
-            chip.id = "teacherVoiceChip";
-            chip.style.cssText = "position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:9999;background:#d93025;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.3);display:flex;align-items:center;gap:8px;";
-            chip.innerHTML = "<span class='material-symbols-outlined' style='font-size:18px'>mic</span> Teacher is speaking";
-            document.body.appendChild(chip);
-          }
-          chip.style.display = "";
-        } else if (chip) chip.style.display = "none";
+        ensureTeacherVoiceChip(!!msg.live);
+        if (msg.live) unlockTeacherVoiceAudio();
         return;
       }
     if (msg.type === "macro") {
