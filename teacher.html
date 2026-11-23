@@ -417,14 +417,14 @@
       60% { transform: scale(1.08) rotate(0deg); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    /* Lab-open: edge-to-edge 6 cells — clean, deep colors, no stripe */
+    /* Lab-open: edge-to-edge 6 cells — LIGHT Google colors */
     .tile.lab-mode .screen { background: transparent; }
     .tile.lab-mode .screen .wait { display: none; }
     .tile.lab-mode .tile-avatar { display: none; }
     .lab-metrics {
       position: absolute;
       left: 0; right: 0; top: 0;
-      bottom: 52px; /* only the footer — stripe removed */
+      bottom: 52px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
@@ -434,7 +434,7 @@
       border: none;
       box-sizing: border-box;
       overflow: hidden;
-      background: #0b0d12;
+      background: #e8eaed;
     }
     .lab-box {
       border-radius: 0;
@@ -446,55 +446,58 @@
       padding: 10px 6px;
       min-height: 0;
       border: none;
-      border-right: 1px solid rgba(0,0,0,.4);
-      border-bottom: 1px solid rgba(0,0,0,.4);
+      border-right: 1px solid rgba(32,33,36,.14);
+      border-bottom: 1px solid rgba(32,33,36,.14);
     }
     body.dark .lab-box {
-      border-right-color: rgba(255,255,255,.12);
-      border-bottom-color: rgba(255,255,255,.12);
+      border-right-color: rgba(255,255,255,.18);
+      border-bottom-color: rgba(255,255,255,.18);
     }
     .lab-box:nth-child(3n) { border-right: none; }
     .lab-box:nth-child(n+4) { border-bottom: none; }
     .lab-box .lb-val {
-      font-size: 18px;
-      font-weight: 700;
-      color: #111 !important;
-      background: rgba(255,255,255,.94);
+      font-size: 17px;
+      font-weight: 600;
+      color: #202124 !important;
+      background: rgba(255,255,255,.92);
       padding: 4px 11px;
-      border-radius: 9px;
+      border-radius: 999px;
       font-variant-numeric: tabular-nums;
       line-height: 1.2;
       text-align: center;
       min-width: 2.6em;
-      box-shadow: 0 1px 4px rgba(0,0,0,.22);
+      box-shadow: 0 1px 3px rgba(0,0,0,.12);
       letter-spacing: -0.2px;
     }
     .lab-box .lb-lbl {
       font-size: 10px;
       font-weight: 600;
-      letter-spacing: 0.45px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
-      opacity: 0.95;
-      color: rgba(255,255,255,.95) !important;
+      opacity: 1;
+      color: #3c4043 !important;
     }
-    /* Deep saturated colors (never light / pastel) */
-    .lab-box.b-alt { background: #0d2a55; }
-    .lab-box.b-vel { background: #08301c; }
-    .lab-box.b-g { background: #2a1f00; }
-    .lab-box.b-heat { background: #3a1000; }
-    .lab-box.b-phase { background: #1a1035; }
-    .lab-box.b-out { background: #141516; }
-    .lab-box.b-out.ok { background: #08301c; }
-    .lab-box.b-out.bad { background: #3a0e0e; }
-    /* Same deep colors in dark mode (already deep) */
-    body.dark .lab-box.b-alt { background: #0d2a55; }
-    body.dark .lab-box.b-vel { background: #08301c; }
-    body.dark .lab-box.b-g { background: #2a1f00; }
-    body.dark .lab-box.b-heat { background: #3a1000; }
-    body.dark .lab-box.b-phase { background: #1a1035; }
-    body.dark .lab-box.b-out { background: #141516; }
-    body.dark .lab-box.b-out.ok { background: #08301c; }
-    body.dark .lab-box.b-out.bad { background: #3a0e0e; }
+    /* LIGHT fills — Google Classroom style */
+    .lab-box.b-alt { background: #d2e3fc; }
+    .lab-box.b-vel { background: #ceead6; }
+    .lab-box.b-g { background: #fef7e0; }
+    .lab-box.b-heat { background: #fad2cf; }
+    .lab-box.b-phase { background: #e9d2fd; }
+    .lab-box.b-out { background: #e8eaed; }
+    .lab-box.b-out.ok { background: #ceead6; }
+    .lab-box.b-out.bad { background: #fad2cf; }
+    /* Dark mode: still readable soft tones (not black) */
+    body.dark .lab-metrics { background: #202124; }
+    body.dark .lab-box.b-alt { background: #8ab4f8; }
+    body.dark .lab-box.b-vel { background: #81c995; }
+    body.dark .lab-box.b-g { background: #fdd663; }
+    body.dark .lab-box.b-heat { background: #f28b82; }
+    body.dark .lab-box.b-phase { background: #d7aefb; }
+    body.dark .lab-box.b-out { background: #9aa0a6; }
+    body.dark .lab-box.b-out.ok { background: #81c995; }
+    body.dark .lab-box.b-out.bad { background: #f28b82; }
+    body.dark .lab-box .lb-val { color: #202124 !important; background: rgba(255,255,255,.95); }
+    body.dark .lab-box .lb-lbl { color: #202124 !important; }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
