@@ -1441,7 +1441,150 @@
   </section>
 
 <hr>
+<!-- ============================================================
+       SECTION 4: BUILDING CUSTOM LABS (STAGE + 2-COL STEPS)
+       ============================================================ -->
+  <style>
+    .sl-cc-stage {
+      padding: 36px;
+      border-radius: 28px;
+      background:
+        radial-gradient(circle at 85% 15%, rgba(255, 255, 255, 0.08) 0%, transparent 48%),
+        rgba(12, 16, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
 
+    .sl-cc-stage-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 28px;
+      padding-bottom: 32px;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.11);
+    }
+
+    .sl-cc-stage-meta {
+      max-width: 340px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.55;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    .sl-cc-two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 36px;
+    }
+
+    .sl-cc-mini-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sl-cc-mini-label {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+    }
+
+    .sl-cc-mini-title {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: #ffffff;
+    }
+
+    .sl-cc-mini-text {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 15.5px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: var(--sl-text-muted);
+    }
+
+    @media (max-width: 900px) {
+      .sl-cc-stage-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .sl-cc-two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .sl-cc-stage {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+    }
+  </style>
+
+  <section class="sl-cc-section is-alt" id="lab-builder" aria-labelledby="slLabBuilderTitle">
+    <div class="sl-cc-container">
+      <div class="sl-cc-stage">
+        <div class="sl-cc-stage-top">
+          <div>
+            <span class="sl-cc-eyebrow">04 · Lab Builder</span>
+            <h2 class="sl-cc-heading" id="slLabBuilderTitle" style="margin-bottom: 12px;">Create labs tailored to your lesson</h2>
+            <p class="sl-cc-lead" style="max-width: 620px;">
+              Shape custom lab setups around the exact topic you are teaching, so students spend their time exploring the right concept rather than digging through menus.
+            </p>
+          </div>
+          <p class="sl-cc-stage-meta">
+            Set the starting conditions, define what students test, and make each lab fit your class pace.
+          </p>
+        </div>
+
+        <div class="sl-cc-two-col">
+          <div class="sl-cc-mini-item">
+            <span class="sl-cc-mini-label">01 · Starting Point</span>
+            <h3 class="sl-cc-mini-title">Pick the scenario and initial values</h3>
+            <p class="sl-cc-mini-text">
+              Start from a clean baseline so every student begins from the same point when the activity opens.
+            </p>
+          </div>
+
+          <div class="sl-cc-mini-item">
+            <span class="sl-cc-mini-label">02 · Focus Controls</span>
+            <h3 class="sl-cc-mini-title">Highlight the variables that matter most</h3>
+            <p class="sl-cc-mini-text">
+              Keep students focused on key cause-and-effect relationships instead of overwhelming them with unrelated settings.
+            </p>
+          </div>
+
+          <div class="sl-cc-mini-item">
+            <span class="sl-cc-mini-label">03 · Clear Goals</span>
+            <h3 class="sl-cc-mini-title">Pair experiments with clear tasks</h3>
+            <p class="sl-cc-mini-text">
+              Give students a target outcome or question to test so every run has a clear purpose.
+            </p>
+          </div>
+
+          <div class="sl-cc-mini-item">
+            <span class="sl-cc-mini-label">04 · Ready to Reuse</span>
+            <h3 class="sl-cc-mini-title">Bring custom labs back in future classes</h3>
+            <p class="sl-cc-mini-text">
+              Keep your lesson setups ready whenever you revisit the topic with another group or class.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  
 
 
 </body>
