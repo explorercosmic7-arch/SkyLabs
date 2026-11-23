@@ -338,6 +338,47 @@
       font-size: 40px;
       opacity: 0.35;
     }
+    .mate-tile.lab-on {
+      background: linear-gradient(160deg, #12141a 0%, #1a2030 100%);
+      min-height: 150px;
+    }
+    .mate-tile .mate-avatar {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1a73e8;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgba(255,255,255,.85);
+      z-index: 2;
+    }
+    .mate-tile .mate-lab-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 28px 12px 8px;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .mate-tile .mate-chip {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: #202124;
+    }
+    .mate-tile .mate-chip.c-score { background: #8ab4f8; }
+    .mate-tile .mate-chip.c-lab { background: #f9ab00; }
+    .mate-tile .mate-chip.c-live { background: #81c995; }
+    .mate-tile .mate-chip.c-off { background: #9aa0a6; color: #fff; }
     #labFrame { position:absolute; inset:0; width:100%; height:100%; border:0; background:#000; display:none; z-index:15; }
     #labFrame.show { display:block; }
     #labFrame.frozen { pointer-events:none; filter:grayscale(.25) brightness(.82); }
@@ -1932,11 +1973,29 @@ function renderMates(students, state) {
     $("classStrip").innerHTML = "<p class='lead'>No classmates yet</p>";
     return;
   }
+  const labOpen = !!(state && state.lab && state.lab.labUrl);
+  const labName = (state && state.lab && (state.lab.labName || state.lab.labUrl)) || "Lab";
   $("classStrip").innerHTML = list.map((s) => {
     const you = s.sid === sid;
     const online = !!s.online;
     const copilot = !!(state.lab && state.lab.copilots && state.lab.copilots[s.sid]);
     const team = (state.lab && state.lab.teams && state.lab.teams[s.sid]) || "";
+    const letter = String(s.nick || "?").trim().charAt(0).toUpperCase() || "?";
+    if (labOpen) {
+      // Lab-open: richer classmate card (not blank TV)
+      return "<div class='mate-tile lab-on" + (you ? " you" : "") + (online ? " live" : "") + (copilot ? " copilot" : "") + "'>" +
+        "<span class='dot'></span>" +
+        "<div class='mate-avatar'>" + esc(letter) + "</div>" +
+        (team ? "<span class='team-badge'>" + esc(team) + "</span>" : "") +
+        (copilot ? "<span class='role'>Co-Pilot</span>" : "") +
+        "<div class='mate-lab-row'>" +
+          "<span class='mate-chip c-score'>" + (Number(s.score) || 0) + " pts</span>" +
+          "<span class='mate-chip c-lab'>" + esc(String(labName).slice(0, 14)) + "</span>" +
+          (online ? "<span class='mate-chip c-live'>In lab</span>" : "<span class='mate-chip c-off'>Away</span>") +
+        "</div>" +
+        "<div class='name'>" + esc(s.nick) + (you ? " · you" : "") + "</div>" +
+        "</div>";
+    }
     return "<div class='mate-tile" + (you ? " you" : "") + (online ? " live" : "") + (copilot ? " copilot" : "") + "'>" +
       "<span class='dot'></span>" +
       (team ? "<span class='team-badge'>" + esc(team) + "</span>" : "") +
