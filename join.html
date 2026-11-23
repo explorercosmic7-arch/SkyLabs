@@ -512,21 +512,16 @@
     #confettiBox { position:fixed; inset:0; pointer-events:none; z-index:90; overflow:hidden; display:none; }
     #confettiBox.on { display:block; }
     .confetti-piece {
-      position:absolute; top:-20px;
+      position:absolute; top:-24px;
+      border-radius:1px;
       animation: confettiFall linear forwards;
       will-change: transform, opacity;
-    }
-    .confetti-piece.rect { border-radius:2px; }
-    .confetti-piece.circ { border-radius:50%; }
-    .confetti-piece.tri {
-      width:0 !important; height:0 !important;
-      border-left:6px solid transparent; border-right:6px solid transparent;
-      border-bottom:12px solid currentColor; background:transparent !important;
+      opacity: 0.95;
     }
     @keyframes confettiFall {
       0% { transform: translate3d(0,0,0) rotate(0deg) scale(1); opacity:1; }
-      25% { opacity:1; }
-      100% { transform: translate3d(var(--dx, 0px), 110vh, 0) rotate(720deg) scale(.7); opacity:0; }
+      70% { opacity:1; }
+      100% { transform: translate3d(var(--dx, 0px), 110vh, 0) rotate(var(--spin, 540deg)) scale(0.85); opacity:0; }
     }
   
     body.lab-focus header,
@@ -1786,31 +1781,29 @@ function showAnnounce(text) {
 }
 function fireConfetti() {
   const box = $("confettiBox");
+  if (!box) return;
   box.innerHTML = "";
   box.classList.add("on");
-  const colors = ["#1a73e8","#34a853","#fbbc04","#ea4335","#9334e6","#00e5ff","#ff6b6b","#ffd93d","#00c853","#ff4081"];
-  const shapes = ["rect", "circ", "tri"];
-  for (let i = 0; i < 120; i++) {
+  // Clean paper-strip confetti (Google Classroom style) — no triangles/circles
+  const colors = ["#1a73e8", "#34a853", "#fbbc04", "#ea4335", "#9334e6", "#4285f4", "#f9ab00", "#0f9d58"];
+  const n = 90;
+  for (let i = 0; i < n; i++) {
     const p = document.createElement("div");
-    const shape = shapes[i % 3];
-    p.className = "confetti-piece " + shape;
+    p.className = "confetti-piece";
     const color = colors[i % colors.length];
+    const w = 5 + Math.floor(Math.random() * 5);
+    const h = 8 + Math.floor(Math.random() * 10);
+    p.style.background = color;
+    p.style.width = w + "px";
+    p.style.height = h + "px";
     p.style.left = (Math.random() * 100) + "%";
-    p.style.setProperty("--dx", ((Math.random() - 0.5) * 160).toFixed(1) + "px");
-    p.style.animationDuration = (1.8 + Math.random() * 2.4) + "s";
-    p.style.animationDelay = (Math.random() * 0.55) + "s";
-    if (shape === "tri") {
-      p.style.color = color;
-      p.style.borderBottomColor = color;
-    } else {
-      p.style.background = color;
-      const size = 6 + Math.floor(Math.random() * 8);
-      p.style.width = size + "px";
-      p.style.height = (shape === "circ" ? size : size + 4) + "px";
-    }
+    p.style.setProperty("--dx", ((Math.random() - 0.5) * 220).toFixed(1) + "px");
+    p.style.setProperty("--spin", (360 + Math.random() * 720).toFixed(0) + "deg");
+    p.style.animationDuration = (2.2 + Math.random() * 2.6) + "s";
+    p.style.animationDelay = (Math.random() * 0.45) + "s";
     box.appendChild(p);
   }
-  setTimeout(() => { box.classList.remove("on"); box.innerHTML = ""; }, 4800);
+  setTimeout(() => { box.classList.remove("on"); box.innerHTML = ""; }, 5200);
 }
 async function fileToData(file, maxW, quality) {
   if (!file) return "";
@@ -2009,7 +2002,12 @@ function drawQuizSingle(quiz) {
       $("qTimer").style.display = "none";
     }
   }
-  $("qTitle").textContent = quiz.question;
+  // Clean noisy LaTeX so students see real fractions, not \displaystyle
+  const cleanQ = String(quiz.question || "")
+    .replace(/\\displaystyle\s*/g, "")
+    .replace(/\\textstyle\s*/g, "")
+    .replace(/\*\*([^*]+)\*\*/g, "$1");
+  $("qTitle").textContent = cleanQ;
   try {
     if (window.renderMathInElement) {
       renderMathInElement($("qTitle"), { delimiters: [
@@ -2038,7 +2036,11 @@ function drawQuizSingle(quiz) {
   (quiz.options || []).forEach((opt, i) => {
     const b = document.createElement("button");
     b.className = "opt";
-        b.textContent = opt;
+    const cleanOpt = String(opt || "")
+      .replace(/\\displaystyle\s*/g, "")
+      .replace(/\\textstyle\s*/g, "")
+      .replace(/\*\*([^*]+)\*\*/g, "$1");
+    b.textContent = cleanOpt;
     try {
       if (window.renderMathInElement) {
         renderMathInElement(b, {
@@ -2050,13 +2052,13 @@ function drawQuizSingle(quiz) {
           ],
           throwOnError: false
         });
-      } else if (window.katex && /\$|\\\\/.test(opt)) {
-        const tex = String(opt).replace(/^\$|\$$/g, "").replace(/^\\\(|\\\)$/g, "");
+      } else if (window.katex && /\$|\\\\/.test(cleanOpt)) {
+        const tex = String(cleanOpt).replace(/^\$|\$$/g, "").replace(/^\\\(|\\\)$/g, "");
         b.innerHTML = "";
         katex.render(tex, b, { throwOnError: false, displayMode: false });
       }
-    } catch (e) { b.textContent = opt; }
-b.disabled = locked || (timerLeft === 0 && Number(quiz.timer) > 0);
+    } catch (e) { b.textContent = cleanOpt; }
+    b.disabled = locked || (timerLeft === 0 && Number(quiz.timer) > 0);
     b.onclick = () => answer(i, key, quiz);
     $("qOpts").appendChild(b);
   });
@@ -3543,12 +3545,15 @@ if ($("aiMicBtn")) $("aiMicBtn").onclick = () => {
   }
 };
 function formatAiReply(text) {
+  const cleaned = String(text || "")
+    .replace(/\\displaystyle\s*/g, "")
+    .replace(/\\textstyle\s*/g, "");
   try {
     if (typeof marked !== "undefined" && marked.parse) {
-      return marked.parse(String(text || ""), { breaks: true, gfm: true });
+      return marked.parse(cleaned, { breaks: true, gfm: true });
     }
   } catch (e) {}
-  return esc(text).replace(/\n/g, "<br>");
+  return esc(cleaned).replace(/\n/g, "<br>");
 }
 async function aiSend() {
   if (!isCopilot) return;
@@ -3575,12 +3580,12 @@ async function aiSend() {
         messages: [
           {
             role: "system",
-            content: "You are Glamber, the Co-Pilot AI for SkyLabs students promoted as peer helpers. Rules: (1) Clean Markdown. (2) Math with $inline$ or $$display$$. (3) Socratic hints — one next step, never full exam answers. (4) Warm and precise. Class pin: " + (roomId || "none") + ". Student nick: " + (nick || "") + "."
+            content: "You are Glamber — Co-Pilot helper for SkyLabs classmates. Be short, warm, and exact.\nRules:\n1) Clean Markdown. One tight idea at a time.\n2) Math: use $...$ (e.g. $\\frac{3}{8}$). Never leave raw \\displaystyle or unreadable LaTeX.\n3) Socratic: give the next step only — never the full exam answer.\n4) No filler, no long lectures.\nClass pin: " + (roomId || "none") + ". Student: " + (nick || "") + "."
           },
           ...aiHistory.slice(-8)
         ],
-        temperature: 0.6,
-        max_tokens: 500
+        temperature: 0.45,
+        max_tokens: 420
       })
     });
     const data = await res.json();
