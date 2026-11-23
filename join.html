@@ -1587,7 +1587,7 @@ let classStudents = [];
 let helpTarget = "";
 let peerThreads = {};
 let aiHistory = [];
-let tele = { alt: 0, vel: 0, thrust: 0, twr: null, heat: null };
+let tele = { alt: 0, vel: 0, thrust: 0, twr: null, heat: null, g: null, status: "", labId: "", labName: "", outcome: "", reason: "" };
 let teleTimer = null;
 let pulseKey = "";
 let ghostPending = null;
@@ -3390,7 +3390,30 @@ window.addEventListener("message", (ev) => {
     if (typeof data.thrust === "number") tele.thrust = data.thrust;
     if (typeof data.twr === "number") tele.twr = data.twr;
     if (typeof data.heat === "number") tele.heat = data.heat;
+    if (typeof data.g === "number") tele.g = data.g;
+    if (data.status) tele.status = data.status;
+    if (data.labId) tele.labId = data.labId;
+    if (data.labName) tele.labName = data.labName;
+    if (data.outcome) tele.outcome = data.outcome;
+    if (data.reason) tele.reason = data.reason;
     paintTele();
+    // Push rich telemetry to teacher (per-student live pills)
+    if (joined) {
+      wsSend({
+        type: "telemetry",
+        alt: tele.alt,
+        vel: tele.vel,
+        thrust: tele.thrust,
+        twr: tele.twr,
+        heat: tele.heat,
+        g: tele.g,
+        status: tele.status || "",
+        labId: tele.labId || "",
+        labName: tele.labName || "",
+        outcome: tele.outcome || "",
+        reason: tele.reason || ""
+      });
+    }
   }
   if (data.type === "NH_BACK_TO_CLASS") {
     hideOverlays();
