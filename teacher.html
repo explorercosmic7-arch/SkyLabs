@@ -417,32 +417,45 @@
       60% { transform: scale(1.08) rotate(0deg); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    /* Lab-open: 6 metric boxes fill the tile body */
-    .tile.lab-mode .screen { background: #12141a; }
+    /* Lab-open: edge-to-edge 6 cells (Google Classroom style) */
+    .tile.lab-mode .screen { background: transparent; }
     .tile.lab-mode .screen .wait { display: none; }
+    .tile.lab-mode .tile-avatar { display: none; }
     .lab-metrics {
       position: absolute;
-      left: 10px; right: 10px;
-      top: 44px;
-      bottom: 52px;
+      left: 0; right: 0; top: 0;
+      bottom: 28px; /* room for lab name stripe */
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      gap: 8px;
+      gap: 0;
       z-index: 4;
       pointer-events: none;
+      border: 1px solid #202124;
+      box-sizing: border-box;
+    }
+    body.dark .lab-metrics {
+      border-color: rgba(255,255,255,.55);
     }
     .lab-box {
-      border-radius: 12px;
+      border-radius: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
       padding: 6px 4px;
-      border: 1.5px solid rgba(255,255,255,.14);
       min-height: 0;
+      border: none;
+      border-right: 1px solid #202124;
+      border-bottom: 1px solid #202124;
     }
+    body.dark .lab-box {
+      border-right-color: rgba(255,255,255,.35);
+      border-bottom-color: rgba(255,255,255,.35);
+    }
+    .lab-box:nth-child(3n) { border-right: none; }
+    .lab-box:nth-child(n+4) { border-bottom: none; }
     .lab-box .lb-val {
       font-size: 15px;
       font-weight: 600;
@@ -456,43 +469,26 @@
       font-weight: 500;
       letter-spacing: 0.3px;
       text-transform: uppercase;
-      opacity: 0.9;
-      color: rgba(255,255,255,.88);
+      opacity: 0.92;
+      color: rgba(255,255,255,.9);
     }
-    .lab-box.b-alt { background: #1a3a6e; border-color: #8ab4f8; }
-    .lab-box.b-vel { background: #0d3b24; border-color: #81c995; }
-    .lab-box.b-g { background: #3c2a00; border-color: #f9ab00; }
-    .lab-box.b-heat { background: #4a1800; border-color: #e8710a; }
-    .lab-box.b-phase { background: #2a1a4a; border-color: #c58af9; }
-    .lab-box.b-out { background: #202124; border-color: #9aa0a6; }
-    .lab-box.b-out.ok { background: #0d3b24; border-color: #0f9d58; }
-    .lab-box.b-out.bad { background: #3c1010; border-color: #d93025; }
-    .tile-topbar {
-      position: absolute;
-      left: 0; right: 0; top: 0;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px 8px;
-      background: linear-gradient(rgba(0,0,0,.72), transparent);
-      pointer-events: none;
-    }
-    .tile-topbar .name-text {
-      flex: 1;
-      min-width: 0;
-      font-size: 13px;
-      font-weight: 500;
-      color: #fff;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
+    .lab-box.b-alt { background: #1a3a6e; }
+    .lab-box.b-vel { background: #0d3b24; }
+    .lab-box.b-g { background: #3c2a00; }
+    .lab-box.b-heat { background: #4a1800; }
+    .lab-box.b-phase { background: #2a1a4a; }
+    .lab-box.b-out { background: #202124; }
+    .lab-box.b-out.ok { background: #0d3b24; }
+    .lab-box.b-out.bad { background: #3c1010; }
     .tile-lab-stripe {
       position: absolute;
       left: 0; right: 0; bottom: 48px;
+      height: 28px;
       z-index: 5;
-      padding: 5px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: 0.2px;
@@ -503,10 +499,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    .tile-lab-stripe.lab-reentry { background: rgba(232,113,10,.92); }
-    .tile-lab-stripe.lab-twr { background: rgba(26,115,232,.9); }
-    .tile-lab-stripe.lab-deltav { background: rgba(147,52,230,.9); }
-    .tile-lab-stripe.lab-default { background: rgba(60,64,67,.9); }
+    .tile-lab-stripe.lab-reentry { background: #e8710a; }
+    .tile-lab-stripe.lab-twr { background: #1a73e8; }
+    .tile-lab-stripe.lab-deltav { background: #9334e6; }
+    .tile-lab-stripe.lab-default { background: #3c4043; }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
@@ -3837,9 +3833,7 @@ function renderStage(force) {
       const badgeTitle = outcome === "fail" ? "Fail" : (outcome === "pass" ? "Pass" : "");
       const badgeSub = outcome === "fail" ? esc(String((t && t.reason) || "Mission failed").slice(0, 40)) : (outcome === "pass" ? esc(s.nick) + " · clear" : "");
       return "<div class='tile" + (labOn ? " lab-mode" : "") + (s.sid === spotlight ? " pinned" : "") + (lost ? " focus-lost" : "") + (copilots[s.sid] ? " copilot" : "") + missionCls + "' data-sid='" + esc(s.sid) + "' data-nick='" + esc(s.nick) + "'>" +
-        (labOn
-          ? "<div class='tile-topbar'><span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + "</span><div class='tile-avatar' style='position:static;width:28px;height:28px;font-size:12px;flex-shrink:0'>" + esc(avatarLetter(s.nick)) + "</div></div>"
-          : "<div class='tile-avatar'>" + esc(avatarLetter(s.nick)) + "</div>") +
+        (labOn ? "" : "<div class='tile-avatar'>" + esc(avatarLetter(s.nick)) + "</div>") +
         "<div class='screen' data-screen='" + esc(s.sid) + "'>" + (labOn ? telemetryHtml(s.sid) : "") + screenInner +
         (outcome ? "<div class='tile-mission-badge'><div class='tick'><span class='material-symbols-outlined'>" + badgeIcon + "</span></div><div class='mb-title'>" + badgeTitle + "</div><div class='mb-sub'>" + badgeSub + "</div></div>" : "") +
         "</div>" +
