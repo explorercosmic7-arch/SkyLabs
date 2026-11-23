@@ -2250,10 +2250,177 @@
 
     <hr>
 
-    
-    
+    <!-- ============================================================
+       SECTION 10: CURRENT STATUS & NEXT STEPS
+       ============================================================ -->
+  <style>
+    .sl-cc-status-card {
+      padding: 36px 32px;
+      border-radius: 26px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 46%),
+        rgba(13, 17, 25, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 28px;
+    }
 
+    .sl-cc-status-body {
+      max-width: 720px;
+    }
 
+    .sl-cc-status-note {
+      margin-top: 14px;
+      font-family: 'Google Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.55;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    .sl-cc-status-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .sl-cc-status-card {
+        padding: 24px 20px;
+        border-radius: 20px;
+      }
+      .sl-cc-status-actions {
+        width: 100%;
+      }
+      .sl-cc-status-actions .sl-hero-btn {
+        flex: 1 1 130px;
+      }
+    }
+  </style>
+
+  <section class="sl-cc-section is-alt" id="current-status" aria-labelledby="slStatusTitle">
+    <div class="sl-cc-container">
+      <div class="sl-cc-status-card">
+        <div class="sl-cc-status-body">
+          <span class="sl-cc-eyebrow">10 · Current Status</span>
+          <h2 class="sl-cc-heading" id="slStatusTitle" style="margin-bottom: 12px;">Active and evolving in live sessions</h2>
+          <p class="sl-cc-lead">
+            Cloud Class brings together live room connection, interactive labs, lab building, quizzes, polls, teams, co-pilots, focus/pulse signals, and direct help tools for teachers and students.
+          </p>
+          <p class="sl-cc-status-note">
+            Features continue to be refined around real classroom sessions—jump into a class to try the current flow or explore the labs first.
+          </p>
+        </div>
+
+        <div class="sl-cc-status-actions">
+          <a href="join.html" class="sl-hero-btn sl-hero-btn-primary">Join Cloud Class</a>
+          <a href="Labs.html" class="sl-hero-btn sl-hero-btn-secondary">Explore Labs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <style>
+    .sl-footer {
+      width: 100%;
+      padding: 40px 36px;
+      background-color: #05070a;
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--sl-text-muted);
+    }
+
+    .sl-footer-inner {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px 32px;
+    }
+
+    .sl-footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sl-footer-name {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    .sl-footer-copy {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.62);
+    }
+
+    .sl-footer-links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .sl-footer-links a {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      color: var(--sl-text-muted);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .sl-footer-links a:hover {
+      color: #ffffff;
+    }
+
+    @media (max-width: 768px) {
+      .sl-footer {
+        padding: 32px 20px;
+      }
+      .sl-footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .sl-footer-links {
+        gap: 14px 20px;
+      }
+    }
+  </style>
+
+  <footer class="sl-footer" aria-label="Footer">
+    <div class="sl-footer-inner">
+      <div class="sl-footer-brand">
+        <span class="sl-footer-name">SkyLabs · Cloud Class</span>
+        <span class="sl-footer-copy">Interactive space labs and live classroom tools.</span>
+      </div>
+
+      <ul class="sl-footer-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="Labs.html">Labs</a></li>
+        <li><a href="Docs.html">Mission Guide</a></li>
+        <li><a href="Safe.html">Safety &amp; Rules</a></li>
+        <li><a href="Contact.html">Contact</a></li>
+        <li><a href="join.html">Join Now</a></li>
+      </ul>
+    </div>
+  </footer>
+    
 </body>
 </html>
+
 
