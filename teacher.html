@@ -291,12 +291,154 @@
     /* Google Meet–style participant tiles */
     .tile {
       position:relative; background:#202124; color:#fff; border-radius:16px; overflow:hidden;
-      min-height:180px; display:flex; flex-direction:column;
+      min-height:220px; display:flex; flex-direction:column;
       border:1px solid rgba(255,255,255,.10); box-shadow: 0 4px 20px rgba(0,0,0,.18);
+      transition: background-color 0.85s ease, box-shadow 0.85s ease, outline-color 0.4s ease;
     }
     .tile.focus-lost { outline:3px solid var(--err); outline-offset: -1px; }
     .tile.copilot { outline:3px solid #9334e6; outline-offset: -1px; }
     .tile.pinned { outline:3px solid #1a73e8; outline-offset: -1px; }
+    .tile.mission-pass {
+      background: linear-gradient(160deg, #0d3b24 0%, #137333 55%, #0f9d58 100%);
+      box-shadow: 0 0 0 2px rgba(15,157,88,.55), 0 8px 28px rgba(15,157,88,.25);
+    }
+    .tile.mission-fail {
+      background: linear-gradient(160deg, #3c1010 0%, #a50e0e 55%, #d93025 100%);
+      box-shadow: 0 0 0 2px rgba(217,48,37,.45), 0 8px 28px rgba(217,48,37,.22);
+    }
+    .tile-avatar {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 5;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #1a73e8;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 500;
+      display: grid;
+      place-items: center;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,.35);
+      pointer-events: none;
+      letter-spacing: 0;
+    }
+    body.dark .tile-avatar { border-color: #202124; }
+    .tile-lab-pill {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      z-index: 5;
+      max-width: calc(100% - 110px);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .tile-lab-pill.lab-reentry { background: rgba(232,113,10,.92); color: #fff; }
+    .tile-lab-pill.lab-twr { background: rgba(26,115,232,.9); color: #fff; }
+    .tile-lab-pill.lab-deltav { background: rgba(147,52,230,.9); color: #fff; }
+    .tile-lab-pill.lab-default { background: rgba(60,64,67,.85); color: #e8eaed; }
+    .tile-status-pill {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      color: #e8eaed;
+      max-width: 120px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .tile-status-pill.is-pass { background: rgba(15,157,88,.9); color: #fff; }
+    .tile-status-pill.is-fail { background: rgba(217,48,37,.9); color: #fff; }
+    .tile-status-pill.is-heat { background: rgba(232,113,10,.9); color: #fff; }
+    .tile-mission-badge {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      pointer-events: none;
+      background: rgba(0,0,0,.18);
+      opacity: 0;
+      transition: opacity 0.7s ease;
+    }
+    .tile.mission-pass .tile-mission-badge,
+    .tile.mission-fail .tile-mission-badge {
+      display: flex;
+      opacity: 1;
+    }
+    .tile-mission-badge .tick {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.95);
+      color: #0f9d58;
+      font-size: 30px;
+      transform: scale(0.4);
+      animation: missionTickIn 0.65s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .tile.mission-fail .tile-mission-badge .tick { color: #d93025; }
+    .tile-mission-badge .mb-title {
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,.4);
+    }
+    .tile-mission-badge .mb-sub {
+      font-size: 12px;
+      color: rgba(255,255,255,.9);
+      max-width: 90%;
+      text-align: center;
+    }
+    @keyframes missionTickIn {
+      0% { transform: scale(0.3) rotate(-20deg); opacity: 0; }
+      60% { transform: scale(1.08) rotate(0deg); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .telemetry {
+      position:absolute; top:52px; left:12px; right:12px; display:flex; gap:8px; flex-wrap:wrap; z-index:4;
+      pointer-events: none;
+    }
+    .telemetry .t-metric {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.62);
+      border: 1px solid rgba(255,255,255,.14);
+      color: #e8eaed;
+      font-variant-numeric: tabular-nums;
+    }
+    .telemetry .t-metric .material-symbols-outlined {
+      font-size: 15px;
+      font-weight: 300;
+    }
+    .telemetry .t-metric.m-g { border-color: rgba(138,180,248,.45); }
+    .telemetry .t-metric.m-g .material-symbols-outlined { color: #8ab4f8; }
+    .telemetry .t-metric.m-vel { border-color: rgba(129,201,149,.45); }
+    .telemetry .t-metric.m-vel .material-symbols-outlined { color: #81c995; }
+    .telemetry .t-metric.m-heat { border-color: rgba(242,139,130,.5); }
+    .telemetry .t-metric.m-heat .material-symbols-outlined { color: #f28b82; }
+    .telemetry .t-val { transition: opacity 0.2s ease; }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
@@ -306,14 +448,6 @@
     .screen img { width:100%; height:100%; object-fit:cover; display:block; }
     .screen .wait { text-align:center; color:#9aa0a6; font-size:16px; padding:20px; }
     .screen .wait .material-symbols-outlined { display:block; font-size:48px; margin:0 auto 10px; color:#8ab4f8; }
-    .telemetry {
-      position:absolute; top:12px; left:12px; right:12px; display:flex; gap:8px; flex-wrap:wrap; z-index:2;
-      pointer-events: none;
-    }
-    .telemetry span {
-      font-size:12px; font-weight:400; padding:5px 10px; border-radius:999px; background:rgba(0,0,0,.65);
-      border:1px solid rgba(255,255,255,.14);
-    }
     /* Caption lives inside .tile-foot */
     .caption {
       display:flex; align-items:center; gap:8px; flex-wrap:nowrap;
@@ -345,11 +479,11 @@
       left: 0; right: 0; bottom: 0;
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 8px 10px 12px;
+      gap: 8px;
+      padding: 10px 10px 12px 12px;
       background: linear-gradient(transparent, rgba(0,0,0,.78));
-      z-index: 3;
-      min-height: 48px;
+      z-index: 7;
+      min-height: 52px;
       pointer-events: none;
       }
 
@@ -2264,7 +2398,7 @@
       #stage { padding: 10px; gap: 12px; top: 60px; bottom: 76px; }
       /* Much taller student cards on phone */
       .tile {
-        min-height: 220px !important;
+        min-height: 260px !important;
         border-radius: 14px;
       }
       .tile-foot { min-height: 44px; padding: 8px 8px 10px 12px; }
@@ -3140,13 +3274,13 @@ function renderNotes() {
 
 function layout(n) {
   const w = window.innerWidth || 1200;
-  // Mobile + tablet: always single column (PC keeps multi-col)
+  // Mobile + tablet: 1 column; desktop pairs as 2×2 then grows
   if (w <= 1024) return "1fr";
   if (n <= 1) return "1fr";
   if (n === 2) return "1fr 1fr";
   if (n <= 4) return "1fr 1fr";
   if (n <= 6) return "1fr 1fr 1fr";
-  return "1fr 1fr 1fr 1fr";
+  return "1fr 1fr 1fr";
 }
 
 function renderBoard() {
@@ -3319,17 +3453,72 @@ function renderReports() {
   }).join("");
 }
 
+function labPillClass(labId) {
+  const id = String(labId || "").toLowerCase();
+  if (id.indexOf("reentry") >= 0 || id.indexOf("heat") >= 0) return "lab-reentry";
+  if (id.indexOf("twr") >= 0) return "lab-twr";
+  if (id.indexOf("delta") >= 0 || id.indexOf("dv") >= 0) return "lab-deltav";
+  return "lab-default";
+}
+
+function labPillLabel(t) {
+  if (!t) return "";
+  if (t.labName) return String(t.labName).slice(0, 18);
+  const id = String(t.labId || "").toLowerCase();
+  if (id.indexOf("reentry") >= 0) return "Reentry";
+  if (id.indexOf("twr") >= 0) return "TWR Lab";
+  if (id.indexOf("delta") >= 0) return "Delta-v";
+  return t.labId ? String(t.labId).slice(0, 18) : "";
+}
+
+function formatVel(v) {
+  const n = Number(v) || 0;
+  if (n >= 1000) return (n / 1000).toFixed(2) + " km/s";
+  if (n > 0) return Math.round(n) + " m/s";
+  return "0";
+}
+
+function formatHeat(h) {
+  const n = Number(h);
+  if (n == null || isNaN(n)) return "—";
+  return n.toFixed(1) + " MW";
+}
+
+function formatG(g) {
+  const n = Number(g);
+  if (n == null || isNaN(n)) return "—";
+  return n.toFixed(1) + " g";
+}
+
 function telemetryHtml(sid) {
   const t = telemetryMap[sid] || (window._tele && window._tele[sid]) || null;
   if (!t) return "";
-  const parts = [];
-  if (t.status) parts.push("<span>" + esc(String(t.status).slice(0, 24)) + "</span>");
-  if (t.alt != null && t.alt !== 0) parts.push("<span>" + Math.round(Number(t.alt)) + "</span>");
-  if (t.vel != null && t.vel !== 0) parts.push("<span>" + Math.round(Number(t.vel)) + "</span>");
-  if (t.thrust != null) parts.push("<span>" + Math.round(Number(t.thrust)) + "%</span>");
-  if (t.labId) parts.push("<span>" + esc(String(t.labId).slice(0, 18)) + "</span>");
-  if (!parts.length) return "";
-  return "<div class='telemetry'>" + parts.join("") + "</div>";
+  // Three clean metric pills: G · Velocity · Heat flux
+  const g = formatG(t.g);
+  const vel = formatVel(t.vel);
+  const heat = formatHeat(t.heat);
+  let html = "<div class='telemetry' data-sid='" + esc(sid) + "'>";
+  html += "<span class='t-metric m-g'><span class='material-symbols-outlined'>speed</span><span class='t-val' data-k='g'>" + esc(g) + "</span></span>";
+  html += "<span class='t-metric m-vel'><span class='material-symbols-outlined'>rocket_launch</span><span class='t-val' data-k='vel'>" + esc(vel) + "</span></span>";
+  html += "<span class='t-metric m-heat'><span class='material-symbols-outlined'>local_fire_department</span><span class='t-val' data-k='heat'>" + esc(heat) + "</span></span>";
+  html += "</div>";
+  return html;
+}
+
+function statusPillHtml(t) {
+  if (!t || !t.status) return "";
+  const st = String(t.status).toUpperCase();
+  let cls = "tile-status-pill";
+  if (st === "SUCCESS" || st === "TOUCHDOWN" || st === "PARACHUTE" || t.outcome === "pass") cls += " is-pass";
+  else if (st === "FAILED" || t.outcome === "fail") cls += " is-fail";
+  else if (st === "HEAT" || st === "ENTRY") cls += " is-heat";
+  const label = st === "FAILED" && t.reason ? String(t.reason).slice(0, 18) : st.slice(0, 14);
+  return "<span class='" + cls + "'>" + esc(label) + "</span>";
+}
+
+function avatarLetter(nick) {
+  const n = String(nick || "?").trim();
+  return (n.charAt(0) || "?").toUpperCase();
 }
 
 function closeAllTileMenus(except) {
@@ -3491,15 +3680,28 @@ function renderStage(force) {
       const team = teams[s.sid] ? "<span class='team-tag'>" + teams[s.sid] + "</span>" : "";
       const role = copilots[s.sid] ? "<span class='role-tag'>Co-Pilot</span>" : "";
       const hasLive = !!(window._uplinkStreams && window._uplinkStreams[s.sid]);
+      const t = telemetryMap[s.sid] || (window._tele && window._tele[s.sid]) || null;
+      const outcome = t && t.outcome ? String(t.outcome) : "";
+      const missionCls = outcome === "pass" ? " mission-pass" : (outcome === "fail" ? " mission-fail" : "");
+      const labLabel = labPillLabel(t);
+      const labCls = labPillClass(t && t.labId);
       const screenInner = hasLive
         ? ""
         : (s.frame
           ? "<img alt='' src='" + s.frame + "' />"
           : "<div class='wait'><span class='material-symbols-outlined'>desktop_windows</span>In class<br>" + esc(s.nick) + "</div>");
-      return "<div class='tile" + (s.sid === spotlight ? " pinned" : "") + (lost ? " focus-lost" : "") + (copilots[s.sid] ? " copilot" : "") + "' data-sid='" + esc(s.sid) + "' data-nick='" + esc(s.nick) + "'>" +
-        "<div class='screen' data-screen='" + esc(s.sid) + "'>" + telemetryHtml(s.sid) + screenInner + "</div>" +
+      const badgeIcon = outcome === "fail" ? "close" : "check";
+      const badgeTitle = outcome === "fail" ? "Fail" : (outcome === "pass" ? "Pass" : "");
+      const badgeSub = outcome === "fail" ? esc(String((t && t.reason) || "Mission failed").slice(0, 40)) : (outcome === "pass" ? esc(s.nick) + " · clear" : "");
+      return "<div class='tile" + (s.sid === spotlight ? " pinned" : "") + (lost ? " focus-lost" : "") + (copilots[s.sid] ? " copilot" : "") + missionCls + "' data-sid='" + esc(s.sid) + "' data-nick='" + esc(s.nick) + "'>" +
+        "<div class='tile-avatar'>" + esc(avatarLetter(s.nick)) + "</div>" +
+        (labLabel ? "<div class='tile-lab-pill " + labCls + "'>" + esc(labLabel) + "</div>" : "") +
+        "<div class='screen' data-screen='" + esc(s.sid) + "'>" + telemetryHtml(s.sid) + screenInner +
+        (outcome ? "<div class='tile-mission-badge'><div class='tick'><span class='material-symbols-outlined'>" + badgeIcon + "</span></div><div class='mb-title'>" + badgeTitle + "</div><div class='mb-sub'>" + badgeSub + "</div></div>" : "") +
+        "</div>" +
         "<div class='tile-foot'>" +
         "<div class='caption'><span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + (lost ? " · left tab" : "") + "</span></div>" +
+        statusPillHtml(t) +
         "<button type='button' class='tile-menu-btn" + (unreadDmBySid[s.sid] ? " has-unread" : "") + "' title='Student tools' aria-label='Menu'><span class='material-symbols-outlined'>more_vert</span></button>" +
         "</div>" +
         "<div class='tile-menu' role='menu'>" +
@@ -3532,33 +3734,82 @@ function renderStage(force) {
     });
     bindTileActions(stage);
   } else {
-    // Lightweight update: captions, telemetry, badges only — never touch video
+    // Lightweight update: captions, telemetry, status, mission skin — never touch video
     list.forEach((s) => {
       const tile = stage.querySelector('.tile[data-sid="' + s.sid + '"]');
       if (!tile) return;
       const lost = focusLock && focusMap[s.sid] === false;
+      const t = telemetryMap[s.sid] || (window._tele && window._tele[s.sid]) || null;
+      const outcome = t && t.outcome ? String(t.outcome) : "";
       tile.classList.toggle("focus-lost", !!lost);
       tile.classList.toggle("pinned", s.sid === spotlight);
       tile.classList.toggle("copilot", !!copilots[s.sid]);
+      tile.classList.toggle("mission-pass", outcome === "pass");
+      tile.classList.toggle("mission-fail", outcome === "fail");
       const team = teams[s.sid] ? "<span class='team-tag'>" + teams[s.sid] + "</span>" : "";
       const role = copilots[s.sid] ? "<span class='role-tag'>Co-Pilot</span>" : "";
       const cap = tile.querySelector(".caption");
       if (cap) {
         cap.innerHTML = "<span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + (lost ? " · left tab" : "") + "</span>";
       }
+      // Lab topic pill
+      let labPill = tile.querySelector(".tile-lab-pill");
+      const labLabel = labPillLabel(t);
+      if (labLabel) {
+        if (!labPill) {
+          labPill = document.createElement("div");
+          labPill.className = "tile-lab-pill";
+          tile.appendChild(labPill);
+        }
+        labPill.className = "tile-lab-pill " + labPillClass(t && t.labId);
+        labPill.textContent = labLabel;
+      } else if (labPill) labPill.remove();
+      // Status pill beside menu
+      let stPill = tile.querySelector(".tile-status-pill");
+      const stHtml = statusPillHtml(t);
+      if (stHtml) {
+        if (!stPill) {
+          const foot = tile.querySelector(".tile-foot");
+          const menuBtn = tile.querySelector(".tile-menu-btn");
+          if (foot && menuBtn) {
+            menuBtn.insertAdjacentHTML("beforebegin", stHtml);
+          }
+        } else {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = stHtml;
+          const neu = tmp.firstChild;
+          if (neu) stPill.replaceWith(neu);
+        }
+      } else if (stPill) stPill.remove();
+      // Metric pills
       const screen = tile.querySelector(".screen");
       if (screen) {
         let tele = screen.querySelector(".telemetry");
         const html = telemetryHtml(s.sid);
         if (html) {
-          if (!tele) {
-            screen.insertAdjacentHTML("afterbegin", html);
+          if (!tele) screen.insertAdjacentHTML("afterbegin", html);
+          else tele.outerHTML = html;
+        } else if (tele) tele.remove();
+        // Mission overlay badge
+        let badge = screen.querySelector(".tile-mission-badge");
+        if (outcome === "pass" || outcome === "fail") {
+          const icon = outcome === "fail" ? "close" : "check";
+          const title = outcome === "fail" ? "Fail" : "Pass";
+          const sub = outcome === "fail"
+            ? esc(String((t && t.reason) || "Mission failed").slice(0, 40))
+            : esc(s.nick) + " · clear";
+          if (!badge) {
+            screen.insertAdjacentHTML("beforeend",
+              "<div class='tile-mission-badge'><div class='tick'><span class='material-symbols-outlined'>" + icon + "</span></div><div class='mb-title'>" + title + "</div><div class='mb-sub'>" + sub + "</div></div>");
           } else {
-            tele.outerHTML = html;
+            const ti = badge.querySelector(".mb-title");
+            const su = badge.querySelector(".mb-sub");
+            const ic = badge.querySelector(".material-symbols-outlined");
+            if (ti) ti.textContent = title;
+            if (su) su.innerHTML = sub;
+            if (ic) ic.textContent = icon;
           }
-        } else if (tele) {
-          tele.remove();
-        }
+        } else if (badge) badge.remove();
       }
       const dot = tile.querySelector(".msg-dot");
       if (dot) {
@@ -4642,7 +4893,7 @@ async function doSendQuiz() {
   let question = stripMdNoise(cleanMathText($("qText").value.trim() || "Quick question"));
   question = adaptiveRewrite(question);
   const options = [$("q0").value, $("q1").value, $("q2").value, $("q3").value]
-    .map((x) => stripMdNoise(cleanMathText((x || "").trim())))
+    .map((x) => fracToSlash(stripMdNoise(cleanMathText((x || "").trim()))))
     .filter(Boolean);
   const steps = $("qSteps").value.trim();
   const timer = Number($("qTimer").value) || 0;
@@ -5471,6 +5722,16 @@ function stripMdNoise(s) {
     .trim();
 }
 
+/** Option chips look better as 6/9 than stacked KaTeX fractions */
+function fracToSlash(s) {
+  s = String(s || "");
+  s = s.replace(/\$\$\\frac\{([^}]+)\}\{([^}]+)\}\$\$/g, "$1/$2");
+  s = s.replace(/\$\\frac\{([^}]+)\}\{([^}]+)\}\$/g, "$1/$2");
+  s = s.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1/$2");
+  s = s.replace(/\$([^$]+)\$/g, "$1");
+  return s.trim();
+}
+
 function formatAiReply(text) {
   let html = "";
   const cleaned = cleanMathText(text);
@@ -5520,10 +5781,11 @@ function parseQuizFromAiText(text) {
 function applyAiQuizToBuilder(question, optA, optB, optC, optD, correctIdx) {
   showPanel("quizPanel");
   $("qText").value = stripMdNoise(cleanMathText(question || ""));
-  $("q0").value = stripMdNoise(cleanMathText(optA || ""));
-  $("q1").value = stripMdNoise(cleanMathText(optB || ""));
-  $("q2").value = stripMdNoise(cleanMathText(optC || ""));
-  $("q3").value = stripMdNoise(cleanMathText(optD || ""));
+  // Options: plain a/b fractions in the chip inputs (not vertical KaTeX)
+  $("q0").value = fracToSlash(stripMdNoise(cleanMathText(optA || "")));
+  $("q1").value = fracToSlash(stripMdNoise(cleanMathText(optB || "")));
+  $("q2").value = fracToSlash(stripMdNoise(cleanMathText(optC || "")));
+  $("q3").value = fracToSlash(stripMdNoise(cleanMathText(optD || "")));
   if (typeof correctIdx === "number" && correctIdx >= 0) {
     correctIndex = Math.max(0, Math.min(3, correctIdx));
     paintTicks();
