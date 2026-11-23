@@ -421,24 +421,21 @@
     .tile.lab-mode .screen { background: transparent; }
     .tile.lab-mode .screen .wait { display: none; }
     .tile.lab-mode .tile-avatar { display: none; }
-    /* Lab metrics grid — edge-to-edge, clean, no white corners */
     .lab-metrics {
       position: absolute;
       left: 0; right: 0; top: 0;
-      bottom: 78px; /* footer ~52px + stripe ~26px — no overlap */
+      bottom: 28px; /* room for lab name stripe */
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 0;
       z-index: 4;
       pointer-events: none;
-      border: none;
+      border: 1px solid #202124;
       box-sizing: border-box;
-      overflow: hidden;
-      background: #0b0d12;
     }
     body.dark .lab-metrics {
-      background: #0b0d12;
+      border-color: rgba(255,255,255,.55);
     }
     .lab-box {
       border-radius: 0;
@@ -446,68 +443,74 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 5px;
-      padding: 8px 6px;
+      gap: 3px;
+      padding: 6px 4px;
       min-height: 0;
       border: none;
-      border-right: 1px solid rgba(0,0,0,.45);
-      border-bottom: 1px solid rgba(0,0,0,.45);
+      border-right: 1px solid #202124;
+      border-bottom: 1px solid #202124;
     }
     body.dark .lab-box {
-      border-right-color: rgba(255,255,255,.14);
-      border-bottom-color: rgba(255,255,255,.14);
+      border-right-color: rgba(255,255,255,.35);
+      border-bottom-color: rgba(255,255,255,.35);
     }
     .lab-box:nth-child(3n) { border-right: none; }
     .lab-box:nth-child(n+4) { border-bottom: none; }
     .lab-box .lb-val {
-      font-size: 16px;
-      font-weight: 700;
-      color: #111;
-      background: rgba(255,255,255,.93);
-      padding: 3px 10px;
-      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #fff;
       font-variant-numeric: tabular-nums;
-      line-height: 1.2;
+      line-height: 1.15;
       text-align: center;
-      min-width: 2.4em;
-      box-shadow: 0 1px 3px rgba(0,0,0,.25);
     }
     .lab-box .lb-lbl {
       font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.4px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
-      opacity: 0.95;
-      color: rgba(255,255,255,.95);
+      opacity: 0.92;
+      color: rgba(255,255,255,.9);
     }
-    /* Rich dark backgrounds — never light/bright */
-    .lab-box.b-alt { background: #0d2a55; }
-    .lab-box.b-vel { background: #08301c; }
-    .lab-box.b-g { background: #2a1f00; }
-    .lab-box.b-heat { background: #3a1000; }
-    .lab-box.b-phase { background: #1a1035; }
-    .lab-box.b-out { background: #141516; }
-    .lab-box.b-out.ok { background: #08301c; }
-    .lab-box.b-out.bad { background: #3a0e0e; }
+    /* Light Google-style fills (readable on both themes) */
+    .lab-box.b-alt { background: #d2e3fc; }
+    .lab-box.b-vel { background: #ceead6; }
+    .lab-box.b-g { background: #fef7e0; }
+    .lab-box.b-heat { background: #fad2cf; }
+    .lab-box.b-phase { background: #e9d2fd; }
+    .lab-box.b-out { background: #e8eaed; }
+    .lab-box.b-out.ok { background: #ceead6; }
+    .lab-box.b-out.bad { background: #fad2cf; }
+    .lab-box .lb-val { color: #202124 !important; }
+    .lab-box .lb-lbl { color: #5f6368 !important; opacity: 1; }
+    body.dark .lab-box.b-alt { background: #174ea6; }
+    body.dark .lab-box.b-vel { background: #0d652d; }
+    body.dark .lab-box.b-g { background: #e37400; }
+    body.dark .lab-box.b-heat { background: #c5221f; }
+    body.dark .lab-box.b-phase { background: #7627bb; }
+    body.dark .lab-box.b-out { background: #3c4043; }
+    body.dark .lab-box.b-out.ok { background: #0d652d; }
+    body.dark .lab-box.b-out.bad { background: #c5221f; }
+    body.dark .lab-box .lb-val { color: #fff !important; }
+    body.dark .lab-box .lb-lbl { color: rgba(255,255,255,.9) !important; }
     .tile-lab-stripe {
       position: absolute;
-      left: 0; right: 0; bottom: 52px;
-      height: 26px;
+      left: 0; right: 0; bottom: 48px;
+      height: 28px;
       z-index: 5;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 12px;
+      padding: 0 10px;
       font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.25px;
+      letter-spacing: 0.2px;
       color: #fff;
       text-align: center;
       pointer-events: none;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      box-shadow: 0 -1px 0 rgba(0,0,0,.2);
     }
     .tile-lab-stripe.lab-reentry { background: #e8710a; }
     .tile-lab-stripe.lab-twr { background: #1a73e8; }
@@ -670,6 +673,7 @@
     .tbtn .material-symbols-outlined { display:block; margin:0 auto 4px; font-size:28px; }
     .tbtn:hover { background:rgba(26,115,232,.1); color:var(--blue); }
     .tbtn.primary { background:var(--blue); color:#fff; }
+    .tbtn.mic-live { background: #d93025 !important; color: #fff !important; box-shadow: 0 0 0 3px rgba(217,48,37,.28); }
     .tbtn.danger { color:var(--err); }
     .tbtn.on { color:var(--blue); background:var(--blue-light); }
     .tbtn:disabled { opacity:.35; cursor:not-allowed; }
@@ -2984,6 +2988,7 @@
     <button class="tbtn" id="btnShare" data-tip="Share pin"><span class="material-symbols-outlined">ios_share</span>Share</button>
     <button class="tbtn" id="btnPause" data-tip="Pause class"><span class="material-symbols-outlined">pause</span>Pause</button>
     <button class="tbtn" id="btnFreeze" data-tip="Freeze sims"><span class="material-symbols-outlined">ac_unit</span>Freeze</button>
+    <button class="tbtn" id="btnTeacherMic" data-tip="Speak to class (push-to-talk)"><span class="material-symbols-outlined">mic</span>Mic</button>
     <button class="tbtn" id="btnQuiz" data-tip="Quiz"><span class="material-symbols-outlined">quiz</span>Quiz</button>
     <button class="tbtn" id="btnLab" data-tip="Labs"><span class="material-symbols-outlined">science</span>Labs</button>
     <button class="tbtn" id="btnCloseLab" data-tip="Close lab"><span class="material-symbols-outlined">close</span>Close lab</button>
@@ -3598,10 +3603,7 @@ function phaseLabel(t) {
   return labels[st] || st.slice(0, 10);
 }
 
-function telemetryHtml(sid) {
-  // Only when a lab is open — otherwise tile stays clean lobby style
-  if (!isLabSessionActive()) return "";
-  const t = telemetryMap[sid] || (window._tele && window._tele[sid]) || null;
+function metricSnapshot(t) {
   const alt = t ? formatAlt(t.alt) : "—";
   const vel = t ? formatVel(t.vel) : "—";
   const g = t ? formatG(t.g) : "—";
@@ -3612,15 +3614,39 @@ function telemetryHtml(sid) {
   if (t && t.outcome === "pass") { outVal = "PASS"; outCls = "b-out ok"; }
   else if (t && t.outcome === "fail") { outVal = (t.reason ? String(t.reason).slice(0, 12) : "FAIL"); outCls = "b-out bad"; }
   else if (t && t.status) { outVal = "LIVE"; }
+  return { alt, vel, g, heat, phase, outVal, outCls };
+}
 
+function updateLabMetricValues(tile, t) {
+  const grid = tile && tile.querySelector(".lab-metrics");
+  if (!grid) return;
+  const m = metricSnapshot(t);
+  const vals = grid.querySelectorAll(".lb-val");
+  if (vals[0] && vals[0].textContent !== m.alt) vals[0].textContent = m.alt;
+  if (vals[1] && vals[1].textContent !== m.vel) vals[1].textContent = m.vel;
+  if (vals[2] && vals[2].textContent !== m.g) vals[2].textContent = m.g;
+  if (vals[3] && vals[3].textContent !== m.heat) vals[3].textContent = m.heat;
+  if (vals[4] && vals[4].textContent !== m.phase) vals[4].textContent = m.phase;
+  if (vals[5] && vals[5].textContent !== m.outVal) vals[5].textContent = m.outVal;
+  const outBox = grid.querySelector(".lab-box.b-out, .lab-box.ok, .lab-box.bad") || grid.children[5];
+  if (outBox) {
+    outBox.className = "lab-box " + m.outCls;
+  }
+}
+
+function telemetryHtml(sid) {
+  // Only when a lab is open — otherwise tile stays clean lobby style
+  if (!isLabSessionActive()) return "";
+  const t = telemetryMap[sid] || (window._tele && window._tele[sid]) || null;
+  const m = metricSnapshot(t);
   return (
     "<div class='lab-metrics' data-sid='" + esc(sid) + "'>" +
-      "<div class='lab-box b-alt'><div class='lb-val'>" + esc(alt) + "</div><div class='lb-lbl'>Altitude</div></div>" +
-      "<div class='lab-box b-vel'><div class='lb-val'>" + esc(vel) + "</div><div class='lb-lbl'>Velocity</div></div>" +
-      "<div class='lab-box b-g'><div class='lb-val'>" + esc(g) + "</div><div class='lb-lbl'>G-force</div></div>" +
-      "<div class='lab-box b-heat'><div class='lb-val'>" + esc(heat) + "</div><div class='lb-lbl'>Heat flux</div></div>" +
-      "<div class='lab-box b-phase'><div class='lb-val'>" + esc(phase) + "</div><div class='lb-lbl'>Phase</div></div>" +
-      "<div class='lab-box " + outCls + "'><div class='lb-val'>" + esc(outVal) + "</div><div class='lb-lbl'>Mission</div></div>" +
+      "<div class='lab-box b-alt'><div class='lb-val'>" + esc(m.alt) + "</div><div class='lb-lbl'>Altitude</div></div>" +
+      "<div class='lab-box b-vel'><div class='lb-val'>" + esc(m.vel) + "</div><div class='lb-lbl'>Velocity</div></div>" +
+      "<div class='lab-box b-g'><div class='lb-val'>" + esc(m.g) + "</div><div class='lb-lbl'>G-force</div></div>" +
+      "<div class='lab-box b-heat'><div class='lb-val'>" + esc(m.heat) + "</div><div class='lb-lbl'>Heat flux</div></div>" +
+      "<div class='lab-box b-phase'><div class='lb-val'>" + esc(m.phase) + "</div><div class='lb-lbl'>Phase</div></div>" +
+      "<div class='lab-box " + m.outCls + "'><div class='lb-val'>" + esc(m.outVal) + "</div><div class='lb-lbl'>Mission</div></div>" +
     "</div>"
   );
 }
@@ -3850,7 +3876,6 @@ function renderStage(force) {
         (labOn && labLabel ? "<div class='tile-lab-stripe " + labCls + "'>" + esc(labLabel) + "</div>" : "") +
         "<div class='tile-foot'>" +
         "<div class='caption'><span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + (lost ? " · left tab" : "") + "</span></div>" +
-        (labOn ? statusPillHtml(t) : "") +
         "<button type='button' class='tile-menu-btn" + (unreadDmBySid[s.sid] ? " has-unread" : "") + "' title='Student tools' aria-label='Menu'><span class='material-symbols-outlined'>more_vert</span></button>" +
         "</div>" +
         "<div class='tile-menu' role='menu'>" +
@@ -3883,7 +3908,7 @@ function renderStage(force) {
     });
     bindTileActions(stage);
   } else {
-    // Lightweight update: captions, telemetry, status, mission skin — never touch video
+    // Lightweight: captions + in-place metric values only — never rebuild grid / pills
     list.forEach((s) => {
       const tile = stage.querySelector('.tile[data-sid="' + s.sid + '"]');
       if (!tile) return;
@@ -3901,45 +3926,13 @@ function renderStage(force) {
       if (cap) {
         cap.innerHTML = "<span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + (lost ? " · left tab" : "") + "</span>";
       }
-      // Lab topic pill
-      let labPill = tile.querySelector(".tile-lab-pill");
-      const labLabel = labPillLabel(t);
-      if (labLabel) {
-        if (!labPill) {
-          labPill = document.createElement("div");
-          labPill.className = "tile-lab-pill";
-          tile.appendChild(labPill);
-        }
-        labPill.className = "tile-lab-pill " + labPillClass(t && t.labId);
-        labPill.textContent = labLabel;
-      } else if (labPill) labPill.remove();
-      // Status pill beside menu
-      let stPill = tile.querySelector(".tile-status-pill");
-      const stHtml = statusPillHtml(t);
-      if (stHtml) {
-        if (!stPill) {
-          const foot = tile.querySelector(".tile-foot");
-          const menuBtn = tile.querySelector(".tile-menu-btn");
-          if (foot && menuBtn) {
-            menuBtn.insertAdjacentHTML("beforebegin", stHtml);
-          }
-        } else {
-          const tmp = document.createElement("div");
-          tmp.innerHTML = stHtml;
-          const neu = tmp.firstChild;
-          if (neu) stPill.replaceWith(neu);
-        }
-      } else if (stPill) stPill.remove();
-      // Metric pills
+      // Remove legacy floating Reentry pills if any
+      tile.querySelectorAll(".tile-lab-pill").forEach((el) => el.remove());
+      // Keep foot status pill stable (phase lives in grid)
+      // Update 6-cell values in place (no DOM rebuild → no flicker / lag)
+      updateLabMetricValues(tile, t);
       const screen = tile.querySelector(".screen");
       if (screen) {
-        let tele = screen.querySelector(".telemetry");
-        const html = telemetryHtml(s.sid);
-        if (html) {
-          if (!tele) screen.insertAdjacentHTML("afterbegin", html);
-          else tele.outerHTML = html;
-        } else if (tele) tele.remove();
-        // Mission overlay badge
         let badge = screen.querySelector(".tile-mission-badge");
         if (outcome === "pass" || outcome === "fail") {
           const icon = outcome === "fail" ? "close" : "check";
@@ -6269,12 +6262,96 @@ window.addEventListener("resize", () => {
   }, 150);
 });
 setInterval(poll, 1000);
-// Student lab metric boxes: full-grid refresh every 5 seconds
+// Student lab metrics: in-place value paint every 5s (no full DOM rebuild)
 setInterval(() => {
-  if (view === "class" && typeof isLabSessionActive === "function" && isLabSessionActive()) {
-    renderStage();
-  }
+  if (view !== "class" || typeof isLabSessionActive !== "function" || !isLabSessionActive()) return;
+  const stageEl = $("stage");
+  if (!stageEl) return;
+  stageEl.querySelectorAll(".tile.lab-mode").forEach((tile) => {
+    const sid = tile.dataset.sid;
+    const t = telemetryMap[sid] || (window._tele && window._tele[sid]) || null;
+    updateLabMetricValues(tile, t);
+  });
 }, 5000);
+
+/* ---- Teacher live voice (push-to-talk → all students) ---- */
+let _tvStream = null;
+let _tvRec = null;
+let _tvLive = false;
+async function blobToDataUrl(blob) {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(blob);
+  });
+}
+async function startTeacherVoice() {
+  if (_tvLive) return;
+  if (!roomId) { snack("Create a class first"); return; }
+  try {
+    _tvStream = await navigator.mediaDevices.getUserMedia({
+      audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+      video: false
+    });
+  } catch (e) {
+    snack("Mic permission denied");
+    return;
+  }
+  const mime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
+    ? "audio/webm;codecs=opus"
+    : (MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "");
+  try {
+    _tvRec = mime ? new MediaRecorder(_tvStream, { mimeType: mime, audioBitsPerSecond: 24000 })
+      : new MediaRecorder(_tvStream);
+  } catch (e) {
+    snack("Recorder not supported");
+    try { _tvStream.getTracks().forEach((t) => t.stop()); } catch (_) {}
+    _tvStream = null;
+    return;
+  }
+  _tvRec.ondataavailable = async (ev) => {
+    if (!_tvLive || !ev.data || ev.data.size < 200) return;
+    try {
+      const url = await blobToDataUrl(ev.data);
+      // Keep chunks small for DO broadcast
+      if (url.length > 120000) return;
+      wsSend({ type: "teacher_voice", chunk: url, mime: _tvRec.mimeType || "audio/webm" });
+    } catch (e) {}
+  };
+  _tvRec.start(320); // ~3 chunks / sec
+  _tvLive = true;
+  const btn = $("btnTeacherMic");
+  if (btn) {
+    btn.classList.add("mic-live", "on");
+    const ic = btn.querySelector(".material-symbols-outlined");
+    if (ic) ic.textContent = "mic";
+  }
+  snack("Mic live — students can hear you");
+  wsSend({ type: "teacher_voice_state", live: true });
+}
+function stopTeacherVoice() {
+  _tvLive = false;
+  try { if (_tvRec && _tvRec.state !== "inactive") _tvRec.stop(); } catch (e) {}
+  _tvRec = null;
+  if (_tvStream) {
+    try { _tvStream.getTracks().forEach((t) => t.stop()); } catch (e) {}
+    _tvStream = null;
+  }
+  const btn = $("btnTeacherMic");
+  if (btn) {
+    btn.classList.remove("mic-live", "on");
+    const ic = btn.querySelector(".material-symbols-outlined");
+    if (ic) ic.textContent = "mic";
+  }
+  wsSend({ type: "teacher_voice_state", live: false });
+}
+if ($("btnTeacherMic")) {
+  $("btnTeacherMic").onclick = () => {
+    if (_tvLive) stopTeacherVoice();
+    else startTeacherVoice();
+  };
+}
 </script>
 </body>
 </html>
