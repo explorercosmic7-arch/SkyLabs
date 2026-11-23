@@ -2343,6 +2343,35 @@ function wsUrl() {
     "&role=student&sid=" + encodeURIComponent(sid) +
     "&nick=" + encodeURIComponent(nick);
 }
+/* Teacher voice playback queue (low-latency chunk player) */
+let _tvAudio = null;
+let _tvQueue = [];
+let _tvPlaying = false;
+function playTeacherVoiceChunk(dataUrl) {
+  if (!dataUrl || typeof dataUrl !== "string") return;
+  _tvQueue.push(dataUrl);
+  if (_tvQueue.length > 8) _tvQueue.shift(); // drop oldest if backlog
+  if (!_tvPlaying) drainTeacherVoiceQueue();
+}
+function drainTeacherVoiceQueue() {
+  if (!_tvQueue.length) { _tvPlaying = false; return; }
+  _tvPlaying = true;
+  const src = _tvQueue.shift();
+  try {
+    if (!_tvAudio) {
+      _tvAudio = new Audio();
+      _tvAudio.preload = "auto";
+    }
+    _tvAudio.onended = () => drainTeacherVoiceQueue();
+    _tvAudio.onerror = () => drainTeacherVoiceQueue();
+    _tvAudio.src = src;
+    const p = _tvAudio.play();
+    if (p && p.catch) p.catch(() => drainTeacherVoiceQueue());
+  } catch (e) {
+    _tvPlaying = false;
+  }
+}
+
 function wsSend(obj) {
   if (!ws || ws.readyState !== 1) return false;
   try { ws.send(JSON.stringify(obj)); return true; } catch (e) { return false; }
@@ -2683,6 +2712,26 @@ function connectWs() {
         return;
       }
       if (msg.type === "welcome") { setWsChip("WS live", true); return; }
+      // Teacher live voice (audio-only broadcast)
+      if (msg.type === "teacher_voice" && msg.chunk) {
+        playTeacherVoiceChunk(msg.chunk);
+        return;
+      }
+      if (msg.type === "teacher_voice_state") {
+        const live = !!msg.live;
+        let chip = document.getElementById("teacherVoiceChip");
+        if (live) {
+          if (!chip) {
+            chip = document.createElement("div");
+            chip.id = "teacherVoiceChip";
+            chip.style.cssText = "position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:9999;background:#d93025;color:#fff;font-size:12px;font-weight:600;padding:6px 14px;border-radius:999px;box-shadow:0 2px 8px rgba(0,0,0,.25);";
+            chip.textContent = "Teacher speaking";
+            document.body.appendChild(chip);
+          }
+          chip.style.display = "";
+        } else if (chip) chip.style.display = "none";
+        return;
+      }
     if (msg.type === "macro") {
       const action = String(msg.action || "").toUpperCase();
       const payload = msg.payload || {};
@@ -3468,22 +3517,26 @@ window.addEventListener("message", (ev) => {
     if (data.outcome) tele.outcome = data.outcome;
     if (data.reason) tele.reason = data.reason;
     paintTele();
-    // Push rich telemetry to teacher (per-student live pills)
+    // Throttle WS telemetry to teacher: every 5s (backend-friendly, less lag)
     if (joined) {
-      wsSend({
-        type: "telemetry",
-        alt: tele.alt,
-        vel: tele.vel,
-        thrust: tele.thrust,
-        twr: tele.twr,
-        heat: tele.heat,
-        g: tele.g,
-        status: tele.status || "",
-        labId: tele.labId || "",
-        labName: tele.labName || "",
-        outcome: tele.outcome || "",
-        reason: tele.reason || ""
-      });
+      const now = Date.now();
+      if (!window._lastTeleWs || now - window._lastTeleWs >= 5000) {
+        window._lastTeleWs = now;
+        wsSend({
+          type: "telemetry",
+          alt: tele.alt,
+          vel: tele.vel,
+          thrust: tele.thrust,
+          twr: tele.twr,
+          heat: tele.heat,
+          g: tele.g,
+          status: tele.status || "",
+          labId: tele.labId || "",
+          labName: tele.labName || "",
+          outcome: tele.outcome || "",
+          reason: tele.reason || ""
+        });
+      }
     }
   }
   if (data.type === "NH_BACK_TO_CLASS") {
