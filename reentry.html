@@ -5871,13 +5871,16 @@ setTimeout(() => {
     const t = {
       type: 'NH_LAB_TELEMETRY',
       labId: 'reentry',
+      labName: 'Reentry',
       alt: 0,
       vel: 0,
       thrust: 0,
       twr: null,
       heat: null,
       g: null,
-      status: nhSimFrozen ? 'FROZEN' : 'LIVE'
+      status: nhSimFrozen ? 'FROZEN' : 'ORBITAL',
+      outcome: '',
+      reason: ''
     };
     try {
       if (typeof window._liveAltKm === 'number') t.alt = window._liveAltKm;
@@ -5887,7 +5890,7 @@ setTimeout(() => {
       }
     } catch (e) {}
     try {
-      if (typeof window._liveVel === 'number') t.vel = window._liveVel * 1000; // km/s → m/s for class HUD
+      if (typeof window._liveVel === 'number') t.vel = window._liveVel * 1000;
       else if (document.getElementById('hudVel')) {
         const txt = document.getElementById('hudVel').textContent || '';
         const m = txt.match(/([\d.]+)/);
@@ -5899,7 +5902,10 @@ setTimeout(() => {
     } catch (e) {}
     try {
       if (typeof peakHeatLive === 'number' && peakHeatLive > 0) t.heat = peakHeatLive;
-      else if (document.getElementById('altMeterVal')) {
+      else if (document.getElementById('heatMeterVal')) {
+        const m = (document.getElementById('heatMeterVal').textContent || '').match(/([\d.]+)/);
+        if (m) t.heat = parseFloat(m[1]);
+      } else if (document.getElementById('altMeterVal')) {
         const m = (document.getElementById('altMeterVal').textContent || '').match(/([\d.]+)/);
         if (m) t.heat = parseFloat(m[1]);
       }
@@ -5916,6 +5922,55 @@ setTimeout(() => {
         const max = parseFloat(document.getElementById('entryVel').max) || 12000;
         const cur = parseFloat(document.getElementById('entryVel').value) || 0;
         t.thrust = Math.min(100, (cur / max) * 100);
+      }
+    } catch (e) {}
+    try {
+      if (nhSimFrozen) {
+        t.status = 'FROZEN';
+      } else if (typeof isFailed !== 'undefined' && isFailed) {
+        t.status = 'FAILED';
+        t.outcome = 'fail';
+        let reason = 'Heat shield failed';
+        try {
+          if (typeof metalSurvives === 'function' && typeof peakHeatLive === 'number' && !metalSurvives(peakHeatLive)) {
+            reason = 'Shield melted';
+          } else if (typeof peakGLive === 'number' && peakGLive > 12) {
+            reason = 'Peak g too high';
+          } else if (typeof currentG === 'number' && currentG > 12) {
+            reason = 'g-load critical';
+          }
+        } catch (e2) {}
+        t.reason = reason;
+      } else if (typeof isSuccess !== 'undefined' && isSuccess) {
+        t.status = 'SUCCESS';
+        t.outcome = 'pass';
+      } else if (typeof window._splashed !== 'undefined' && window._splashed) {
+        t.status = 'TOUCHDOWN';
+        t.outcome = 'pass';
+      } else if (typeof chuteActive !== 'undefined' && chuteActive) {
+        t.status = 'PARACHUTE';
+        t.outcome = 'pass';
+      } else if (typeof entryPhase === 'number') {
+        if (entryPhase >= 5) t.status = 'HEAT';
+        else if (entryPhase >= 4) t.status = 'ENTRY';
+        else if (entryPhase >= 3) t.status = 'ATTITUDE';
+        else if (entryPhase >= 2) t.status = 'DE-ORBIT';
+        else t.status = 'ORBITAL';
+      }
+      if (!t.outcome && typeof entryPhase === 'number' && entryPhase >= 5) {
+        try {
+          if (typeof metalSurvives === 'function' && typeof peakHeatLive === 'number' && peakHeatLive > 0.05) {
+            if (!metalSurvives(peakHeatLive)) {
+              t.outcome = 'fail';
+              t.status = 'FAILED';
+              t.reason = 'Shield melted';
+            } else if (typeof peakGLive === 'number' && peakGLive > 12) {
+              t.outcome = 'fail';
+              t.status = 'FAILED';
+              t.reason = 'Peak g too high';
+            }
+          }
+        } catch (e3) {}
       }
     } catch (e) {}
     return t;
