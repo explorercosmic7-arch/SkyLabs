@@ -1066,7 +1066,93 @@
     #presentOverlay .present-card h2 { font-size: 24px; margin-bottom: 8px; }
     #presentOverlay .present-card .lead { margin-bottom: 0; }
 
-  
+    /* Teacher speaking — Google-style center card + 5 sound bars */
+    #speakOverlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      background: rgba(15,16,20,.72);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+    #speakOverlay.show { display: flex; }
+    .speak-card {
+      max-width: 380px;
+      width: calc(100% - 48px);
+      text-align: center;
+      padding: 36px 32px 32px;
+      border-radius: 24px;
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(0,0,0,.06);
+      box-shadow: 0 16px 48px rgba(0,0,0,.22);
+      color: #202124;
+    }
+    body.dark .speak-card {
+      background: rgba(32,33,36,.94);
+      border-color: rgba(255,255,255,.1);
+      color: #e8eaed;
+      box-shadow: 0 16px 48px rgba(0,0,0,.5);
+    }
+    .speak-bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 6px;
+      height: 48px;
+      margin: 0 auto 20px;
+    }
+    .speak-bars span {
+      width: 6px;
+      border-radius: 4px;
+      background: #1a73e8;
+      height: 12px;
+      transform-origin: bottom center;
+      animation: speakBar 0.9s ease-in-out infinite;
+    }
+    body.dark .speak-bars span { background: #8ab4f8; }
+    .speak-bars span:nth-child(1) { animation-delay: 0.00s; height: 14px; }
+    .speak-bars span:nth-child(2) { animation-delay: 0.12s; height: 28px; }
+    .speak-bars span:nth-child(3) { animation-delay: 0.24s; height: 40px; }
+    .speak-bars span:nth-child(4) { animation-delay: 0.16s; height: 24px; }
+    .speak-bars span:nth-child(5) { animation-delay: 0.08s; height: 16px; }
+    @keyframes speakBar {
+      0%, 100% { transform: scaleY(0.35); opacity: 0.7; }
+      50% { transform: scaleY(1); opacity: 1; }
+    }
+    .speak-card h2 {
+      font-size: 22px;
+      font-weight: 500;
+      margin: 0 0 8px;
+      letter-spacing: -0.2px;
+    }
+    .speak-card .lead {
+      margin: 0;
+      font-size: 14px;
+      color: #5f6368;
+      line-height: 1.45;
+    }
+    body.dark .speak-card .lead { color: #9aa0a6; }
+    .speak-msg {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: #e8f0fe;
+      color: #174ea6;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 1.4;
+      display: none;
+    }
+    body.dark .speak-msg {
+      background: rgba(138,180,248,.12);
+      color: #aecbfa;
+    }
+    .speak-msg.show { display: block; }
+
     .sl-tip {
       position: fixed;
       z-index: 400;
@@ -1394,6 +1480,17 @@
         <span class="material-symbols-outlined">pause_circle</span>
         <h2>Teacher paused the class</h2>
         <p class="lead">This screen will continue when the teacher resumes.</p>
+      </div>
+    </div>
+    <!-- Teacher speaking (live mic) — centered bars + message -->
+    <div id="speakOverlay" aria-live="polite" aria-atomic="true">
+      <div class="speak-card">
+        <div class="speak-bars" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <h2>Teacher is speaking</h2>
+        <p class="lead">Listen carefully — class continues when they finish.</p>
+        <div class="speak-msg" id="speakMsg"></div>
       </div>
     </div>
     <div class="overlay" id="presentOverlay">
@@ -2372,15 +2469,31 @@ function unlockTeacherVoiceAudio() {
 document.addEventListener("pointerdown", unlockTeacherVoiceAudio, { passive: true });
 document.addEventListener("keydown", unlockTeacherVoiceAudio, { passive: true });
 
-function ensureTeacherVoiceChip(show) {
+function ensureTeacherVoiceChip(show, messageText) {
+  const overlay = document.getElementById("speakOverlay");
+  const msgEl = document.getElementById("speakMsg");
+  if (overlay) {
+    overlay.classList.toggle("show", !!show);
+  }
+  if (msgEl) {
+    const t = (messageText || "").trim();
+    if (t) {
+      msgEl.textContent = t;
+      msgEl.classList.add("show");
+    } else {
+      msgEl.textContent = "";
+      msgEl.classList.remove("show");
+    }
+  }
+  // Keep a small top chip as backup when overlay is hidden by other full-screen layers
   let chip = document.getElementById("teacherVoiceChip");
   if (show) {
     if (!chip) {
       chip = document.createElement("div");
       chip.id = "teacherVoiceChip";
       chip.setAttribute("role", "status");
-      chip.style.cssText = "position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100000;background:#d93025;color:#fff;font-size:13px;font-weight:600;padding:8px 16px;border-radius:999px;box-shadow:0 4px 16px rgba(0,0,0,.35);display:flex;align-items:center;gap:8px;pointer-events:none;font-family:Google Sans,Roboto,Arial,sans-serif;";
-      chip.innerHTML = "<span class='material-symbols-outlined' style='font-size:18px'>mic</span> Teacher is speaking";
+      chip.style.cssText = "position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:100000;background:#1a73e8;color:#fff;font-size:13px;font-weight:500;padding:8px 16px;border-radius:999px;box-shadow:0 4px 16px rgba(26,115,232,.4);display:flex;align-items:center;gap:8px;pointer-events:none;font-family:Google Sans,Roboto,Arial,sans-serif;";
+      chip.innerHTML = "<span class='material-symbols-outlined' style='font-size:18px'>graphic_eq</span> Teacher is speaking";
       document.body.appendChild(chip);
     }
     chip.style.display = "flex";
@@ -2397,12 +2510,16 @@ function playTeacherVoiceChunk(dataUrl) {
   if (_tvQueue.length > 10) _tvQueue.shift();
   if (!_tvPlaying) drainTeacherVoiceQueue();
 }
+let _tvLiveState = false;
 function drainTeacherVoiceQueue() {
   if (!_tvQueue.length) {
     _tvPlaying = false;
+    // Hide speaking UI only when teacher released the mic
+    if (!_tvLiveState) ensureTeacherVoiceChip(false);
     return;
   }
   _tvPlaying = true;
+  ensureTeacherVoiceChip(true);
   const src = _tvQueue.shift();
   try {
     if (!_tvAudio) {
@@ -2424,6 +2541,7 @@ function drainTeacherVoiceQueue() {
     });
   } catch (e) {
     _tvPlaying = false;
+    if (!_tvLiveState) ensureTeacherVoiceChip(false);
   }
 }
 
@@ -2773,8 +2891,10 @@ function connectWs() {
         return;
       }
       if (msg.type === "teacher_voice_state") {
+        _tvLiveState = !!msg.live;
         ensureTeacherVoiceChip(!!msg.live);
         if (msg.live) unlockTeacherVoiceAudio();
+        else if (!_tvPlaying) ensureTeacherVoiceChip(false);
         return;
       }
     if (msg.type === "macro") {
