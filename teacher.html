@@ -417,25 +417,24 @@
       60% { transform: scale(1.08) rotate(0deg); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    /* Lab-open: edge-to-edge 6 cells (Google Classroom style) */
+    /* Lab-open: edge-to-edge 6 cells — clean, deep colors, no stripe */
     .tile.lab-mode .screen { background: transparent; }
     .tile.lab-mode .screen .wait { display: none; }
     .tile.lab-mode .tile-avatar { display: none; }
     .lab-metrics {
       position: absolute;
       left: 0; right: 0; top: 0;
-      bottom: 28px; /* room for lab name stripe */
+      bottom: 52px; /* only the footer — stripe removed */
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       grid-template-rows: 1fr 1fr;
       gap: 0;
       z-index: 4;
       pointer-events: none;
-      border: 1px solid #202124;
+      border: none;
       box-sizing: border-box;
-    }
-    body.dark .lab-metrics {
-      border-color: rgba(255,255,255,.55);
+      overflow: hidden;
+      background: #0b0d12;
     }
     .lab-box {
       border-radius: 0;
@@ -443,79 +442,59 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      padding: 6px 4px;
+      gap: 6px;
+      padding: 10px 6px;
       min-height: 0;
       border: none;
-      border-right: 1px solid #202124;
-      border-bottom: 1px solid #202124;
+      border-right: 1px solid rgba(0,0,0,.4);
+      border-bottom: 1px solid rgba(0,0,0,.4);
     }
     body.dark .lab-box {
-      border-right-color: rgba(255,255,255,.35);
-      border-bottom-color: rgba(255,255,255,.35);
+      border-right-color: rgba(255,255,255,.12);
+      border-bottom-color: rgba(255,255,255,.12);
     }
     .lab-box:nth-child(3n) { border-right: none; }
     .lab-box:nth-child(n+4) { border-bottom: none; }
     .lab-box .lb-val {
-      font-size: 15px;
-      font-weight: 600;
-      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      color: #111 !important;
+      background: rgba(255,255,255,.94);
+      padding: 4px 11px;
+      border-radius: 9px;
       font-variant-numeric: tabular-nums;
-      line-height: 1.15;
+      line-height: 1.2;
       text-align: center;
+      min-width: 2.6em;
+      box-shadow: 0 1px 4px rgba(0,0,0,.22);
+      letter-spacing: -0.2px;
     }
     .lab-box .lb-lbl {
       font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.3px;
-      text-transform: uppercase;
-      opacity: 0.92;
-      color: rgba(255,255,255,.9);
-    }
-    /* Light Google-style fills (readable on both themes) */
-    .lab-box.b-alt { background: #d2e3fc; }
-    .lab-box.b-vel { background: #ceead6; }
-    .lab-box.b-g { background: #fef7e0; }
-    .lab-box.b-heat { background: #fad2cf; }
-    .lab-box.b-phase { background: #e9d2fd; }
-    .lab-box.b-out { background: #e8eaed; }
-    .lab-box.b-out.ok { background: #ceead6; }
-    .lab-box.b-out.bad { background: #fad2cf; }
-    .lab-box .lb-val { color: #202124 !important; }
-    .lab-box .lb-lbl { color: #5f6368 !important; opacity: 1; }
-    body.dark .lab-box.b-alt { background: #174ea6; }
-    body.dark .lab-box.b-vel { background: #0d652d; }
-    body.dark .lab-box.b-g { background: #e37400; }
-    body.dark .lab-box.b-heat { background: #c5221f; }
-    body.dark .lab-box.b-phase { background: #7627bb; }
-    body.dark .lab-box.b-out { background: #3c4043; }
-    body.dark .lab-box.b-out.ok { background: #0d652d; }
-    body.dark .lab-box.b-out.bad { background: #c5221f; }
-    body.dark .lab-box .lb-val { color: #fff !important; }
-    body.dark .lab-box .lb-lbl { color: rgba(255,255,255,.9) !important; }
-    .tile-lab-stripe {
-      position: absolute;
-      left: 0; right: 0; bottom: 48px;
-      height: 28px;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 10px;
-      font-size: 11px;
       font-weight: 600;
-      letter-spacing: 0.2px;
-      color: #fff;
-      text-align: center;
-      pointer-events: none;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      letter-spacing: 0.45px;
+      text-transform: uppercase;
+      opacity: 0.95;
+      color: rgba(255,255,255,.95) !important;
     }
-    .tile-lab-stripe.lab-reentry { background: #e8710a; }
-    .tile-lab-stripe.lab-twr { background: #1a73e8; }
-    .tile-lab-stripe.lab-deltav { background: #9334e6; }
-    .tile-lab-stripe.lab-default { background: #3c4043; }
+    /* Deep saturated colors (never light / pastel) */
+    .lab-box.b-alt { background: #0d2a55; }
+    .lab-box.b-vel { background: #08301c; }
+    .lab-box.b-g { background: #2a1f00; }
+    .lab-box.b-heat { background: #3a1000; }
+    .lab-box.b-phase { background: #1a1035; }
+    .lab-box.b-out { background: #141516; }
+    .lab-box.b-out.ok { background: #08301c; }
+    .lab-box.b-out.bad { background: #3a0e0e; }
+    /* Same deep colors in dark mode (already deep) */
+    body.dark .lab-box.b-alt { background: #0d2a55; }
+    body.dark .lab-box.b-vel { background: #08301c; }
+    body.dark .lab-box.b-g { background: #2a1f00; }
+    body.dark .lab-box.b-heat { background: #3a1000; }
+    body.dark .lab-box.b-phase { background: #1a1035; }
+    body.dark .lab-box.b-out { background: #141516; }
+    body.dark .lab-box.b-out.ok { background: #08301c; }
+    body.dark .lab-box.b-out.bad { background: #3a0e0e; }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
@@ -3873,7 +3852,6 @@ function renderStage(force) {
         "<div class='screen' data-screen='" + esc(s.sid) + "'>" + (labOn ? telemetryHtml(s.sid) : "") + screenInner +
         (outcome ? "<div class='tile-mission-badge'><div class='tick'><span class='material-symbols-outlined'>" + badgeIcon + "</span></div><div class='mb-title'>" + badgeTitle + "</div><div class='mb-sub'>" + badgeSub + "</div></div>" : "") +
         "</div>" +
-        (labOn && labLabel ? "<div class='tile-lab-stripe " + labCls + "'>" + esc(labLabel) + "</div>" : "") +
         "<div class='tile-foot'>" +
         "<div class='caption'><span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + (lost ? " · left tab" : "") + "</span></div>" +
         "<button type='button' class='tile-menu-btn" + (unreadDmBySid[s.sid] ? " has-unread" : "") + "' title='Student tools' aria-label='Menu'><span class='material-symbols-outlined'>more_vert</span></button>" +
