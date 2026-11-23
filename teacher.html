@@ -328,12 +328,12 @@
     body.dark .tile-avatar { border-color: #202124; }
     .tile-lab-pill {
       position: absolute;
-      top: 12px;
+      top: 48px;
       left: 12px;
       z-index: 5;
       max-width: calc(100% - 110px);
       font-size: 11px;
-      font-weight: 500;
+      font-weight: 600;
       padding: 4px 10px;
       border-radius: 999px;
       white-space: nowrap;
@@ -347,21 +347,27 @@
     .tile-lab-pill.lab-deltav { background: rgba(147,52,230,.9); color: #fff; }
     .tile-lab-pill.lab-default { background: rgba(60,64,67,.85); color: #e8eaed; }
     .tile-status-pill {
-      font-size: 11px;
-      font-weight: 500;
-      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      padding: 6px 12px;
       border-radius: 999px;
-      background: rgba(255,255,255,.14);
-      color: #e8eaed;
-      max-width: 120px;
+      background: #5f6368;
+      color: #fff;
+      max-width: 140px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
       flex-shrink: 0;
+      line-height: 1.2;
+      border: 1px solid rgba(255,255,255,.12);
     }
-    .tile-status-pill.is-pass { background: rgba(15,157,88,.9); color: #fff; }
-    .tile-status-pill.is-fail { background: rgba(217,48,37,.9); color: #fff; }
-    .tile-status-pill.is-heat { background: rgba(232,113,10,.9); color: #fff; }
+    .tile-status-pill.is-pass { background: #0f9d58; color: #fff; }
+    .tile-status-pill.is-fail { background: #d93025; color: #fff; }
+    .tile-status-pill.is-heat { background: #e8710a; color: #fff; }
+    .tile-status-pill.is-entry { background: #f9ab00; color: #202124; }
+    .tile-status-pill.is-orbit { background: #1a73e8; color: #fff; }
+    .tile-status-pill.is-chute { background: #9334e6; color: #fff; }
     .tile-mission-badge {
       position: absolute;
       inset: 0;
@@ -412,33 +418,32 @@
       100% { transform: scale(1); opacity: 1; }
     }
     .telemetry {
-      position:absolute; top:52px; left:12px; right:12px; display:flex; gap:8px; flex-wrap:wrap; z-index:4;
+      position:absolute; top:12px; left:12px; right:56px; display:flex; gap:6px; flex-wrap:wrap; z-index:4;
       pointer-events: none;
+      align-items: flex-start;
     }
     .telemetry .t-metric {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       padding: 5px 10px;
       border-radius: 999px;
-      background: rgba(0,0,0,.62);
-      border: 1px solid rgba(255,255,255,.14);
-      color: #e8eaed;
+      border: none;
+      color: #202124;
       font-variant-numeric: tabular-nums;
+      box-shadow: 0 1px 4px rgba(0,0,0,.28);
     }
     .telemetry .t-metric .material-symbols-outlined {
       font-size: 15px;
-      font-weight: 300;
+      font-weight: 500;
+      color: #202124;
     }
-    .telemetry .t-metric.m-g { border-color: rgba(138,180,248,.45); }
-    .telemetry .t-metric.m-g .material-symbols-outlined { color: #8ab4f8; }
-    .telemetry .t-metric.m-vel { border-color: rgba(129,201,149,.45); }
-    .telemetry .t-metric.m-vel .material-symbols-outlined { color: #81c995; }
-    .telemetry .t-metric.m-heat { border-color: rgba(242,139,130,.5); }
-    .telemetry .t-metric.m-heat .material-symbols-outlined { color: #f28b82; }
-    .telemetry .t-val { transition: opacity 0.2s ease; }
+    .telemetry .t-metric.m-g { background: #8ab4f8; }
+    .telemetry .t-metric.m-vel { background: #81c995; }
+    .telemetry .t-metric.m-heat { background: #f9ab00; }
+    .telemetry .t-val { color: #202124; transition: opacity 0.2s ease; }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
@@ -3506,13 +3511,38 @@ function telemetryHtml(sid) {
 }
 
 function statusPillHtml(t) {
-  if (!t || !t.status) return "";
-  const st = String(t.status).toUpperCase();
+  // Prefer live mission phase — never a generic LIVE badge
+  if (!t) return "";
+  let st = String(t.status || "").toUpperCase().trim();
+  if (!st || st === "LIVE") {
+    // Infer from outcome / lab when status missing
+    if (t.outcome === "pass") st = "SUCCESS";
+    else if (t.outcome === "fail") st = "FAILED";
+    else if (t.labId) st = "ORBITAL";
+    else return "";
+  }
   let cls = "tile-status-pill";
-  if (st === "SUCCESS" || st === "TOUCHDOWN" || st === "PARACHUTE" || t.outcome === "pass") cls += " is-pass";
+  if (st === "SUCCESS" || st === "TOUCHDOWN" || t.outcome === "pass") cls += " is-pass";
   else if (st === "FAILED" || t.outcome === "fail") cls += " is-fail";
-  else if (st === "HEAT" || st === "ENTRY") cls += " is-heat";
-  const label = st === "FAILED" && t.reason ? String(t.reason).slice(0, 18) : st.slice(0, 14);
+  else if (st === "HEAT") cls += " is-heat";
+  else if (st === "ENTRY" || st === "DE-ORBIT" || st === "ATTITUDE") cls += " is-entry";
+  else if (st === "PARACHUTE") cls += " is-chute";
+  else if (st === "ORBITAL" || st === "FROZEN") cls += " is-orbit";
+  // Human labels for reentry phases
+  const labels = {
+    "ORBITAL": "ORBITAL",
+    "DE-ORBIT": "DE-ORBIT",
+    "ATTITUDE": "ATTITUDE",
+    "ENTRY": "ENTRY",
+    "HEAT": "HEAT",
+    "PARACHUTE": "CHUTE",
+    "TOUCHDOWN": "LAND",
+    "SUCCESS": "PASS",
+    "FAILED": "FAIL",
+    "FROZEN": "FROZEN"
+  };
+  let label = labels[st] || st.slice(0, 12);
+  if (st === "FAILED" && t.reason) label = String(t.reason).slice(0, 16);
   return "<span class='" + cls + "'>" + esc(label) + "</span>";
 }
 
@@ -5723,14 +5753,60 @@ function stripMdNoise(s) {
 }
 
 /** Option chips look better as 6/9 than stacked KaTeX fractions */
-function fracToSlash(s) {
+/** Convert LaTeX / science markup → clean human text for option chips */
+function scienceReadable(s) {
   s = String(s || "");
-  s = s.replace(/\$\$\\frac\{([^}]+)\}\{([^}]+)\}\$\$/g, "$1/$2");
-  s = s.replace(/\$\\frac\{([^}]+)\}\{([^}]+)\}\$/g, "$1/$2");
+  // strip math delimiters first
+  s = s.replace(/\$\$/g, "").replace(/\$/g, "");
+  // fractions
   s = s.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, "$1/$2");
-  s = s.replace(/\$([^$]+)\$/g, "$1");
-  return s.trim();
+  // \text{...} and \mathrm{...}
+  s = s.replace(/\\text\{([^}]*)\}/g, "$1");
+  s = s.replace(/\\mathrm\{([^}]*)\}/g, "$1");
+  s = s.replace(/\\mathbf\{([^}]*)\}/g, "$1");
+  s = s.replace(/\\textbf\{([^}]*)\}/g, "$1");
+  // powers: x^2 x^{10} → x² x¹⁰
+  const supMap = { "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹","+":"⁺","-":"⁻" };
+  s = s.replace(/\^\{([^}]+)\}/g, function (_, body) {
+    return String(body).split("").map(function (c) { return supMap[c] || c; }).join("");
+  });
+  s = s.replace(/\^([0-9+\-])/g, function (_, d) { return supMap[d] || ("^" + d); });
+  // common symbols
+  s = s.replace(/\\circ/g, "°");
+  s = s.replace(/\\times/g, "×");
+  s = s.replace(/\\cdot/g, "·");
+  s = s.replace(/\\pm/g, "±");
+  s = s.replace(/\\approx/g, "≈");
+  s = s.replace(/\\infty/g, "∞");
+  s = s.replace(/\\pi/g, "π");
+  s = s.replace(/\\alpha/g, "α");
+  s = s.replace(/\\beta/g, "β");
+  s = s.replace(/\\gamma/g, "γ");
+  s = s.replace(/\\Delta/g, "Δ");
+  s = s.replace(/\\delta/g, "δ");
+  s = s.replace(/\\mu/g, "μ");
+  s = s.replace(/\\omega/g, "ω");
+  s = s.replace(/\\Omega/g, "Ω");
+  s = s.replace(/\\rightarrow/g, "→");
+  s = s.replace(/\\leftarrow/g, "←");
+  s = s.replace(/\\geq/g, "≥");
+  s = s.replace(/\\leq/g, "≤");
+  s = s.replace(/\\neq/g, "≠");
+  s = s.replace(/\\sqrt\{([^}]+)\}/g, "√($1)");
+  s = s.replace(/\\log/g, "log");
+  s = s.replace(/\\ln/g, "ln");
+  s = s.replace(/\\sin/g, "sin");
+  s = s.replace(/\\cos/g, "cos");
+  s = s.replace(/\\tan/g, "tan");
+  // leftover backslashes on simple words
+  s = s.replace(/\\([a-zA-Z]+)/g, "$1");
+  // tidy spaces around units
+  s = s.replace(/\s*\/\s*/g, "/");
+  s = s.replace(/\s+/g, " ").trim();
+  return s;
 }
+// Back-compat alias used by apply / send paths
+function fracToSlash(s) { return scienceReadable(s); }
 
 function formatAiReply(text) {
   let html = "";
@@ -5899,7 +5975,7 @@ async function aiSend() {
         messages: [
           {
             role: "system",
-            content: "You are Glamber — SkyLabs classroom AI for teachers. Be sharp, short, and useful (not a support bot).\nRules:\n1) Clean Markdown. Short paragraphs or tight bullets. No filler.\n2) Math: use $...$ for inline (e.g. $\\frac{3}{8}$) and $$...$$ only for display. Never write raw \\displaystyle or leave unrendered LaTeX for humans to read.\n3) When asked for a quiz, reply ONLY in this exact structure (no extra prose before/after):\n**Question:** <clear stem>\nA) <option>\nB) <option>\nC) <option>\nD) <option>\n**Correct:** <letter>\n4) Options with fractions must use KaTeX, e.g. $\\frac{1}{8}$ not 1/8 alone if it is a pure fraction answer.\n5) For class analysis use the LIVE CLASS SNAPSHOT: name students, cite scores/focus/teams/telemetry, give one concrete next action.\n6) Prefer exact answers over long explanations.\n\n" + buildGlamberClassSnapshot()
+            content: "You are Glamber — SkyLabs classroom AI for teachers. Be sharp, short, and useful (not a support bot).\nRules:\n1) Clean Markdown. Short paragraphs or tight bullets. No filler.\n2) Math: use $...$ for inline (e.g. $\\frac{3}{8}$) and $$...$$ only for display. Never write raw \\displaystyle or leave unrendered LaTeX for humans to read.\n3) When asked for a quiz, reply ONLY in this exact structure (no extra prose before/after):\n**Question:** <clear stem>\nA) <option>\nB) <option>\nC) <option>\nD) <option>\n**Correct:** <letter>\n4) Quiz OPTIONS must be plain human text — use 3/8, 9.81 m/s², 45° — never raw LaTeX like \\frac or \\text{m/s}^2 in options.\n5) For class analysis use the LIVE CLASS SNAPSHOT: name students, cite scores/focus/teams/telemetry, give one concrete next action.\n6) Prefer exact answers over long explanations.\n\n" + buildGlamberClassSnapshot()
           },
           ...aiHistory.slice(-10)
         ],
