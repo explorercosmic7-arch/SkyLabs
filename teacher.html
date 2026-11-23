@@ -4063,10 +4063,10 @@ function loadQuizFields(i) {
 function paintQuizPreview() {
   const box = $("qPreview");
   if (!box) return;
-  const q = ($("qText") && $("qText").value) || "";
+  const q = stripMdNoise(cleanMathText(($("qText") && $("qText").value) || ""));
   const opts = [0,1,2,3].map((i) => {
     const el = $("q" + i);
-    return el ? (el.value || "").trim() : "";
+    return el ? stripMdNoise(cleanMathText((el.value || "").trim())) : "";
   });
   let html = "<div style='font-size:12px;color:var(--muted);margin-bottom:6px'>Math preview (what students will see)</div>";
   html += "<div class='qp-q' style='font-size:17px;margin-bottom:8px'></div>";
@@ -4088,8 +4088,8 @@ function paintQuizPreview() {
         delimiters: [
           { left: "$$", right: "$$", display: true },
           { left: "$", right: "$", display: false },
-          { left: "\(", right: "\)", display: false },
-          { left: "\[", right: "\]", display: true }
+          { left: "\\(", right: "\\)", display: false },
+          { left: "\\[", right: "\\]", display: true }
         ],
         throwOnError: false,
         strict: false
@@ -4639,15 +4639,19 @@ $("qSend").onclick = () => {
 };
 
 async function doSendQuiz() {
-  let question = $("qText").value.trim() || "Quick question";
+  let question = stripMdNoise(cleanMathText($("qText").value.trim() || "Quick question"));
   question = adaptiveRewrite(question);
-  const options = [$("q0").value, $("q1").value, $("q2").value, $("q3").value].map((x) => x.trim()).filter(Boolean);
+  const options = [$("q0").value, $("q1").value, $("q2").value, $("q3").value]
+    .map((x) => stripMdNoise(cleanMathText((x || "").trim())))
+    .filter(Boolean);
   const steps = $("qSteps").value.trim();
   const timer = Number($("qTimer").value) || 0;
   const pack = (typeof collectQuizPayload === "function") ? collectQuizPayload() : null;
   const questions = (pack && pack.length > 1) ? pack.map((x) => ({
-    question: x.q,
-    options: (x.opts || []).filter(Boolean).length ? (x.opts || []).filter(Boolean) : ["A","B","C","D"],
+    question: stripMdNoise(cleanMathText(x.q || "")),
+    options: (x.opts || []).map((o) => stripMdNoise(cleanMathText(o || ""))).filter(Boolean).length
+      ? (x.opts || []).map((o) => stripMdNoise(cleanMathText(o || ""))).filter(Boolean)
+      : ["A","B","C","D"],
     correct: x.correct || 0,
     steps: x.steps || ""
   })) : null;
@@ -5449,57 +5453,83 @@ if (aiRecognition) {
   aiRecognition.onerror = () => { const b = $("aiMicBtn"); if (b) b.classList.remove("listening"); };
 }
 
+function cleanMathText(s) {
+  s = String(s || "");
+  s = s.replace(/\\displaystyle\s*/g, "");
+  s = s.replace(/\\textstyle\s*/g, "");
+  s = s.replace(/\$\$\s*\\frac\{([^}]+)\}\{([^}]+)\}\s*\$\$/g, "$$\\frac{$1}{$2}$$");
+  s = s.replace(/\$\s*\\frac\{([^}]+)\}\{([^}]+)\}\s*\$/g, "$\\frac{$1}{$2}$");
+  s = s.replace(/\$\s*(\d+)\s*\/\s*(\d+)\s*\$/g, "$\\frac{$1}{$2}$");
+  return s;
+}
+
+function stripMdNoise(s) {
+  return String(s || "")
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/\*([^*]+)\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .trim();
+}
+
 function formatAiReply(text) {
   let html = "";
+  const cleaned = cleanMathText(text);
   try {
     if (typeof marked !== "undefined" && marked.parse) {
-      html = marked.parse(String(text || ""), { breaks: true, gfm: true });
+      html = marked.parse(String(cleaned || ""), { breaks: true, gfm: true });
     } else {
-      html = esc(text).replace(/\n/g, "<br>");
+      html = esc(cleaned).replace(/\n/g, "<br>");
     }
   } catch (e) {
-    html = esc(text).replace(/\n/g, "<br>");
+    html = esc(cleaned).replace(/\n/g, "<br>");
   }
   return html;
 }
 
 function parseQuizFromAiText(text) {
   const raw = String(text || "").replace(/<[^>]+>/g, " ");
-  let question = "";
   const opts = ["", "", "", ""];
-  let correct = 0;
+  let correct = -1;
+  let question = "";
+
   const qMatch = raw.match(/\*\*\s*Question\s*:\s*\*\*\s*([\s\S]*?)(?=\n\s*[A-D][)\.]|\n\s*\*\*|$)/i)
-    || raw.match(/Question\s*:\s*([\s\S]*?)(?=\n\s*[A-D][)\.]|$)/i);
+    || raw.match(/(?:^|\n)\s*Question\s*:\s*([\s\S]*?)(?=\n\s*[A-D][)\.]|$)/i);
   if (qMatch) question = qMatch[1].trim();
-  else {
-    const lines = raw.split(/\n+/).map((l) => l.trim()).filter(Boolean);
-    if (lines.length) question = lines[0].replace(/^#+\s*/, "");
-  }
+
   const optRe = /(?:^|\n)\s*([A-D])[)\.]\s*([^\n]+)/gi;
   let m;
+  let optCount = 0;
   while ((m = optRe.exec(raw)) !== null) {
     const idx = m[1].toUpperCase().charCodeAt(0) - 65;
-    if (idx >= 0 && idx < 4) opts[idx] = m[2].trim();
+    if (idx >= 0 && idx < 4 && !opts[idx]) {
+      opts[idx] = stripMdNoise(cleanMathText(m[2]));
+      optCount++;
+    }
   }
-  const cMatch = raw.match(/\*\*\s*Correct\s*:\s*\*\*\s*([A-D])/i) || raw.match(/Correct\s*:\s*([A-D])/i);
+
+  const cMatch = raw.match(/\*\*\s*Correct\s*:\s*\*\*\s*([A-D])/i) || raw.match(/(?:^|\n)\s*Correct\s*:\s*([A-D])/i);
   if (cMatch) correct = Math.max(0, Math.min(3, cMatch[1].toUpperCase().charCodeAt(0) - 65));
-  if (!question && !opts.some(Boolean)) return null;
-  return { question: question || "AI question", options: opts, correct: correct };
+
+  // Strict: only real quiz blocks get the Apply button (needs Question + ≥2 options + Correct)
+  if (!question || optCount < 2 || correct < 0) return null;
+
+  question = stripMdNoise(cleanMathText(question));
+  return { question: question, options: opts, correct: correct };
 }
 
 function applyAiQuizToBuilder(question, optA, optB, optC, optD, correctIdx) {
   showPanel("quizPanel");
-  $("qText").value = question || "";
-  $("q0").value = optA || "";
-  $("q1").value = optB || "";
-  $("q2").value = optC || "";
-  $("q3").value = optD || "";
-  if (typeof correctIdx === "number") {
+  $("qText").value = stripMdNoise(cleanMathText(question || ""));
+  $("q0").value = stripMdNoise(cleanMathText(optA || ""));
+  $("q1").value = stripMdNoise(cleanMathText(optB || ""));
+  $("q2").value = stripMdNoise(cleanMathText(optC || ""));
+  $("q3").value = stripMdNoise(cleanMathText(optD || ""));
+  if (typeof correctIdx === "number" && correctIdx >= 0) {
     correctIndex = Math.max(0, Math.min(3, correctIdx));
     paintTicks();
   }
   if (typeof paintQuizPreview === "function") paintQuizPreview();
-  snack("AI quiz loaded — review and Send to class");
+  snack("Quiz loaded — review options, then Send to class");
 }
 
 window.applyAiQuizToBuilder = applyAiQuizToBuilder;
@@ -5507,6 +5537,7 @@ window.applyAiQuizToBuilder = applyAiQuizToBuilder;
 function attachApplyQuizButton(container, sourceText) {
   const parsed = parseQuizFromAiText(sourceText);
   if (!parsed) return;
+  if (container.querySelector(".ai-action-btn")) return;
   const actions = document.createElement("div");
   actions.className = "ai-actions";
   const btn = document.createElement("button");
@@ -5606,12 +5637,12 @@ async function aiSend() {
         messages: [
           {
             role: "system",
-            content: "You are Glamber, the classroom AI for SkyLabs teachers. Rules: (1) Clean Markdown only. (2) Math with $inline$ or $$display$$. (3) Short paragraphs and bullets. (4) No raw HTML. (5) Quizzes use exact structure with **Question:** A) B) C) D) **Correct:**. (6) When analyzing students use the LIVE CLASS SNAPSHOT — name students, cite scores/focus/teams/telemetry, give actionable tips.\n\n" + buildGlamberClassSnapshot()
+            content: "You are Glamber — SkyLabs classroom AI for teachers. Be sharp, short, and useful (not a support bot).\nRules:\n1) Clean Markdown. Short paragraphs or tight bullets. No filler.\n2) Math: use $...$ for inline (e.g. $\\frac{3}{8}$) and $$...$$ only for display. Never write raw \\displaystyle or leave unrendered LaTeX for humans to read.\n3) When asked for a quiz, reply ONLY in this exact structure (no extra prose before/after):\n**Question:** <clear stem>\nA) <option>\nB) <option>\nC) <option>\nD) <option>\n**Correct:** <letter>\n4) Options with fractions must use KaTeX, e.g. $\\frac{1}{8}$ not 1/8 alone if it is a pure fraction answer.\n5) For class analysis use the LIVE CLASS SNAPSHOT: name students, cite scores/focus/teams/telemetry, give one concrete next action.\n6) Prefer exact answers over long explanations.\n\n" + buildGlamberClassSnapshot()
           },
           ...aiHistory.slice(-10)
         ],
-        temperature: 0.6,
-        max_tokens: 600
+        temperature: 0.45,
+        max_tokens: 550
       })
     });
     const data = await res.json();
