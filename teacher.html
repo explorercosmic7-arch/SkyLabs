@@ -417,33 +417,96 @@
       60% { transform: scale(1.08) rotate(0deg); opacity: 1; }
       100% { transform: scale(1); opacity: 1; }
     }
-    .telemetry {
-      position:absolute; top:12px; left:12px; right:56px; display:flex; gap:6px; flex-wrap:wrap; z-index:4;
+    /* Lab-open: 6 metric boxes fill the tile body */
+    .tile.lab-mode .screen { background: #12141a; }
+    .tile.lab-mode .screen .wait { display: none; }
+    .lab-metrics {
+      position: absolute;
+      left: 10px; right: 10px;
+      top: 44px;
+      bottom: 52px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 8px;
+      z-index: 4;
       pointer-events: none;
-      align-items: flex-start;
     }
-    .telemetry .t-metric {
-      display: inline-flex;
+    .lab-box {
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: none;
-      color: #202124;
-      font-variant-numeric: tabular-nums;
-      box-shadow: 0 1px 4px rgba(0,0,0,.28);
+      padding: 6px 4px;
+      border: 1.5px solid rgba(255,255,255,.14);
+      min-height: 0;
     }
-    .telemetry .t-metric .material-symbols-outlined {
+    .lab-box .lb-val {
       font-size: 15px;
-      font-weight: 500;
-      color: #202124;
+      font-weight: 600;
+      color: #fff;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+      text-align: center;
     }
-    .telemetry .t-metric.m-g { background: #8ab4f8; }
-    .telemetry .t-metric.m-vel { background: #81c995; }
-    .telemetry .t-metric.m-heat { background: #f9ab00; }
-    .telemetry .t-val { color: #202124; transition: opacity 0.2s ease; }
+    .lab-box .lb-lbl {
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      opacity: 0.9;
+      color: rgba(255,255,255,.88);
+    }
+    .lab-box.b-alt { background: #1a3a6e; border-color: #8ab4f8; }
+    .lab-box.b-vel { background: #0d3b24; border-color: #81c995; }
+    .lab-box.b-g { background: #3c2a00; border-color: #f9ab00; }
+    .lab-box.b-heat { background: #4a1800; border-color: #e8710a; }
+    .lab-box.b-phase { background: #2a1a4a; border-color: #c58af9; }
+    .lab-box.b-out { background: #202124; border-color: #9aa0a6; }
+    .lab-box.b-out.ok { background: #0d3b24; border-color: #0f9d58; }
+    .lab-box.b-out.bad { background: #3c1010; border-color: #d93025; }
+    .tile-topbar {
+      position: absolute;
+      left: 0; right: 0; top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px 8px;
+      background: linear-gradient(rgba(0,0,0,.72), transparent);
+      pointer-events: none;
+    }
+    .tile-topbar .name-text {
+      flex: 1;
+      min-width: 0;
+      font-size: 13px;
+      font-weight: 500;
+      color: #fff;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .tile-lab-stripe {
+      position: absolute;
+      left: 0; right: 0; bottom: 48px;
+      z-index: 5;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      color: #fff;
+      text-align: center;
+      pointer-events: none;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tile-lab-stripe.lab-reentry { background: rgba(232,113,10,.92); }
+    .tile-lab-stripe.lab-twr { background: rgba(26,115,232,.9); }
+    .tile-lab-stripe.lab-deltav { background: rgba(147,52,230,.9); }
+    .tile-lab-stripe.lab-default { background: rgba(60,64,67,.9); }
     .screen {
       flex:1; margin:0; border-radius:0; background:#0b0d12;
       border:none; overflow:hidden; position:relative;
@@ -3495,19 +3558,65 @@ function formatG(g) {
   return n.toFixed(1) + " g";
 }
 
+function isLabSessionActive() {
+  if (typeof lastLab !== "undefined" && lastLab && lastLab.url) return true;
+  const now = Date.now();
+  for (const sid in telemetryMap) {
+    const t = telemetryMap[sid];
+    if (t && t.labId && (now - (Number(t.at) || 0) < 45000)) return true;
+  }
+  return false;
+}
+
+function formatAlt(a) {
+  const n = Number(a);
+  if (n == null || isNaN(n)) return "—";
+  if (n >= 100) return Math.round(n) + " km";
+  if (n >= 1) return n.toFixed(1) + " km";
+  return Math.round(n * 1000) + " m";
+}
+
+function phaseLabel(t) {
+  if (!t) return "—";
+  let st = String(t.status || "").toUpperCase();
+  if (!st || st === "LIVE") {
+    if (t.outcome === "pass") st = "SUCCESS";
+    else if (t.outcome === "fail") st = "FAILED";
+    else st = "ORBITAL";
+  }
+  const labels = {
+    ORBITAL: "ORBITAL", "DE-ORBIT": "DE-ORBIT", ATTITUDE: "ATTITUDE",
+    ENTRY: "ENTRY", HEAT: "HEAT", PARACHUTE: "CHUTE",
+    TOUCHDOWN: "LAND", SUCCESS: "PASS", FAILED: "FAIL", FROZEN: "FROZEN"
+  };
+  return labels[st] || st.slice(0, 10);
+}
+
 function telemetryHtml(sid) {
+  // Only when a lab is open — otherwise tile stays clean lobby style
+  if (!isLabSessionActive()) return "";
   const t = telemetryMap[sid] || (window._tele && window._tele[sid]) || null;
-  if (!t) return "";
-  // Three clean metric pills: G · Velocity · Heat flux
-  const g = formatG(t.g);
-  const vel = formatVel(t.vel);
-  const heat = formatHeat(t.heat);
-  let html = "<div class='telemetry' data-sid='" + esc(sid) + "'>";
-  html += "<span class='t-metric m-g'><span class='material-symbols-outlined'>speed</span><span class='t-val' data-k='g'>" + esc(g) + "</span></span>";
-  html += "<span class='t-metric m-vel'><span class='material-symbols-outlined'>rocket_launch</span><span class='t-val' data-k='vel'>" + esc(vel) + "</span></span>";
-  html += "<span class='t-metric m-heat'><span class='material-symbols-outlined'>local_fire_department</span><span class='t-val' data-k='heat'>" + esc(heat) + "</span></span>";
-  html += "</div>";
-  return html;
+  const alt = t ? formatAlt(t.alt) : "—";
+  const vel = t ? formatVel(t.vel) : "—";
+  const g = t ? formatG(t.g) : "—";
+  const heat = t ? formatHeat(t.heat) : "—";
+  const phase = phaseLabel(t);
+  let outVal = "—";
+  let outCls = "b-out";
+  if (t && t.outcome === "pass") { outVal = "PASS"; outCls = "b-out ok"; }
+  else if (t && t.outcome === "fail") { outVal = (t.reason ? String(t.reason).slice(0, 12) : "FAIL"); outCls = "b-out bad"; }
+  else if (t && t.status) { outVal = "LIVE"; }
+
+  return (
+    "<div class='lab-metrics' data-sid='" + esc(sid) + "'>" +
+      "<div class='lab-box b-alt'><div class='lb-val'>" + esc(alt) + "</div><div class='lb-lbl'>Altitude</div></div>" +
+      "<div class='lab-box b-vel'><div class='lb-val'>" + esc(vel) + "</div><div class='lb-lbl'>Velocity</div></div>" +
+      "<div class='lab-box b-g'><div class='lb-val'>" + esc(g) + "</div><div class='lb-lbl'>G-force</div></div>" +
+      "<div class='lab-box b-heat'><div class='lb-val'>" + esc(heat) + "</div><div class='lb-lbl'>Heat flux</div></div>" +
+      "<div class='lab-box b-phase'><div class='lb-val'>" + esc(phase) + "</div><div class='lb-lbl'>Phase</div></div>" +
+      "<div class='lab-box " + outCls + "'><div class='lb-val'>" + esc(outVal) + "</div><div class='lb-lbl'>Mission</div></div>" +
+    "</div>"
+  );
 }
 
 function statusPillHtml(t) {
@@ -3689,7 +3798,8 @@ function renderStage(force) {
   const list = spotlight
     ? [students.find((s) => s.sid === spotlight)].concat(students.filter((s) => s.sid !== spotlight)).filter(Boolean)
     : students;
-  const sidKey = list.map((s) => s.sid).join("|") + "|" + (spotlight || "");
+  const labOnKey = isLabSessionActive() ? "L1" : "L0";
+  const sidKey = list.map((s) => s.sid).join("|") + "|" + (spotlight || "") + "|" + labOnKey;
   const structureChanged = force || sidKey !== window._stageSids;
   stage.style.gridTemplateColumns = layout(list.length);
 
@@ -3705,6 +3815,7 @@ function renderStage(force) {
       }
     });
     window._stageSids = sidKey;
+    const labOn = isLabSessionActive();
     stage.innerHTML = list.map((s) => {
       const lost = focusLock && focusMap[s.sid] === false;
       const team = teams[s.sid] ? "<span class='team-tag'>" + teams[s.sid] + "</span>" : "";
@@ -3713,25 +3824,29 @@ function renderStage(force) {
       const t = telemetryMap[s.sid] || (window._tele && window._tele[s.sid]) || null;
       const outcome = t && t.outcome ? String(t.outcome) : "";
       const missionCls = outcome === "pass" ? " mission-pass" : (outcome === "fail" ? " mission-fail" : "");
-      const labLabel = labPillLabel(t);
-      const labCls = labPillClass(t && t.labId);
+      const labLabel = labOn ? (labPillLabel(t) || (typeof lastLab !== "undefined" && lastLab && lastLab.name) || "Lab live") : "";
+      const labCls = labPillClass((t && t.labId) || (labOn ? "reentry" : ""));
       const screenInner = hasLive
         ? ""
-        : (s.frame
-          ? "<img alt='' src='" + s.frame + "' />"
-          : "<div class='wait'><span class='material-symbols-outlined'>desktop_windows</span>In class<br>" + esc(s.nick) + "</div>");
+        : (labOn
+          ? ""
+          : (s.frame
+            ? "<img alt='' src='" + s.frame + "' />"
+            : "<div class='wait'><span class='material-symbols-outlined'>desktop_windows</span>In class<br>" + esc(s.nick) + "</div>"));
       const badgeIcon = outcome === "fail" ? "close" : "check";
       const badgeTitle = outcome === "fail" ? "Fail" : (outcome === "pass" ? "Pass" : "");
       const badgeSub = outcome === "fail" ? esc(String((t && t.reason) || "Mission failed").slice(0, 40)) : (outcome === "pass" ? esc(s.nick) + " · clear" : "");
-      return "<div class='tile" + (s.sid === spotlight ? " pinned" : "") + (lost ? " focus-lost" : "") + (copilots[s.sid] ? " copilot" : "") + missionCls + "' data-sid='" + esc(s.sid) + "' data-nick='" + esc(s.nick) + "'>" +
-        "<div class='tile-avatar'>" + esc(avatarLetter(s.nick)) + "</div>" +
-        (labLabel ? "<div class='tile-lab-pill " + labCls + "'>" + esc(labLabel) + "</div>" : "") +
-        "<div class='screen' data-screen='" + esc(s.sid) + "'>" + telemetryHtml(s.sid) + screenInner +
+      return "<div class='tile" + (labOn ? " lab-mode" : "") + (s.sid === spotlight ? " pinned" : "") + (lost ? " focus-lost" : "") + (copilots[s.sid] ? " copilot" : "") + missionCls + "' data-sid='" + esc(s.sid) + "' data-nick='" + esc(s.nick) + "'>" +
+        (labOn
+          ? "<div class='tile-topbar'><span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + "</span><div class='tile-avatar' style='position:static;width:28px;height:28px;font-size:12px;flex-shrink:0'>" + esc(avatarLetter(s.nick)) + "</div></div>"
+          : "<div class='tile-avatar'>" + esc(avatarLetter(s.nick)) + "</div>") +
+        "<div class='screen' data-screen='" + esc(s.sid) + "'>" + (labOn ? telemetryHtml(s.sid) : "") + screenInner +
         (outcome ? "<div class='tile-mission-badge'><div class='tick'><span class='material-symbols-outlined'>" + badgeIcon + "</span></div><div class='mb-title'>" + badgeTitle + "</div><div class='mb-sub'>" + badgeSub + "</div></div>" : "") +
         "</div>" +
+        (labOn && labLabel ? "<div class='tile-lab-stripe " + labCls + "'>" + esc(labLabel) + "</div>" : "") +
         "<div class='tile-foot'>" +
         "<div class='caption'><span class='live " + (s.online ? "" : "off") + "'></span><span class='name-text'>" + esc(s.nick) + " · " + (s.score || 0) + " pts" + team + role + (lost ? " · left tab" : "") + "</span></div>" +
-        statusPillHtml(t) +
+        (labOn ? statusPillHtml(t) : "") +
         "<button type='button' class='tile-menu-btn" + (unreadDmBySid[s.sid] ? " has-unread" : "") + "' title='Student tools' aria-label='Menu'><span class='material-symbols-outlined'>more_vert</span></button>" +
         "</div>" +
         "<div class='tile-menu' role='menu'>" +
@@ -4081,9 +4196,9 @@ function connectWs() {
       startPresentToStudent(msg.sid);
     }
     if (msg.type === "telemetry" && msg.data && msg.data.sid) {
-      telemetryMap[msg.data.sid] = Object.assign({}, telemetryMap[msg.data.sid] || {}, msg.data);
+      telemetryMap[msg.data.sid] = Object.assign({}, telemetryMap[msg.data.sid] || {}, msg.data, { at: Date.now() });
       window._tele = telemetryMap;
-      if (view === "class") renderStage();
+      // Batch paint every 5s (not every packet) so the whole grid refreshes together
       return;
     }
     if (msg.type === "focus" && typeof msg.focus === "boolean" && msg.sid) {
@@ -4997,6 +5112,8 @@ $("qCloseQuiz").onclick = async () => {
 $("btnCloseLab").onclick = async () => {
   if (!roomId) { snack("Create a class first"); return; }
   lastLab = null;
+  telemetryMap = {};
+  window._tele = {};
   await control("LAB_STATE", {
     payload: {
       className: className,
@@ -5017,6 +5134,7 @@ $("btnCloseLab").onclick = async () => {
   syncGlamberLab(); // Glamber comes back after the lab closes
   view = "class";
   $("stage").style.display = "grid";
+  renderStage(true);
   renderStage();
   addNote("Lab closed for students");
   snack("Lab closed — students return to lobby");
@@ -6147,6 +6265,12 @@ window.addEventListener("resize", () => {
   }, 150);
 });
 setInterval(poll, 1000);
+// Student lab metric boxes: full-grid refresh every 5 seconds
+setInterval(() => {
+  if (view === "class" && typeof isLabSessionActive === "function" && isLabSessionActive()) {
+    renderStage();
+  }
+}, 5000);
 </script>
 </body>
 </html>
