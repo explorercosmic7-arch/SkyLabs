@@ -789,9 +789,10 @@
 </head>
 <body>
 
-<header class="sl-glass-nav" id="slGlassNav">
+  <header class="sl-glass-nav" id="slGlassNav">
     <div class="sl-nav-container">
       <div class="sl-left-group">
+        <!-- Left: Massive Icon + Massive SkyLabs Word + Gap -->
         <a href="index.html" class="sl-brand" aria-label="SkyLabs Space Lab Home">
           <img
             src="Favicon.png"
@@ -802,8 +803,10 @@
           <span class="sl-brand-word">SkyLabs</span>
         </a>
 
+        <!-- Navigation Links (Words Only) -->
         <nav aria-label="Primary Navigation">
           <ul class="sl-nav-list">
+            <!-- 1. About Dropdown: Journey, Labs, Telemetry -->
             <li class="sl-nav-item">
               <a href="index.html#about" class="sl-nav-trigger" aria-expanded="false">About</a>
               <div class="sl-dropdown" role="menu" aria-label="About menu">
@@ -815,8 +818,9 @@
               </div>
             </li>
 
+            <!-- 2. Labs Dropdown: 3 Space Lab Topics -->
             <li class="sl-nav-item">
-              <a href="join.html" class="sl-nav-trigger" aria-expanded="false">Class</a>
+              <a href="Labs.html" class="sl-nav-trigger" aria-expanded="false">Labs</a>
               <div class="sl-dropdown" role="menu" aria-label="Class topics">
                 <ul class="sl-dropdown-list">
                   <li><a href="orbital-labs.html" class="sl-dropdown-link" role="menuitem">Orbital Mechanics</a></li>
@@ -826,17 +830,19 @@
               </div>
             </li>
 
+            <!-- 3. Contact -->
             <li class="sl-nav-item">
               <a href="Contact.html" class="sl-nav-trigger">Contact</a>
             </li>
 
+            <!-- 4. Docs Dropdown: Important -->
             <li class="sl-nav-item">
               <a href="index.html#docs" class="sl-nav-trigger" aria-expanded="false">Docs</a>
               <div class="sl-dropdown" role="menu" aria-label="Documentation">
                 <span class="sl-dropdown-badge">Important</span>
                 <ul class="sl-dropdown-list">
                   <li><a href="Docs.html" class="sl-dropdown-link" role="menuitem">Mission Guide</a></li>
-                  <li><a href="Cloudclass.html" class="sl-dropdown-link" role="menuitem">Cloud Class</a></li>
+                  <li><a href="Why.html" class="sl-dropdown-link" role="menuitem">Why</a></li>
                   <li><a href="Safe.html" class="sl-dropdown-link" role="menuitem">Lab Safety &amp; Rules</a></li>
                 </ul>
               </div>
@@ -845,10 +851,12 @@
         </nav>
       </div>
 
+      <!-- Right Corner Button: Massive Words Only -->
       <div class="sl-right-action">
-        <a href="join.html" class="sl-join-btn">Join Now</a>
+        <a href="Labs.html" class="sl-join-btn">Explore Labs</a>
       </div>
 
+      <!-- Mobile 2-Line Hamburger Button (No Circle Container) -->
       <button
         type="button"
         class="sl-hamburger"
@@ -862,7 +870,9 @@
       </button>
     </div>
 
+    <!-- Mobile Full-Width Top Panel -->
     <div class="sl-mobile-panel" id="slMobilePanel" aria-label="Mobile Navigation">
+      <!-- 1. About -->
       <div class="sl-mobile-section">
         <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobAbout" aria-expanded="false">
           <span>About</span>
@@ -871,7 +881,6 @@
         <div class="sl-mobile-collapse" id="mobAbout">
           <div class="sl-mobile-collapse-inner">
             <ul class="sl-mobile-sublist">
-              <li><a href="index.html#about">About Overview</a></li>
               <li><a href="Journey.html">Journey</a></li>
               <li><a href="Labs.html">Labs</a></li>
               <li><a href="Telemetry.html">Telemetry</a></li>
@@ -882,9 +891,10 @@
 
       <hr class="sl-mobile-divider" />
 
+      <!-- 2. Labs -->
       <div class="sl-mobile-section">
         <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobClass" aria-expanded="false">
-          <span>Class</span>
+          <span>Labs</span>
           <span class="sl-arrow" aria-hidden="true">&#8594;</span>
         </button>
         <div class="sl-mobile-collapse" id="mobClass">
@@ -900,6 +910,7 @@
 
       <hr class="sl-mobile-divider" />
 
+      <!-- 3. Contact -->
       <div class="sl-mobile-section">
         <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobContact" aria-expanded="false">
           <span>Contact</span>
@@ -908,7 +919,7 @@
         <div class="sl-mobile-collapse" id="mobContact">
           <div class="sl-mobile-collapse-inner">
             <ul class="sl-mobile-sublist">
-              <li><a href="Contact.html">Contact Page</a></li> 
+              <li><a href="Contact.html">Contact Page</a></li>
             </ul>
           </div>
         </div>
@@ -916,6 +927,7 @@
 
       <hr class="sl-mobile-divider" />
 
+      <!-- 4. Docs -->
       <div class="sl-mobile-section">
         <button type="button" class="sl-mobile-main-btn" data-mobile-target="mobDocs" aria-expanded="false">
           <span>Docs</span>
@@ -925,7 +937,7 @@
           <div class="sl-mobile-collapse-inner">
             <ul class="sl-mobile-sublist">
               <li><a href="Docs.html">Mission Guide</a></li>
-              <li><a href="Cloudclass.html">Cloud Class</a></li>
+              <li><a href="Why.html">Why</a></li>
               <li><a href="Safe.html">Lab Safety &amp; Rules</a></li>
             </ul>
           </div>
@@ -934,7 +946,7 @@
 
       <hr class="sl-mobile-divider" />
 
-      <a href="join.html" class="sl-mobile-join">Join Now</a>
+      <a href="Labs.html" class="sl-mobile-join">Explore Labs</a>
     </div>
   </header>
 
@@ -4323,7 +4335,7 @@
           />
           <span class="sl-ft-word">SkyLabs</span>
         </a>
-        <span class="sl-ft-tagline">Visual space labs, orbits, and cloud classrooms.</span>
+        <span class="sl-ft-tagline">SkyLabs Visual space labs, orbits, and aerospace guides.</span>
       </div>
 
       <a href="reentry.html" class="sl-ft-top-btn">Re-Entry Labs</a>
@@ -4364,7 +4376,7 @@
         <h3 class="sl-ft-col-title">SkyLabs</h3>
         <ul class="sl-ft-links">
           <li><a href="index.html">Home</a></li>
-          <li><a href="join.html">Join with PIN</a></li>
+          <li><a href="Labs.html">Labs</a></li>
           <li><a href="Contact.html">Contact</a></li>
           <li><a href="Start.html">Start guide</a></li>
         </ul>
@@ -4375,7 +4387,7 @@
       <p class="sl-ft-copy" id="slReentryFooterCopy">SkyLabs</p>
       <div class="sl-ft-meta">
         <a href="reentry.html" class="sl-ft-meta-link">Re-Entry Labs</a>
-        <a href="Class-PIN" class="sl-ft-meta-link">Class PIN</a>
+        <a href="News.html" class="sl-ft-meta-link">News</a>
         <button type="button" class="sl-ft-top-trigger" id="slReentryBackToTop">Back to top &#8593;</button>
       </div>
     </div>
