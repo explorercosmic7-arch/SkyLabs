@@ -1919,7 +1919,135 @@
     </div>
   </section>
   <hr>
-  
+  <!-- ============================================================
+       SECTION 7: FOCUS & CLASS PULSE (HORIZONTAL STRIP)
+       ============================================================ -->
+  <style>
+    .sl-cc-pulse-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 1px solid rgba(255, 255, 255, 0.14);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(11, 15, 23, 0.72);
+    }
+
+    .sl-cc-pulse-cell {
+      padding: 28px 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      transition: background-color 0.22s ease;
+    }
+
+    .sl-cc-pulse-cell:last-child {
+      border-right: 0;
+    }
+
+    .sl-cc-pulse-cell:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .sl-cc-pulse-tag {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 10px;
+    }
+
+    .sl-cc-pulse-title {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1.3;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    .sl-cc-pulse-desc {
+      font-family: 'Google Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.55;
+      color: var(--sl-text-muted);
+    }
+
+    @media (max-width: 1020px) {
+      .sl-cc-pulse-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .sl-cc-pulse-cell:nth-child(2) {
+        border-right: 0;
+      }
+      .sl-cc-pulse-cell:nth-child(1),
+      .sl-cc-pulse-cell:nth-child(2) {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .sl-cc-pulse-strip {
+        grid-template-columns: 1fr;
+      }
+      .sl-cc-pulse-cell {
+        border-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        padding: 22px 18px;
+      }
+      .sl-cc-pulse-cell:last-child {
+        border-bottom: 0;
+      }
+    }
+  </style>
+
+  <section class="sl-cc-section" id="focus-and-class-pulse" aria-labelledby="slPulseTitle">
+    <div class="sl-cc-container">
+      <div class="sl-cc-header">
+        <span class="sl-cc-eyebrow">07 · Attention &amp; Pace</span>
+        <h2 class="sl-cc-heading" id="slPulseTitle">Focus and class pulse</h2>
+        <p class="sl-cc-lead">
+          Keep attention anchored on the current activity while giving teachers a clear sense of how the room is keeping up.
+        </p>
+      </div>
+
+      <div class="sl-cc-pulse-strip">
+        <div class="sl-cc-pulse-cell">
+          <span class="sl-cc-pulse-tag">Attention</span>
+          <h3 class="sl-cc-pulse-title">Stay locked on the task</h3>
+          <p class="sl-cc-pulse-desc">
+            Students see the active step clearly so side distractions do not pull them away from the lesson.
+          </p>
+        </div>
+
+        <div class="sl-cc-pulse-cell">
+          <span class="sl-cc-pulse-tag">Room Signal</span>
+          <h3 class="sl-cc-pulse-title">Read the class pulse</h3>
+          <p class="sl-cc-pulse-desc">
+            Teachers can tell whether students are cruising through, taking their time, or hitting a wall.
+          </p>
+        </div>
+
+        <div class="sl-cc-pulse-cell">
+          <span class="sl-cc-pulse-tag">Pacing</span>
+          <h3 class="sl-cc-pulse-title">Adjust on the fly</h3>
+          <p class="sl-cc-pulse-desc">
+            Slow down for a tricky concept or move ahead smoothly when everyone has got it.
+          </p>
+        </div>
+
+        <div class="sl-cc-pulse-cell">
+          <span class="sl-cc-pulse-tag">Clarity</span>
+          <h3 class="sl-cc-pulse-title">Catch stuck moments early</h3>
+          <p class="sl-cc-pulse-desc">
+            Spot where learners need extra guidance before confusion snowballs at the end of class.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
 
 
 </body>
