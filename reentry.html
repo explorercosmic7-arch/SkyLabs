@@ -910,13 +910,38 @@ input[type=range] { width: 100%; accent-color: #1a73e8; height: 5px; cursor: poi
 }
 .confetti-piece {
   position: absolute;
-  top: -20px;
+  top: -28px;
+  width: var(--w, 8px);
+  height: var(--h, 12px);
   border-radius: 2px;
-  animation: confettiFall linear forwards;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation-timing-function: cubic-bezier(0.18, 0.68, 0.28, 1);
+  animation-fill-mode: forwards;
+  transform-origin: center center;
+}
+.confetti-piece.from-sky { animation-name: confettiFall; }
+.confetti-piece.from-cannon { top: auto; animation-name: confettiCannon; }
+.confetti-piece.is-dot { border-radius: 50%; }
+.confetti-piece.is-ribbon { border-radius: 999px; }
+.confetti-piece.is-diamond {
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+.confetti-piece.is-star {
+  border-radius: 0;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
 }
 @keyframes confettiFall {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.3; }
+  0% { transform: translate3d(0, -8vh, 0) rotate(0deg) scale(0.45); opacity: 0; }
+  12% { opacity: 1; }
+  100% { transform: translate3d(var(--dx, 40px), 114vh, 0) rotate(var(--spin, 680deg)) scale(1); opacity: 0; }
+}
+@keyframes confettiCannon {
+  0% { transform: translate3d(0, 8vh, 0) rotate(0deg) scale(0.25); opacity: 0; }
+  16% { opacity: 1; }
+  46% { transform: translate3d(var(--dx, 18vw), var(--rise, -52vh), 0) rotate(180deg) scale(1); opacity: 1; }
+  100% { transform: translate3d(calc(var(--dx, 18vw) * 1.28), 22vh, 0) rotate(var(--spin, 620deg)) scale(0.78); opacity: 0; }
 }
 
 .ai-fab {
@@ -1295,172 +1320,6 @@ body.fs-sim-only .right-panel {
   .ai-panel { right: 12px; left: 12px; width: auto; bottom: 82px; height: 430px; }
 }
 
-/* ===== Clean Ad Popup ===== */
-.ad-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.72);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  z-index: 800;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-}
-.ad-overlay.show { display: flex; }
-.ad-card {
-  background: #fff;
-  color: #202124;
-  border-radius: 16px;
-  width: min(420px, 94vw);
-  overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-  font-family: "Google Sans", Roboto, "Helvetica Neue", Arial, sans-serif;
-  position: relative;
-}
-.ad-header {
-  background: linear-gradient(135deg, #1a73e8, #8ab4f8);
-  color: #fff;
-  padding: 14px 18px;
-  font-size: 20.8px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.ad-carousel {
-  position: relative;
-  height: 220px;
-  overflow: hidden;
-  background: #f8f9fa;
-}
-.ad-track {
-  display: flex;
-  height: 100%;
-  transition: transform 0.55s cubic-bezier(0.25,0.8,0.25,1);
-}
-.ad-slide {
-  min-width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #fff;
-}
-.ad-slide img {
-  max-width: 92%;
-  max-height: 92%;
-  object-fit: contain;
-  border-radius: 6px;
-}
-.ad-dots {
-  display: flex;
-  justify-content: center;
-  gap: 7px;
-  padding: 10px 0 4px;
-}
-.ad-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: #dadce0;
-  cursor: pointer;
-  transition: 0.2s;
-}
-.ad-dot.active { background: #1a73e8; transform: scale(1.25); }
-.ad-body {
-  padding: 12px 18px 16px;
-  text-align: center;
-}
-.ad-body h3 {
-  font-size: 22.1px;
-  margin-bottom: 6px;
-  color: #202124;
-}
-.ad-body p {
-  font-size: 17.6px;
-  color: #5f6368;
-  line-height: 1.45;
-  margin-bottom: 14px;
-}
-.ad-cta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: linear-gradient(135deg, #1a73e8, #8ab4f8);
-  color: #fff;
-  border: none;
-  border-radius: 999px;
-  padding: 12px 28px;
-  font-size: 19.5px;
-  font-family: "Google Sans", Roboto, "Helvetica Neue", Arial, sans-serif;
-  cursor: pointer;
-  text-decoration: none;
-  width: 100%;
-  transition: 0.2s;
-}
-.ad-cta:hover { filter: brightness(1.12); }
-.ad-skip {
-  position: absolute;
-  top: 10px; right: 12px;
-  background: rgba(0,0,0,0.55);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 15.6px;
-  font-family: "Google Sans", Roboto, "Helvetica Neue", Arial, sans-serif;
-  cursor: pointer;
-  opacity: 0;
-  pointer-events: none;
-  transition: 0.3s;
-  z-index: 5;
-}
-.ad-skip.show {
-  opacity: 1;
-  pointer-events: auto;
-}
-.ad-timer {
-  font-size: 15.6px;
-  color: #9aa0a6;
-  margin-top: 8px;
-}
-/* ===== SkyLabs Classroom Bridge (Reentry) ===== */
-.nh-freeze-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 99990;
-  background: rgba(20, 6, 4, 0.78);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  pointer-events: all;
-  backdrop-filter: blur(6px);
-}
-.nh-freeze-overlay.show {
-  display: flex;
-}
-.nh-freeze-overlay .box {
-  background: rgba(24, 10, 6, 0.96);
-  border: 1px solid rgba(26,115,232, 0.55);
-  border-radius: 16px;
-  padding: 22px 28px;
-  color: #8ab4f8;
-  font-family: "Google Sans", Roboto, "Helvetica Neue", Arial, sans-serif;
-  box-shadow: 0 0 40px rgba(26,115,232, 0.28);
-}
-.nh-freeze-overlay h2 {
-  font-size: 26px;
-  letter-spacing: 1px;
-  margin-bottom: 8px;
-  color: #1a73e8;
-}
-.nh-freeze-overlay p {
-  font-size: 16.9px;
-  color: #5f6368;
-}
 /* Unified thin Google-style font weight for EVERYTHING */
 *, *::before, *::after {
   font-weight: 300 !important;
@@ -1900,45 +1759,8 @@ h1, h2, h3, h4, h5, h6, th { font-weight: 300 !important; }
 </div>
 
 
-<!-- Clean Ad Overlay -->
-<div class="ad-overlay" id="adOverlay">
-  <div class="ad-card">
-    <button class="ad-skip" id="adSkip">Skip Ad</button>
-    <div class="ad-header">
-      <span class="material-symbols-outlined" style="font-size: 26px">rocket_launch</span>
-      Buy Rocket Tools
-    </div>
-    <div class="ad-carousel">
-      <div class="ad-track" id="adTrack">
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/51NewLrhn3L.jpg" alt="Rocket tools"></div>
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/81GOwO91xtL._AC_SL1500_.jpg" alt="Books"></div>
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/81an+wibbPL._AC_SL1500_.jpg" alt="Models"></div>
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/91uyY7WNoxL._SL1500_.jpg" alt="Gifts"></div>
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/61klXS3jD2L._AC_SL1280_.jpg" alt="Tools"></div>
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/81HlKcwkRRL._SL1500_.jpg" alt="More"></div>
-        <div class="ad-slide"><img src="https://m.media-amazon.com/images/I/712AEz19OiL._SL1500_.jpg" alt="New tools"></div>
-      </div>
-    </div>
-    <div class="ad-dots" id="adDots"></div>
-    <div class="ad-body">
-      <h3>Rocket Tools & More</h3>
-      <p>Buy books · tools · gifts · models and more for your next mission.</p>
-      <a class="ad-cta" href="all-rocket-tools.html" target="_blank" rel="noopener">
-        <span class="material-symbols-outlined" style="font-size: 23.4px">shopping_cart</span>
-        Open Rocket Tools Store
-      </a>
-      <div class="ad-timer" id="adTimer">Ad ends in 13 s</div>
-    </div>
-  </div>
-</div>
 <div id="confettiBox"></div>
 <div class="toast" id="toast"></div>
-<div class="nh-freeze-overlay" id="nhFreezeOverlay">
-  <div class="box">
-    <h2>Simulations paused by teacher</h2>
-    <p>This lab is paused by your teacher. Waiting to resume…</p>
-  </div>
-</div>
 <script>
 /* ===== MERGED CODE - Deep Ocean + Parachutes + Dusty Surfaces + Smooth Simulation ===== */
 const G0 = 9.80665;
@@ -3699,21 +3521,101 @@ function fireConfetti() {
   const box = document.getElementById('confettiBox');
   if (!box) return;
   box.innerHTML = '';
-  const colors = ['#1a73e8', '#8ab4f8', '#22c55e', '#fbbf24', '#67e8f9', '#ffffff'];
-  const n = IS_MOBILE ? 60 : 120;
-  for (let i = 0; i < n; i++) {
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    const size = 6 + Math.random() * 8;
-    piece.style.width = size + 'px';
-    piece.style.height = (size * 1.6) + 'px';
-    piece.style.left = Math.random() * 100 + 'vw';
-    piece.style.background = colors[Math.floor(Math.random() * colors.length)];
-    piece.style.animationDuration = (2.2 + Math.random() * 2.4) + 's';
-    piece.style.animationDelay = (Math.random() * 0.6) + 's';
-    box.appendChild(piece);
+  const colors = ['#1a73e8', '#8ab4f8', '#ffffff', '#fbbc04', '#34a853', '#ea4335', '#a142f4', '#ffd54f', '#e8f0fe'];
+  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const mobile = !!IS_MOBILE;
+  const rainN = reduce ? 16 : (mobile ? 72 : 150);
+  const cannonN = reduce ? 0 : (mobile ? 24 : 46);
+  const kinds = ['is-rect', 'is-dot', 'is-ribbon', 'is-diamond', 'is-star'];
+
+  function spawn(kind, opts) {
+    const el = document.createElement('span');
+    el.className = 'confetti-piece ' + kind;
+    const size = opts.size;
+    el.style.setProperty('--w', size + 'px');
+    el.style.setProperty('--h', (opts.h || size) + 'px');
+    el.style.setProperty('--dx', opts.dx);
+    el.style.setProperty('--spin', opts.spin);
+    el.style.setProperty('--rise', opts.rise || '-48vh');
+    el.style.left = opts.left;
+    el.style.background = opts.color;
+    el.style.animationDuration = opts.dur;
+    el.style.animationDelay = opts.delay || '0s';
+    if (opts.bottom) el.style.bottom = opts.bottom;
+    if (opts.glow) el.style.boxShadow = '0 0 10px ' + opts.color;
+    box.appendChild(el);
   }
-  setTimeout(() => { box.innerHTML = ''; }, 6000);
+
+  function pickKind() {
+    const roll = Math.random();
+    if (roll < 0.22) return 'is-dot';
+    if (roll < 0.40) return 'is-ribbon';
+    if (roll < 0.58) return 'is-star';
+    if (roll < 0.74) return 'is-diamond';
+    return 'is-rect';
+  }
+
+  for (let i = 0; i < rainN; i++) {
+    const kind = pickKind();
+    const size = kind === 'is-ribbon' ? 3 + Math.random() * 3 : 6 + Math.random() * 10;
+    spawn(kind + ' from-sky', {
+      size: size,
+      h: kind === 'is-ribbon' ? size * (5 + Math.random() * 4) : size * (0.55 + Math.random() * 1.15),
+      dx: ((Math.random() - 0.5) * (mobile ? 160 : 320)) + 'px',
+      spin: ((420 + Math.random() * 980) * (Math.random() < 0.5 ? -1 : 1)) + 'deg',
+      left: (Math.random() * 100) + 'vw',
+      color: colors[i % colors.length],
+      dur: (2.3 + Math.random() * 2.5) + 's',
+      delay: (Math.random() * 0.45) + 's',
+      glow: Math.random() < 0.28
+    });
+  }
+
+  function cannon(side) {
+    for (let i = 0; i < cannonN; i++) {
+      const kind = pickKind();
+      const size = kind === 'is-ribbon' ? 3 + Math.random() * 2.5 : 6 + Math.random() * 8;
+      const dir = side === 'left' ? 1 : -1;
+      spawn(kind + ' from-cannon', {
+        size: size,
+        h: kind === 'is-ribbon' ? size * 6 : size * (0.7 + Math.random() * 0.6),
+        dx: (dir * (16 + Math.random() * 42)) + 'vw',
+        rise: '-' + (30 + Math.random() * 46) + 'vh',
+        spin: ((240 + Math.random() * 760) * dir) + 'deg',
+        left: side === 'left' ? (2 + Math.random() * 10) + 'vw' : (88 + Math.random() * 10) + 'vw',
+        bottom: (0 + Math.random() * 10) + 'vh',
+        color: colors[(i * 3 + (side === 'left' ? 1 : 4)) % colors.length],
+        dur: (1.7 + Math.random() * 1.55) + 's',
+        delay: (Math.random() * 0.22) + 's',
+        glow: Math.random() < 0.4
+      });
+    }
+  }
+  cannon('left');
+  cannon('right');
+
+  if (!reduce) {
+    setTimeout(function () {
+      if (!box.isConnected) return;
+      const extra = mobile ? 30 : 58;
+      for (let i = 0; i < extra; i++) {
+        const kind = Math.random() < 0.45 ? 'is-dot' : (Math.random() < 0.5 ? 'is-star' : 'is-rect');
+        spawn(kind + ' from-sky', {
+          size: 5 + Math.random() * 8,
+          h: 5 + Math.random() * 10,
+          dx: ((Math.random() - 0.5) * 220) + 'px',
+          spin: ((Math.random() * 900) - 450) + 'deg',
+          left: (12 + Math.random() * 76) + 'vw',
+          color: colors[Math.floor(Math.random() * colors.length)],
+          dur: (2.0 + Math.random() * 1.7) + 's',
+          delay: '0s',
+          glow: Math.random() < 0.55
+        });
+      }
+    }, 380);
+  }
+
+  setTimeout(function () { if (box) box.innerHTML = ''; }, 7600);
 }
 
 function updateOrbitPosition() {
@@ -3771,7 +3673,6 @@ function updateOrbitPosition() {
           spawnDustBlast(capsuleGroup.position, isOcean);
           if (isOcean) spawnWaterSplash(capsuleGroup.position);
           showMissionSuccess();
-          setTimeout(() => showAd(), 2500);
         }
         window._settleT = (window._settleT || 0) + 0.016;
         // Only bottom plate / heat-shield rim sinks (~12 units) — body stays fully visible above ground
@@ -4560,12 +4461,7 @@ function reset() {
 
 function animate() {
   requestAnimationFrame(animate);
-  // Classroom freeze: keep rendering HUD/camera, skip physics integration
-  if (typeof window.NH_SIM_FROZEN !== 'undefined' && window.NH_SIM_FROZEN) {
-    if (renderer && scene && camera) renderer.render(scene, camera);
-    return;
-  }
-  const dt = Math.min(clock.getDelta(), 0.05) * (typeof window.NH_FRICTION_MUL === 'number' ? window.NH_FRICTION_MUL : 1);
+  const dt = Math.min(clock.getDelta(), 0.05);
   const t = clock.getElapsedTime();
 
   randomDrift.x = Math.sin(t * 0.08) * 90;
@@ -5452,7 +5348,6 @@ document.getElementById('fsCancel').onclick = () => document.getElementById('fsC
 document.getElementById('btnGraph').onclick = () => {
   showShockGraph();
 };
-document.getElementById('adSkip').onclick = () => closeAd();
 document.getElementById('btnCloseGraph').onclick = () => document.getElementById('graphModal').classList.remove('show');
 
 document.getElementById('aiFab').onclick = () => toggleAI();
@@ -5481,53 +5376,6 @@ document.getElementById('mobBack').onclick = () => {
   onResize();
 };
 
-
-/* ===== Clean Ad System (13 s) ===== */
-let adInterval = null, adSlide = 0, adTimerVal = 13;
-function showAd() {
-  const overlay = document.getElementById('adOverlay');
-  const track = document.getElementById('adTrack');
-  const dots = document.getElementById('adDots');
-  const skip = document.getElementById('adSkip');
-  const timerEl = document.getElementById('adTimer');
-  overlay.classList.add('show');
-  skip.classList.remove('show');
-  adSlide = 0;
-  adTimerVal = 13;
-  track.style.transform = 'translateX(0)';
-  dots.innerHTML = '';
-  const slideCount = 7;
-  for (let i = 0; i < slideCount; i++) {
-    const d = document.createElement('div');
-    d.className = 'ad-dot' + (i === 0 ? ' active' : '');
-    d.onclick = () => goAdSlide(i);
-    dots.appendChild(d);
-  }
-  if (adInterval) clearInterval(adInterval);
-  adInterval = setInterval(() => {
-    adSlide = (adSlide + 1) % slideCount;
-    goAdSlide(adSlide);
-  }, 2200);
-
-  const tick = setInterval(() => {
-    adTimerVal--;
-    if (timerEl) timerEl.textContent = adTimerVal > 0 ? ('Ad ends in ' + adTimerVal + ' s') : 'You may skip';
-    if (adTimerVal <= 0) {
-      clearInterval(tick);
-      skip.classList.add('show');
-      if (timerEl) timerEl.textContent = 'Skip available';
-    }
-  }, 1000);
-}
-function goAdSlide(i) {
-  adSlide = i;
-  document.getElementById('adTrack').style.transform = 'translateX(-' + (i * 100) + '%)';
-  document.querySelectorAll('.ad-dot').forEach((d, idx) => d.classList.toggle('active', idx === i));
-}
-function closeAd() {
-  document.getElementById('adOverlay').classList.remove('show');
-  if (adInterval) clearInterval(adInterval);
-}
 
 (function(){
   const res = document.getElementById('panelResizer');
@@ -5795,222 +5643,6 @@ setTimeout(() => {
   document.getElementById('mobileLagOk').onclick = () => {
     box.style.display = 'none';
     localStorage.setItem(key, '1');
-  };
-})();
-</script>
-<script>
-/* =========================================================
-   SkyLabs Classroom Bridge – Reentry Lab
-   Standalone users: zero effect
-   Inside classroom iframe: freeze + friction + ghost hand + telemetry
-   ========================================================= */
-(function () {
-  const IS_CLASSROOM = (function () {
-    try { return window.parent && window.parent !== window; }
-    catch (e) { return true; }
-  })();
-
-  let nhSimFrozen = false;
-  let nhFrictionMul = 1;
-  let nhLastTele = 0;
-  const freezeOverlay = document.getElementById('nhFreezeOverlay');
-
-  function setFrozen(on, message) {
-    nhSimFrozen = !!on;
-    window.NH_SIM_FROZEN = nhSimFrozen;
-    if (freezeOverlay) {
-      if (message) {
-        const h2 = freezeOverlay.querySelector('h2');
-        if (h2) h2.textContent = message;
-      }
-      freezeOverlay.classList.toggle('show', nhSimFrozen);
-    }
-  }
-
-  function setFriction(mul) {
-    nhFrictionMul = Math.max(0, Math.min(3, Number(mul) || 1));
-    window.NH_FRICTION_MUL = nhFrictionMul;
-  }
-
-  function applyGhostHand(param, value) {
-    param = String(param || 'thrust').toLowerCase();
-    value = Number(value);
-    if (!isFinite(value)) return;
-    try {
-      if (param === 'thrust' || param === 'entryvel' || param === 'velocity') {
-        const el = document.getElementById('entryVel');
-        if (el) {
-          // value 0-100 = percent of range, else absolute m/s
-          let v = value;
-          if (value <= 100) {
-            const min = parseFloat(el.min) || 3000;
-            const max = parseFloat(el.max) || 12000;
-            v = min + (value / 100) * (max - min);
-          }
-          el.value = String(Math.round(v));
-          const lab = document.getElementById('velVal');
-          if (lab) lab.textContent = el.value;
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          if (typeof calc === 'function') calc();
-        }
-      }
-      if (param === 'fpa' || param === 'angle' || param === 'pitch') {
-        const el = document.getElementById('fpa');
-        if (el) {
-          el.value = String(Math.max(-6, Math.min(-0.5, value)));
-          const lab = document.getElementById('angleVal');
-          if (lab) lab.textContent = el.value;
-          el.dispatchEvent(new Event('input', { bubbles: true }));
-          if (typeof calc === 'function') calc();
-        }
-      }
-    } catch (e) {}
-  }
-
-  function readTelemetry() {
-    const t = {
-      type: 'NH_LAB_TELEMETRY',
-      labId: 'reentry',
-      labName: 'Reentry',
-      alt: 0,
-      vel: 0,
-      thrust: 0,
-      twr: null,
-      heat: null,
-      g: null,
-      status: nhSimFrozen ? 'FROZEN' : 'ORBITAL',
-      outcome: '',
-      reason: ''
-    };
-    try {
-      if (typeof window._liveAltKm === 'number') t.alt = window._liveAltKm;
-      else if (document.getElementById('hudAlt')) {
-        const m = (document.getElementById('hudAlt').textContent || '').match(/([\d.]+)/);
-        if (m) t.alt = parseFloat(m[1]);
-      }
-    } catch (e) {}
-    try {
-      if (typeof window._liveVel === 'number') t.vel = window._liveVel * 1000;
-      else if (document.getElementById('hudVel')) {
-        const txt = document.getElementById('hudVel').textContent || '';
-        const m = txt.match(/([\d.]+)/);
-        if (m) {
-          const n = parseFloat(m[1]);
-          t.vel = /km\/s/i.test(txt) ? n * 1000 : n;
-        }
-      }
-    } catch (e) {}
-    try {
-      if (typeof peakHeatLive === 'number' && peakHeatLive > 0) t.heat = peakHeatLive;
-      else if (document.getElementById('heatMeterVal')) {
-        const m = (document.getElementById('heatMeterVal').textContent || '').match(/([\d.]+)/);
-        if (m) t.heat = parseFloat(m[1]);
-      } else if (document.getElementById('altMeterVal')) {
-        const m = (document.getElementById('altMeterVal').textContent || '').match(/([\d.]+)/);
-        if (m) t.heat = parseFloat(m[1]);
-      }
-    } catch (e) {}
-    try {
-      if (typeof currentG === 'number') t.g = currentG;
-      else if (document.getElementById('gMeterVal')) {
-        const m = (document.getElementById('gMeterVal').textContent || '').match(/([\d.]+)/);
-        if (m) t.g = parseFloat(m[1]);
-      }
-    } catch (e) {}
-    try {
-      if (document.getElementById('entryVel')) {
-        const max = parseFloat(document.getElementById('entryVel').max) || 12000;
-        const cur = parseFloat(document.getElementById('entryVel').value) || 0;
-        t.thrust = Math.min(100, (cur / max) * 100);
-      }
-    } catch (e) {}
-    try {
-      if (nhSimFrozen) {
-        t.status = 'FROZEN';
-      } else if (typeof isFailed !== 'undefined' && isFailed) {
-        t.status = 'FAILED';
-        t.outcome = 'fail';
-        let reason = 'Heat shield failed';
-        try {
-          if (typeof metalSurvives === 'function' && typeof peakHeatLive === 'number' && !metalSurvives(peakHeatLive)) {
-            reason = 'Shield melted';
-          } else if (typeof peakGLive === 'number' && peakGLive > 12) {
-            reason = 'Peak g too high';
-          } else if (typeof currentG === 'number' && currentG > 12) {
-            reason = 'g-load critical';
-          }
-        } catch (e2) {}
-        t.reason = reason;
-      } else if (typeof isSuccess !== 'undefined' && isSuccess) {
-        t.status = 'SUCCESS';
-        t.outcome = 'pass';
-      } else if (typeof window._splashed !== 'undefined' && window._splashed) {
-        t.status = 'TOUCHDOWN';
-        t.outcome = 'pass';
-      } else if (typeof chuteActive !== 'undefined' && chuteActive) {
-        t.status = 'PARACHUTE';
-        t.outcome = 'pass';
-      } else if (typeof entryPhase === 'number') {
-        if (entryPhase >= 5) t.status = 'HEAT';
-        else if (entryPhase >= 4) t.status = 'ENTRY';
-        else if (entryPhase >= 3) t.status = 'ATTITUDE';
-        else if (entryPhase >= 2) t.status = 'DE-ORBIT';
-        else t.status = 'ORBITAL';
-      }
-      if (!t.outcome && typeof entryPhase === 'number' && entryPhase >= 5) {
-        try {
-          if (typeof metalSurvives === 'function' && typeof peakHeatLive === 'number' && peakHeatLive > 0.05) {
-            if (!metalSurvives(peakHeatLive)) {
-              t.outcome = 'fail';
-              t.status = 'FAILED';
-              t.reason = 'Shield melted';
-            } else if (typeof peakGLive === 'number' && peakGLive > 12) {
-              t.outcome = 'fail';
-              t.status = 'FAILED';
-              t.reason = 'Peak g too high';
-            }
-          }
-        } catch (e3) {}
-      }
-    } catch (e) {}
-    return t;
-  }
-
-  function emitTelemetry() {
-    if (!IS_CLASSROOM) return;
-    const now = Date.now();
-    if (now - nhLastTele < 1000) return;
-    nhLastTele = now;
-    try { window.parent.postMessage(readTelemetry(), '*'); } catch (e) {}
-  }
-
-  window.addEventListener('message', function (ev) {
-    const data = ev.data;
-    if (!data || typeof data !== 'object') return;
-    if (data.type === 'NH_SIM_FREEZE') {
-      setFrozen(!!data.simFrozen, data.message || '');
-      if (typeof data.frictionMul === 'number') setFriction(data.frictionMul);
-    }
-    if (data.type === 'NH_FRICTION_VECTOR') {
-      setFriction(data.frictionMul);
-      if (typeof data.simFrozen === 'boolean') setFrozen(!!data.simFrozen);
-    }
-    if (data.type === 'NH_GHOST_HAND') {
-      applyGhostHand(data.param, data.value);
-    }
-  });
-
-  if (IS_CLASSROOM) {
-    setInterval(emitTelemetry, 1100);
-    try { window.parent.postMessage({ type: 'NH_LAB_READY', labId: 'reentry' }, '*'); } catch (e) {}
-  }
-
-  window.NH_CLASSROOM = {
-    isClassroom: IS_CLASSROOM,
-    isFrozen: function () { return nhSimFrozen; },
-    friction: function () { return nhFrictionMul; },
-    setFrozen: setFrozen,
-    setFriction: setFriction
   };
 })();
 </script>
