@@ -5,21 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- Google Fonts & Material Symbols Activation -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&family=Inter:wght@300;400;500&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
     <title>404 · SkyLabs</title>
 
-    <!-- Primary Meta Tags -->
     <meta name="title" content="404 · SkyLabs">
     <meta name="description" content="The page or lab you are looking for could not be found on SkyLabs.">
     <meta name="author" content="SkyLabs">
     <meta name="robots" content="noindex, nofollow">
 
-    <!-- Favicon, PWA & Theme Color -->
     <link rel="icon" type="image/png" href="/Favicon.png">
     <link rel="apple-touch-icon" href="/Favicon.png">
     <link rel="manifest" href="/manifest.webmanifest">
@@ -28,26 +25,17 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-title" content="SkyLabs">
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="404 · SkyLabs">
     <meta property="og:description" content="This page or lab could not be found on SkyLabs.">
     <meta property="og:image" content="https://skylabs.pages.dev/Logo.png">
     <meta property="og:site_name" content="SkyLabs">
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="404 · SkyLabs">
     <meta name="twitter:description" content="This page or lab could not be found on SkyLabs.">
     <meta name="twitter:image" content="https://skylabs.pages.dev/Logo.png">
-</head>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500&display=swap"
-    rel="stylesheet"
-  />
   <style>
     *,
     *::before,
@@ -76,7 +64,6 @@
       overflow-x: hidden;
     }
 
-    /* Top Minimal Header */
     .sl-404-header {
       width: 100%;
       padding: 24px 36px;
@@ -135,7 +122,6 @@
       color: #080b10;
     }
 
-    /* Main Centered 404 Stage */
     .sl-404-main {
       flex: 1 0 auto;
       width: 100%;
@@ -278,7 +264,6 @@
       border-color: rgba(255, 255, 255, 0.28);
     }
 
-    /* Quick Destinations */
     .sl-404-quick {
       padding-top: 28px;
       border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -308,7 +293,6 @@
       text-underline-offset: 4px;
     }
 
-    /* Minimal Footer */
     .sl-404-footer {
       width: 100%;
       padding: 24px 36px;
@@ -363,7 +347,7 @@
         />
         <span class="sl-brand-name">SkyLabs</span>
       </a>
-      <a href="join.html" class="sl-header-link">Join</a>
+      <a href="index.html" class="sl-header-link">Home</a>
     </div>
   </header>
 
@@ -373,7 +357,7 @@
       <div class="sl-404-code" aria-hidden="true">404</div>
       <h1 class="sl-404-title" id="sl404Heading">This page could not be found</h1>
       <p class="sl-404-copy">
-        The link you opened (<span class="sl-404-path" id="slMissingPath">/unknown</span>) may have moved or no longer exists. Head back home or jump straight into a lab.
+        The link you opened (<span class="sl-404-path" id="slMissingPath">/unknown</span>) may have moved or no longer exists. Head back home or open a rocket lab, telemetry tool, or guide from the main site.
       </p>
 
       <div class="sl-404-actions">
@@ -381,14 +365,19 @@
         <button type="button" class="sl-btn-secondary" id="slGoBackBtn">Go Back</button>
       </div>
 
-   
+      <div class="sl-404-quick">
+        <span class="sl-404-quick-label">Explore</span>
+        <a href="index.html">Home</a>
+        <a href="Labs.html">Labs</a>
+        <a href="Safe.html">Guides</a>
+      </div>
     </section>
   </main>
 
   <footer class="sl-404-footer">
     <div class="sl-404-footer-inner">
       <span id="sl404Copy">SkyLabs</span>
-      <span>Space labs &amp; classrooms</span>
+      <span>Rocket simulation </span>
     </div>
   </footer>
 
