@@ -4138,7 +4138,296 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     TENTH SECTION: TWR READING GUIDE WRAP-UP (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrEndSection" aria-labelledby="slTwrEndHeading">
+  <style>
+    #slTwrEndSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 78% 25%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
 
+    #slTwrEndSection .sl-twr-end-wrap {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    #slTwrEndSection .sl-twr-end-card {
+      padding: 52px 44px;
+      border-radius: 30px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.84s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrEndSection.is-revealed .sl-twr-end-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrEndSection .sl-twr-end-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrEndSection .sl-twr-end-title {
+      font-size: clamp(34px, 4.4vw, 56px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+      max-width: 720px;
+    }
+
+    #slTwrEndSection .sl-twr-end-copy {
+      font-size: clamp(17px, 1.45vw, 19.5px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 680px;
+    }
+
+    #slTwrEndSection .sl-twr-end-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    #slTwrEndSection .sl-twr-end-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      padding: 0 28px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-family: inherit;
+      font-size: 17px;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    #slTwrEndSection .sl-twr-end-primary:hover {
+      background: #e9eef8;
+      transform: translateY(-1px);
+    }
+
+    #slTwrEndSection .sl-twr-end-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      padding: 0 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 16.5px;
+      font-weight: 400;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #slTwrEndSection .sl-twr-end-secondary:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    @media (max-width: 920px) {
+      #slTwrEndSection {
+        padding: 92px 22px;
+      }
+      #slTwrEndSection .sl-twr-end-card {
+        padding: 32px 22px;
+        border-radius: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      #slTwrEndSection .sl-twr-end-actions,
+      #slTwrEndSection .sl-twr-end-primary,
+      #slTwrEndSection .sl-twr-end-secondary {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="sl-twr-end-wrap">
+    <div class="sl-twr-end-card">
+      <div>
+        <span class="sl-twr-end-tag">Guide Complete</span>
+        <h2 class="sl-twr-end-title" id="slTwrEndHeading">Ready to test TWR with real numbers?</h2>
+        <p class="sl-twr-end-copy">
+          You have explored liftoff margins, burn stages, gravity differences, throttling, and core formulas. Open the TWR Calculator to try your own rocket designs.
+        </p>
+      </div>
+
+      <div class="sl-twr-end-actions">
+        <a href="twr-calc.html" class="sl-twr-end-primary">Open Calculator &#8594;</a>
+        <a href="index.html" class="sl-twr-end-secondary">Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrEndSection');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+
+<!-- ============================================================
+     SIMPLE FOOTER
+     ============================================================ -->
+<footer id="slSimpleFooter" aria-label="Footer">
+  <style>
+    #slSimpleFooter {
+      width: 100%;
+      padding: 22px 36px;
+      background: #04060a;
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+    }
+
+    #slSimpleFooter .sl-foot-wrap {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    #slSimpleFooter .sl-foot-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    #slSimpleFooter .sl-foot-brand img {
+      width: 24px;
+      height: 24px;
+      object-fit: contain;
+      border-radius: 6px;
+      display: block;
+    }
+
+    #slSimpleFooter .sl-foot-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    #slSimpleFooter .sl-foot-links a {
+      color: rgba(245, 247, 251, 0.72);
+      text-decoration: none;
+      font-size: 14.5px;
+      transition: color 0.2s ease;
+    }
+
+    #slSimpleFooter .sl-foot-links a:hover {
+      color: #ffffff;
+    }
+
+    @media (max-width: 640px) {
+      #slSimpleFooter {
+        padding: 18px 20px;
+      }
+    }
+  </style>
+
+  <div class="sl-foot-wrap">
+    <a href="index.html" class="sl-foot-brand">
+      <img
+        src="Favicon.png"
+        onerror="this.onerror=null; this.src='Logo.jpg';"
+        alt="SkyLabs"
+      />
+      <span>SkyLabs</span>
+    </a>
+
+    <div class="sl-foot-links">
+      <a href="index.html">Home</a>
+      <a href="twr-calc.html">TWR Calculator</a>
+      <a href="twr.html">TWR Labs</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
 
 
 </body>
