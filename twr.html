@@ -1792,7 +1792,7 @@ FLAGS.forEach(f => {
 const b = document.createElement('div');
 b.className = 'flag-btn' + (f.c === selFlag ? ' active' : '');
 b.title = f.c;
-b.innerHTML = '<img src="' + flagIconUrl(f.code) + '" alt="' + f.c + '" style="width:100%;height:100%;object-fit:cover;border-radius:4px" loading="lazy" onerror="this.style.display='none';this.parentNode.textContent='' + f.c + '';">';
+b.innerHTML = '<img src="' + flagIconUrl(f.code) + '" alt="' + f.c + '" style="width:100%;height:100%;object-fit:cover;border-radius:4px" loading="lazy" onerror="this.remove()">';
 b.onclick = () => {
 document.querySelectorAll('.flag-btn').forEach(x => x.classList.remove('active'));
 b.classList.add('active');
