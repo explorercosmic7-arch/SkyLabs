@@ -2157,6 +2157,272 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     FOURTH SECTION: COMMON MISTAKES & TRADE-OFFS (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrFourthSection" aria-labelledby="slTwrFourthHeading">
+  <style>
+    #slTwrFourthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 22% 25%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 82% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrFourthSection .sl-twr4-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrFourthSection .sl-twr4-head {
+      max-width: 780px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrFourthSection.is-revealed .sl-twr4-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrFourthSection .sl-twr4-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrFourthSection .sl-twr4-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrFourthSection .sl-twr4-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrFourthSection .sl-twr4-pairs {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    #slTwrFourthSection .sl-twr4-pair {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+      gap: 18px;
+      padding: 24px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slTwrFourthSection .sl-twr4-pair:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slTwrFourthSection .sl-twr4-pair:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slTwrFourthSection.is-revealed .sl-twr4-pair {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrFourthSection .sl-twr4-pair:hover {
+      background: rgba(16, 22, 35, 0.88);
+      border-color: rgba(255, 255, 255, 0.24);
+    }
+
+    #slTwrFourthSection .sl-twr4-col-bad {
+      padding: 20px 22px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    #slTwrFourthSection .sl-twr4-col-good {
+      padding: 20px 24px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrFourthSection .sl-twr4-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 8px;
+    }
+
+    #slTwrFourthSection .sl-twr4-heading {
+      font-size: 20.5px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    #slTwrFourthSection .sl-twr4-text {
+      font-size: 15.8px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    @media (max-width: 960px) {
+      #slTwrFourthSection {
+        padding: 92px 22px;
+      }
+      #slTwrFourthSection .sl-twr4-pair {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 20px;
+      }
+      #slTwrFourthSection .sl-twr4-col-bad,
+      #slTwrFourthSection .sl-twr4-col-good {
+        padding: 16px 18px;
+        border-radius: 14px;
+      }
+    }
+  </style>
+
+  <div class="sl-twr4-wrap">
+    <div class="sl-twr4-head">
+      <span class="sl-twr4-tag">04 &middot; Trade-Offs &amp; Pitfalls</span>
+      <h2 class="sl-twr4-title" id="slTwrFourthHeading">Avoid common TWR design mistakes</h2>
+      <p class="sl-twr4-sub">
+        Too little liftoff thrust leaves a rocket grounded or burning fuel slowly, while excessive thrust adds heavy hardware or steep G-loads.
+      </p>
+    </div>
+
+    <div class="sl-twr4-pairs">
+      <div class="sl-twr4-pair">
+        <div class="sl-twr4-col-bad">
+          <span class="sl-twr4-label">TWR Below 1.00</span>
+          <h3 class="sl-twr4-heading">Relying on thrust less than weight</h3>
+          <p class="sl-twr4-text">
+            If upward thrust is smaller than downward weight, the rocket cannot lift off and simply wastes propellant on the pad.
+          </p>
+        </div>
+        <div class="sl-twr4-col-good">
+          <span class="sl-twr4-label">Better Approach</span>
+          <h3 class="sl-twr4-heading">Build a clean liftoff margin</h3>
+          <p class="sl-twr4-text">
+            Aim for a TWR comfortably above 1.00 so the vehicle clears the launch tower cleanly and builds upward speed without heavy gravity losses.
+          </p>
+        </div>
+      </div>
+
+      <div class="sl-twr4-pair">
+        <div class="sl-twr4-col-bad">
+          <span class="sl-twr4-label">Too Much Liftoff Thrust</span>
+          <h3 class="sl-twr4-heading">Oversizing engines without balance</h3>
+          <p class="sl-twr4-text">
+            Huge engines add dry mass, push the rocket fast into dense lower air where drag rises, and can create high G-forces late in the burn.
+          </p>
+        </div>
+        <div class="sl-twr4-col-good">
+          <span class="sl-twr4-label">Better Approach</span>
+          <h3 class="sl-twr4-heading">Match thrust and throttle to flight</h3>
+          <p class="sl-twr4-text">
+            Balance initial TWR with aerodynamic loads and throttle down when needed so structural stress and fuel mass stay efficient.
+          </p>
+        </div>
+      </div>
+
+      <div class="sl-twr4-pair">
+        <div class="sl-twr4-col-bad">
+          <span class="sl-twr4-label">Static Mass Assumption</span>
+          <h3 class="sl-twr4-heading">Treating rocket mass as constant</h3>
+          <p class="sl-twr4-text">
+            Checking only liftoff TWR misses what happens near burnout, when a much lighter vehicle experiences far higher acceleration.
+          </p>
+        </div>
+        <div class="sl-twr4-col-good">
+          <span class="sl-twr4-label">Better Approach</span>
+          <h3 class="sl-twr4-heading">Check both initial and burnout TWR</h3>
+          <p class="sl-twr4-text">
+            Evaluate TWR at ignition and near cutoff together so you see both liftoff performance and late-stage G-loads.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrFourthSection');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
