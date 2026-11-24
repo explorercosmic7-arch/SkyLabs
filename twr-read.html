@@ -2423,6 +2423,353 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     FIFTH SECTION: PROPULSION & ENGINE TWR TRAITS (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrFifthSection" aria-labelledby="slTwrFifthHeading">
+  <style>
+    #slTwrFifthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 80% 24%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(120, 165, 255, 0.06) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrFifthSection .sl-twr5-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrFifthSection .sl-twr5-top {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 28px;
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrFifthSection.is-revealed .sl-twr5-top {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrFifthSection .sl-twr5-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrFifthSection .sl-twr5-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slTwrFifthSection .sl-twr5-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 620px;
+    }
+
+    #slTwrFifthSection .sl-twr5-tabs {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    #slTwrFifthSection .sl-twr5-tab {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 0;
+      background: transparent;
+      color: rgba(245, 247, 251, 0.78);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slTwrFifthSection .sl-twr5-tab:hover {
+      color: #ffffff;
+    }
+
+    #slTwrFifthSection .sl-twr5-tab.is-active {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #slTwrFifthSection .sl-twr5-board {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.82);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    #slTwrFifthSection.is-revealed .sl-twr5-board {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrFifthSection .sl-twr5-board-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.95fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    #slTwrFifthSection .sl-twr5-code {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    #slTwrFifthSection .sl-twr5-name {
+      font-size: clamp(26px, 2.8vw, 36px);
+      font-weight: 400;
+      line-height: 1.14;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slTwrFifthSection .sl-twr5-desc {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    #slTwrFifthSection .sl-twr5-specs {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    #slTwrFifthSection .sl-twr5-spec {
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    #slTwrFifthSection .sl-twr5-spec-label {
+      font-size: 14.5px;
+      color: rgba(245, 247, 251, 0.64);
+    }
+
+    #slTwrFifthSection .sl-twr5-spec-val {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+      text-align: right;
+    }
+
+    @media (max-width: 960px) {
+      #slTwrFifthSection {
+        padding: 92px 22px;
+      }
+      #slTwrFifthSection .sl-twr5-board {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slTwrFifthSection .sl-twr5-board-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      #slTwrFifthSection .sl-twr5-tabs {
+        border-radius: 20px;
+        width: 100%;
+      }
+      #slTwrFifthSection .sl-twr5-tab {
+        flex: 1 1 auto;
+        text-align: center;
+        padding: 10px 12px;
+        font-size: 14px;
+      }
+    }
+  </style>
+
+  <div class="sl-twr5-wrap">
+    <div class="sl-twr5-top">
+      <div>
+        <span class="sl-twr5-tag">05 &middot; Propulsion &amp; Engine TWR</span>
+        <h2 class="sl-twr5-title" id="slTwrFifthHeading">How stage roles shape thrust needs</h2>
+        <p class="sl-twr5-sub">
+          Different parts of a launch vehicle prioritize raw liftoff push, balanced ascent, or high propellant efficiency once already climbing.
+        </p>
+      </div>
+
+      <div class="sl-twr5-tabs" role="tablist" aria-label="Propulsion stage profiles">
+        <button type="button" class="sl-twr5-tab is-active" data-prop="0" role="tab" aria-selected="true">Liftoff Boosters</button>
+        <button type="button" class="sl-twr5-tab" data-prop="1" role="tab" aria-selected="false">Core First Stage</button>
+        <button type="button" class="sl-twr5-tab" data-prop="2" role="tab" aria-selected="false">Upper Stage</button>
+      </div>
+    </div>
+
+    <div class="sl-twr5-board">
+      <div class="sl-twr5-board-grid">
+        <div>
+          <span class="sl-twr5-code" id="slTwr5Code">Stage Profile &middot; 01</span>
+          <h3 class="sl-twr5-name" id="slTwr5Name">High-Thrust Liftoff Boosters</h3>
+          <p class="sl-twr5-desc" id="slTwr5Desc">
+            Boosters deliver strong immediate lift when the rocket is heaviest on the pad, helping clear dense lower air and build early vertical velocity before separating.
+          </p>
+        </div>
+
+        <div class="sl-twr5-specs">
+          <div class="sl-twr5-spec">
+            <span class="sl-twr5-spec-label">Primary Role</span>
+            <span class="sl-twr5-spec-val" id="slTwr5Role">Pad Liftoff &amp; Early Climb</span>
+          </div>
+          <div class="sl-twr5-spec">
+            <span class="sl-twr5-spec-label">TWR Priority</span>
+            <span class="sl-twr5-spec-val" id="slTwr5Prio">Strong Initial TWR (&gt; 1.2)</span>
+          </div>
+          <div class="sl-twr5-spec">
+            <span class="sl-twr5-spec-label">Key Trade-Off</span>
+            <span class="sl-twr5-spec-val" id="slTwr5Trade">Jettisoned Once Spent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrFifthSection');
+      if (!section) return;
+
+      const tabs = section.querySelectorAll('.sl-twr5-tab');
+      const codeEl = document.getElementById('slTwr5Code');
+      const nameEl = document.getElementById('slTwr5Name');
+      const descEl = document.getElementById('slTwr5Desc');
+      const roleEl = document.getElementById('slTwr5Role');
+      const prioEl = document.getElementById('slTwr5Prio');
+      const tradeEl = document.getElementById('slTwr5Trade');
+
+      const profiles = [
+        {
+          code: 'Stage Profile \u00B7 01',
+          name: 'High-Thrust Liftoff Boosters',
+          desc: 'Boosters deliver strong immediate lift when the rocket is heaviest on the pad, helping clear dense lower air and build early vertical velocity before separating.',
+          role: 'Pad Liftoff & Early Climb',
+          prio: 'Strong Initial TWR (> 1.2)',
+          trade: 'Jettisoned Once Spent'
+        },
+        {
+          code: 'Stage Profile \u00B7 02',
+          name: 'Core First-Stage Engines',
+          desc: 'Core engines carry the main propellant load and sustain thrust through liftoff, max dynamic pressure, and the gravity turn toward orbital insertion.',
+          role: 'Sustained Ascent & Turn',
+          prio: 'Balanced Thrust & Throttling',
+          trade: 'Grows Lighter During Burn'
+        },
+        {
+          code: 'Stage Profile \u00B7 03',
+          name: 'Efficient Upper-Stage Engines',
+          desc: 'Once high in thin air or vacuum, upper stages favor high specific impulse (fuel efficiency) over massive raw pad thrust because the stage is already moving fast.',
+          role: 'High-Altitude & Orbital Push',
+          prio: 'High Fuel Efficiency',
+          trade: 'Lower Pad TWR Needed'
+        }
+      ];
+
+      tabs.forEach((tab, idx) => {
+        tab.addEventListener('click', () => {
+          const item = profiles[idx];
+          if (!item) return;
+
+          tabs.forEach((t, tIdx) => {
+            const active = tIdx === idx;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', String(active));
+          });
+
+          if (codeEl) codeEl.textContent = item.code;
+          if (nameEl) nameEl.textContent = item.name;
+          if (descEl) descEl.textContent = item.desc;
+          if (roleEl) roleEl.textContent = item.role;
+          if (prioEl) prioEl.textContent = item.prio;
+          if (tradeEl) tradeEl.textContent = item.trade;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
