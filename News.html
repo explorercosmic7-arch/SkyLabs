@@ -100,23 +100,10 @@
     scrollbar-color: rgba(255, 255, 255, 0.24) #05070b;
   }
 
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: #05070b;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.22);
-    border-radius: 999px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.38);
-  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #05070b; }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.22); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.38); }
 
   html, body {
     font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -189,9 +176,7 @@
     transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .sl-brand:hover .sl-brand-icon {
-    transform: scale(1.05);
-  }
+  .sl-brand:hover .sl-brand-icon { transform: scale(1.05); }
 
   .sl-brand-word {
     font-family: 'Google Sans', sans-serif;
@@ -210,9 +195,7 @@
     gap: 14px;
   }
 
-  .sl-nav-item {
-    position: relative;
-  }
+  .sl-nav-item { position: relative; }
 
   .sl-nav-trigger {
     display: inline-flex;
@@ -356,9 +339,7 @@
     box-shadow: 0 10px 28px rgba(255, 255, 255, 0.22);
   }
 
-  .sl-join-btn:active {
-    transform: scale(0.98);
-  }
+  .sl-join-btn:active { transform: scale(0.98); }
 
   /* ============================================================
      MOBILE 2-LINE HAMBURGER & TOP PANEL
@@ -435,9 +416,7 @@
     pointer-events: auto;
   }
 
-  .sl-mobile-section {
-    padding: 6px 0;
-  }
+  .sl-mobile-section { padding: 6px 0; }
 
   .sl-mobile-main-btn {
     width: 100%;
@@ -464,9 +443,7 @@
     transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .sl-mobile-main-btn.is-open .sl-arrow {
-    transform: rotate(90deg);
-  }
+  .sl-mobile-main-btn.is-open .sl-arrow { transform: rotate(90deg); }
 
   .sl-mobile-collapse {
     display: grid;
@@ -482,9 +459,7 @@
     opacity: 1;
   }
 
-  .sl-mobile-collapse-inner {
-    overflow: hidden;
-  }
+  .sl-mobile-collapse-inner { overflow: hidden; }
 
   .sl-mobile-sublist {
     list-style: none;
@@ -534,63 +509,27 @@
     transition: transform 0.2s ease, background-color 0.2s ease;
   }
 
-  .sl-mobile-join:hover {
-    background: #e9eef8;
-  }
+  .sl-mobile-join:hover { background: #e9eef8; }
 
   @media (max-width: 1240px) {
-    .sl-nav-container {
-      padding: 12px 24px;
-      gap: 18px;
-    }
-    .sl-brand {
-      margin-right: 32px;
-      gap: 14px;
-    }
-    .sl-brand-icon {
-      width: 54px;
-      height: 54px;
-    }
-    .sl-brand-word {
-      font-size: 32px;
-    }
-    .sl-nav-trigger {
-      font-size: 19px;
-      padding: 10px 15px;
-    }
-    .sl-dropdown-link {
-      font-size: 18px;
-    }
-    .sl-join-btn {
-      font-size: 20px;
-      padding: 13px 24px;
-    }
+    .sl-nav-container { padding: 12px 24px; gap: 18px; }
+    .sl-brand { margin-right: 32px; gap: 14px; }
+    .sl-brand-icon { width: 54px; height: 54px; }
+    .sl-brand-word { font-size: 32px; }
+    .sl-nav-trigger { font-size: 19px; padding: 10px 15px; }
+    .sl-dropdown-link { font-size: 18px; }
+    .sl-join-btn { font-size: 20px; padding: 13px 24px; }
   }
 
   @media (max-width: 1020px) {
-    :root {
-      --sl-nav-height: 78px;
-    }
+    :root { --sl-nav-height: 78px; }
     .sl-nav-list,
-    .sl-right-action {
-      display: none;
-    }
-    .sl-hamburger {
-      display: inline-flex;
-    }
-    .sl-mobile-panel {
-      display: block;
-    }
-    .sl-brand {
-      margin-right: 0;
-    }
-    .sl-brand-icon {
-      width: 52px;
-      height: 52px;
-    }
-    .sl-brand-word {
-      font-size: 30px;
-    }
+    .sl-right-action { display: none; }
+    .sl-hamburger { display: inline-flex; }
+    .sl-mobile-panel { display: block; }
+    .sl-brand { margin-right: 0; }
+    .sl-brand-icon { width: 52px; height: 52px; }
+    .sl-brand-word { font-size: 30px; }
   }
 
   /* ============================================================
@@ -1047,7 +986,7 @@
 <hr>
 
 <!-- ============================================================
-     LATEST NEWS SECTION (3 DISPATCHES · IMAGE FRAME + BG + <hr>)
+     LATEST NEWS SECTION (NEWEST FIRST · AUTO 3-COLUMNS · <hr> RULES)
      ============================================================ -->
 <section id="latest-news" class="sl-nd-section" aria-labelledby="slNdHeading">
   <style>
@@ -1144,20 +1083,30 @@
       transform: translateY(-1px);
     }
 
-    /* 3-Column Row Separated by <hr class="sl-nd-v-rule"> */
+    /* FIX: auto-fit grid supports any number of cards (3 per row on desktop).
+       The old fixed 5-column template only had room for 3 cards,
+       so the 4th card had nowhere to go and got pushed out. */
     .sl-nd-row {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr) 1px minmax(0, 1fr);
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 28px;
       align-items: stretch;
     }
 
-    .sl-nd-v-rule {
-      border: 0;
+    /* FIX: vertical rule drawn with a pseudo-element on each card
+       (except the last card in its row) instead of <hr> elements,
+       so it works no matter how many cards there are. */
+    .sl-nd-card {
+      position: relative;
+    }
+
+    .sl-nd-card:not(:nth-child(3n))::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: -14.5px;
       width: 1px;
-      height: 100%;
-      min-height: 320px;
-      margin: 0 auto;
       background: linear-gradient(
         180deg,
         transparent 0%,
@@ -1165,12 +1114,14 @@
         rgba(255, 255, 255, 0.16) 80%,
         transparent 100%
       );
+      pointer-events: none;
     }
 
-    .sl-nd-card {
+    .sl-nd-card-inner {
       position: relative;
       display: flex;
       flex-direction: column;
+      height: 100%;
       border-radius: 24px;
       overflow: hidden;
       background: rgba(11, 15, 24, 0.84);
@@ -1186,25 +1137,17 @@
         border-color 0.24s ease;
     }
 
-    .sl-nd-section.is-revealed .sl-nd-card:nth-of-type(1) {
+    .sl-nd-card:nth-child(1) .sl-nd-card-inner { transition-delay: 0.05s; }
+    .sl-nd-card:nth-child(2) .sl-nd-card-inner { transition-delay: 0.14s; }
+    .sl-nd-card:nth-child(3) .sl-nd-card-inner { transition-delay: 0.23s; }
+    .sl-nd-card:nth-child(4) .sl-nd-card-inner { transition-delay: 0.32s; }
+
+    .sl-nd-section.is-revealed .sl-nd-card-inner {
       opacity: 1;
       transform: translateY(0);
-      transition-delay: 0.05s;
     }
 
-    .sl-nd-section.is-revealed .sl-nd-card:nth-of-type(2) {
-      opacity: 1;
-      transform: translateY(0);
-      transition-delay: 0.14s;
-    }
-
-    .sl-nd-section.is-revealed .sl-nd-card:nth-of-type(3) {
-      opacity: 1;
-      transform: translateY(0);
-      transition-delay: 0.23s;
-    }
-
-    .sl-nd-card:hover {
+    .sl-nd-card-inner:hover {
       border-color: rgba(145, 185, 255, 0.38);
     }
 
@@ -1222,7 +1165,7 @@
       transition: opacity 0.35s ease, transform 0.5s ease;
     }
 
-    .sl-nd-card:hover .sl-nd-card-bg {
+    .sl-nd-card-inner:hover .sl-nd-card-bg {
       opacity: 0.34;
       transform: scale(1.24);
     }
@@ -1240,7 +1183,7 @@
       pointer-events: none;
     }
 
-    .sl-nd-card-inner {
+    .sl-nd-card-content {
       position: relative;
       z-index: 2;
       display: flex;
@@ -1269,7 +1212,7 @@
       transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .sl-nd-card:hover .sl-nd-frame img {
+    .sl-nd-card-inner:hover .sl-nd-frame img {
       transform: scale(1.04);
     }
 
@@ -1294,6 +1237,24 @@
       color: rgba(245, 247, 251, 0.85);
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    /* NEW: red badge for the latest news item */
+    .sl-nd-badge.is-new {
+      color: #ffffff;
+      background: #ff2d3f;
+      border-color: rgba(255, 255, 255, 0.28);
+      box-shadow: 0 4px 16px rgba(255, 45, 63, 0.45);
+      animation: slBadgePulse 2.4s ease-in-out infinite;
+    }
+
+    @keyframes slBadgePulse {
+      0%, 100% { box-shadow: 0 4px 16px rgba(255, 45, 63, 0.45); }
+      50% { box-shadow: 0 4px 22px rgba(255, 45, 63, 0.8); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sl-nd-badge.is-new { animation: none; }
     }
 
     .sl-nd-card-title {
@@ -1335,31 +1296,60 @@
     }
 
     @media (max-width: 980px) {
-      .sl-nd-section {
-        padding: 84px 22px;
-      }
+      .sl-nd-section { padding: 84px 22px; }
+
+      /* FIX: 2 columns on tablets, 1 on phones */
       .sl-nd-row {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 20px;
       }
-      .sl-nd-v-rule {
-        width: 100%;
+
+      .sl-nd-card:not(:nth-child(3n))::after {
+        top: 0;
+        bottom: 0;
+      }
+
+      /* vertical rule between the 2 columns on tablet */
+      .sl-nd-card:nth-child(odd)::after {
+        right: -10.5px;
+        background: linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.16) 20%,
+          rgba(255, 255, 255, 0.16) 80%,
+          transparent 100%
+        );
+      }
+
+      /* last card in odd count has no rule */
+      .sl-nd-card:last-child::after { display: none; }
+    }
+
+    @media (max-width: 640px) {
+      .sl-nd-row { grid-template-columns: 1fr; }
+
+      /* horizontal rule under each card except the last, on phones */
+      .sl-nd-card::after {
+        right: 0 !important;
+        left: 0;
+        top: auto !important;
+        bottom: -10.5px !important;
+        width: 100% !important;
         height: 1px;
-        min-height: 1px;
         background: linear-gradient(
           90deg,
           transparent 0%,
           rgba(255, 255, 255, 0.16) 15%,
           rgba(255, 255, 255, 0.16) 85%,
           transparent 100%
-        );
+        ) !important;
       }
+
+      .sl-nd-card:last-child::after { display: none; }
     }
 
     @media (max-width: 600px) {
-      .sl-nd-all-link {
-        width: 100%;
-      }
+      .sl-nd-all-link { width: 100%; }
     }
   </style>
 
@@ -1369,97 +1359,100 @@
         <span class="sl-nd-tag">Latest Dispatches</span>
         <h2 class="sl-nd-title" id="slNdHeading">What is new in SkyLabs</h2>
         <p class="sl-nd-sub">
-          Three core milestones from our launch log—browser rocket sims, orbital labs, and flight calculators.
+          Our launch log, newest first: browser rocket sims, orbital labs, and flight calculators.
         </p>
       </div>
       <a href="Labs.html" class="sl-nd-all-link">Explore All Labs &#8594;</a>
     </div>
 
-    <div class="sl-nd-row">
-      <!-- News 1 -->
-      <article class="sl-nd-card" data-bg-src="">
-        <div class="sl-nd-card-bg" aria-hidden="true"></div>
-        <div class="sl-nd-card-tint" aria-hidden="true"></div>
+    <div class="sl-nd-row" id="slNdRow">
+      <!-- News: 2026.11.25 Thrust-to-Weight Lab (NEWEST · red badge) -->
+      <article class="sl-nd-card" data-date="2026-11-25">
         <div class="sl-nd-card-inner">
-          <div class="sl-nd-frame">
-            <img src="https://images.unsplash.com/vector-1749730126421-31f04d0bb763?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="SkyLabs Kickoff preview" loading="lazy" />
+          <div class="sl-nd-card-bg" aria-hidden="true"></div>
+          <div class="sl-nd-card-tint" aria-hidden="true"></div>
+          <div class="sl-nd-card-content">
+            <div class="sl-nd-frame">
+              <img src="https://plus.unsplash.com/premium_vector-1711987676879-91b7cf22edb9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Thrust-to-Weight Lab preview" loading="lazy" />
+            </div>
+            <div class="sl-nd-meta">
+              <span class="sl-nd-date">2026.11.25</span>
+              <span class="sl-nd-badge is-new">NEW · TWR Lab</span>
+            </div>
+            <h3 class="sl-nd-card-title">Thrust-to-Weight Lab</h3>
+            <p class="sl-nd-card-copy">
+              Introducing the Thrust-to-Weight (TWR) lab to balance engine thrust against vehicle mass and test liftoff margin in real time.
+            </p>
+            <a href="twr.html" class="sl-nd-action">Open TWR Lab &#8594;</a>
           </div>
-          <div class="sl-nd-meta">
-            <span class="sl-nd-date">2026.11.22</span>
-            <span class="sl-nd-badge">Kickoff</span>
-          </div>
-          <h3 class="sl-nd-card-title">SkyLabs Kickoff</h3>
-          <p class="sl-nd-card-copy">
-            We began building SkyLabs from scratch—laying the ground for browser-based 3D rocket simulations and orbital mechanics exploration.
-          </p>
-          <a href="rocketlabs.html" class="sl-nd-action">See Rocket Labs &#8594;</a>
         </div>
       </article>
 
-      <hr class="sl-nd-v-rule" aria-hidden="true" />
-
-      <!-- News 2 -->
-      <article class="sl-nd-card" data-bg-src="">
-        <div class="sl-nd-card-bg" aria-hidden="true"></div>
-        <div class="sl-nd-card-tint" aria-hidden="true"></div>
+      <!-- News: 2026.11.24 Guides & Calculators -->
+      <article class="sl-nd-card" data-date="2026-11-24">
         <div class="sl-nd-card-inner">
-          <div class="sl-nd-frame">
-            <img src="https://images.unsplash.com/vector-1752982370672-f48f43e31c70?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="First Labs Launched preview" loading="lazy" />
+          <div class="sl-nd-card-bg" aria-hidden="true"></div>
+          <div class="sl-nd-card-tint" aria-hidden="true"></div>
+          <div class="sl-nd-card-content">
+            <div class="sl-nd-frame">
+              <img src="https://images.unsplash.com/vector-1752609379698-25512883d074?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Guides and Calculators Live preview" loading="lazy" />
+            </div>
+            <div class="sl-nd-meta">
+              <span class="sl-nd-date">2026.11.24</span>
+              <span class="sl-nd-badge">Tools</span>
+            </div>
+            <h3 class="sl-nd-card-title">Guides &amp; Calculators Live</h3>
+            <p class="sl-nd-card-copy">
+              We launched aerospace guides and calculators alongside the sims to help check numbers and understand flight concepts.
+            </p>
+            <a href="Telemetry.html" class="sl-nd-action">Open Guides &amp; Calcs &#8594;</a>
           </div>
-          <div class="sl-nd-meta">
-            <span class="sl-nd-date">2026.11.23</span>
-            <span class="sl-nd-badge">Labs</span>
-          </div>
-          <h3 class="sl-nd-card-title">First Labs Launched</h3>
-          <p class="sl-nd-card-copy">
-            Opened our early rocket and space labs in the browser so you can test delta-v, TWR, reentry, and orbits right away.
-          </p>
-          <a href="Labs.html" class="sl-nd-action">Open Labs &#8594;</a>
         </div>
       </article>
 
-      <hr class="sl-nd-v-rule" aria-hidden="true" />
-
-      <!-- News 3 -->
-      <article class="sl-nd-card" data-bg-src="">
-        <div class="sl-nd-card-bg" aria-hidden="true"></div>
-        <div class="sl-nd-card-tint" aria-hidden="true"></div>
+      <!-- News: 2026.11.23 First Labs Launched -->
+      <article class="sl-nd-card" data-date="2026-11-23">
         <div class="sl-nd-card-inner">
-          <div class="sl-nd-frame">
-            <img src="https://images.unsplash.com/vector-1752609379698-25512883d074?q=80&w=880&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Guides and Calculators Live preview" loading="lazy" />
+          <div class="sl-nd-card-bg" aria-hidden="true"></div>
+          <div class="sl-nd-card-tint" aria-hidden="true"></div>
+          <div class="sl-nd-card-content">
+            <div class="sl-nd-frame">
+              <img src="https://images.unsplash.com/vector-1752982370672-f48f43e31c70?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="First Labs Launched preview" loading="lazy" />
+            </div>
+            <div class="sl-nd-meta">
+              <span class="sl-nd-date">2026.11.23</span>
+              <span class="sl-nd-badge">Labs</span>
+            </div>
+            <h3 class="sl-nd-card-title">First Labs Launched</h3>
+            <p class="sl-nd-card-copy">
+              Opened our early rocket and space labs in the browser so you can test delta-v, TWR, reentry, and orbits right away.
+            </p>
+            <a href="Labs.html" class="sl-nd-action">Open Labs &#8594;</a>
           </div>
-          <div class="sl-nd-meta">
-            <span class="sl-nd-date">2026.11.24</span>
-            <span class="sl-nd-badge">Tools</span>
-          </div>
-          <h3 class="sl-nd-card-title">Guides &amp; Calculators Live</h3>
-          <p class="sl-nd-card-copy">
-            We launched aerospace guides and calculators alongside the sims to help check numbers and understand flight concepts.
-          </p>
-          <a href="Telemetry.html" class="sl-nd-action">Open Guides &amp; Calcs &#8594;</a>
         </div>
       </article>
 
-      <hr class="sl-nd-v-rule" aria-hidden="true" />
-      
-<article class="sl-nd-card" data-bg-src="https://plus.unsplash.com/premium_vector-1711987676879-91b7cf22edb9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D">
-  <div class="sl-nd-card-bg" style="background-image: url('https://plus.unsplash.com/premium_vector-1711987676879-91b7cf22edb9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D');" aria-hidden="true"></div>
-  <div class="sl-nd-card-tint" aria-hidden="true"></div>
-  <div class="sl-nd-card-inner">
-    <div class="sl-nd-frame">
-      <img src="https://plus.unsplash.com/premium_vector-1711987676879-91b7cf22edb9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="Thrust-to-Weight Lab preview" loading="lazy" />
-    </div>
-    <div class="sl-nd-meta">
-      <span class="sl-nd-date">2026.11.25</span>
-      <span class="sl-nd-badge">TWR Lab</span>
-    </div>
-    <h3 class="sl-nd-card-title">Thrust-to-Weight Lab</h3>
-    <p class="sl-nd-card-copy">
-      Introducing the Thrust-to-Weight (TWR) lab to balance engine thrust against vehicle mass and test liftoff margin in real time.
-    </p>
-    <a href="twr.html" class="sl-nd-action">Open TWR Lab &#8594;</a>
-  </div>
-</article>
+      <!-- News: 2026.11.22 SkyLabs Kickoff (OLDEST) -->
+      <article class="sl-nd-card" data-date="2026-11-22">
+        <div class="sl-nd-card-inner">
+          <div class="sl-nd-card-bg" aria-hidden="true"></div>
+          <div class="sl-nd-card-tint" aria-hidden="true"></div>
+          <div class="sl-nd-card-content">
+            <div class="sl-nd-frame">
+              <img src="https://images.unsplash.com/vector-1749730126421-31f04d0bb763?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D" alt="SkyLabs Kickoff preview" loading="lazy" />
+            </div>
+            <div class="sl-nd-meta">
+              <span class="sl-nd-date">2026.11.22</span>
+              <span class="sl-nd-badge">Kickoff</span>
+            </div>
+            <h3 class="sl-nd-card-title">SkyLabs Kickoff</h3>
+            <p class="sl-nd-card-copy">
+              We began building SkyLabs from scratch, laying the ground for browser-based 3D rocket simulations and orbital mechanics exploration.
+            </p>
+            <a href="rocketlabs.html" class="sl-nd-action">See Rocket Labs &#8594;</a>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 
@@ -1467,6 +1460,16 @@
     (function () {
       const section = document.getElementById('latest-news');
       if (!section) return;
+
+      const row = document.getElementById('slNdRow');
+
+      // Safety net: auto-sort cards newest first using data-date,
+      // so old cards always sink to the bottom even if you add new ones out of order.
+      if (row) {
+        const cards = Array.from(row.querySelectorAll('.sl-nd-card'));
+        cards.sort((a, b) => (b.dataset.date || '').localeCompare(a.dataset.date || ''));
+        cards.forEach((card) => row.appendChild(card));
+      }
 
       // Sync each card's blurred background image with its framed <img src="">
       section.querySelectorAll('.sl-nd-card').forEach((card) => {
@@ -1573,9 +1576,7 @@
       transition: color 0.2s ease;
     }
 
-    .sl-sf-nav a:hover {
-      color: #ffffff;
-    }
+    .sl-sf-nav a:hover { color: #ffffff; }
 
     .sl-sf-bottom {
       display: flex;
@@ -1598,17 +1599,11 @@
       transition: color 0.2s ease;
     }
 
-    .sl-sf-top-btn:hover {
-      color: #ffffff;
-    }
+    .sl-sf-top-btn:hover { color: #ffffff; }
 
     @media (max-width: 720px) {
-      .sl-sf-footer {
-        padding: 44px 22px 28px;
-      }
-      .sl-sf-nav {
-        gap: 14px 18px;
-      }
+      .sl-sf-footer { padding: 44px 22px 28px; }
+      .sl-sf-nav { gap: 14px 18px; }
     }
   </style>
 
@@ -1650,11 +1645,6 @@
     })();
   </script>
 </footer>
-
-
-
-
-
 
 </body>
 </html>
