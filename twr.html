@@ -1680,6 +1680,8 @@ let pitchAngle = 0;        // 0 = straight up, ~80 deg = orbital
 let hVelocity = 0;         // horizontal velocity (m/s)
 let downrange = 0;         // horizontal distance travelled (m)
 let engineCutoff = false;  // MECO: engines cut in space / at orbit
+let maxQRings = [];        // expanding shock rings during Max-Q
+let maxQRingTimer = 0;
 
 const PRESETS = {
   f9:       { dry: 22000,  fuel: 380000,  isp: 282, thrust: 7600  },
@@ -2555,15 +2557,15 @@ function buildStars() {
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
   g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
   starField = new THREE.Points(g, new THREE.PointsMaterial({
-    size: 1.15,           // keep small / thin as requested
+    size: 1.05,
     vertexColors: true,
     transparent: true,
-    opacity: 0.92,
+    opacity: 0.95,
     sizeAttenuation: true,
     depthWrite: false
   }));
   starField.visible = false;
-  starField.frustumCulled = false; // always render, never culled by camera frustum
+  starField.frustumCulled = false;
   scene.add(starField);
 
   const info = PLANETS.earth;
@@ -2626,6 +2628,26 @@ function buildFX() {
   });
   plume.position.y = 5;
   rocketGroup.add(plume);
+
+  /* Max-Q shock rings — start at nose, expand + drift aft, fade, loop */
+  maxQRings = [];
+  for (let i = 0; i < 5; i++) {
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.6, 0.07, 8, 48),
+      new THREE.MeshBasicMaterial({
+        color: 0xaaccff,
+        transparent: true,
+        opacity: 0,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.visible = false;
+    ring.userData = { life: 0, active: false };
+    rocketGroup.add(ring);
+    maxQRings.push(ring);
+  }
 
   const fc = IS_MOBILE ? 6000 : 16000;
   const fg = new THREE.BufferGeometry();
@@ -2723,17 +2745,20 @@ function buildFX() {
   scene.add(expP);
 }
 
-/* NEW: clean engine cutoff (MECO) — fire, glow plume and smoke all stop */
+/* Hard MECO / SECO — engines, plume, fire and smoke fully off (no vacuum flames) */
 function cutoffEngines(msg) {
   if (engineCutoff) return;
   engineCutoff = true;
-  plume.children.forEach(c => c.visible = false);
-  fireP.visible = false;
-  smokeP.visible = false;
-  steamP.visible = false;
-  if (msg) {
-    toast(msg);
-  }
+  if (plume) plume.children.forEach(c => { c.visible = false; });
+  if (fireP) fireP.visible = false;
+  if (smokeP) smokeP.visible = false;
+  if (steamP) steamP.visible = false;
+  // freeze live TWR display at 0 after cutoff
+  const live = document.getElementById('liveTwrVal');
+  if (live) live.textContent = '0.00';
+  const ht = document.getElementById('hudTwr');
+  if (ht) ht.textContent = 'TWR 0.00';
+  if (msg) toast(msg);
 }
 
 function setTime(m) {
@@ -2796,6 +2821,12 @@ function startLaunch() {
   coreDetached = false;
   maxQPassed = false;
   engineCutoff = false;
+  maxQRingTimer = 0;
+  if (maxQRings) maxQRings.forEach(r => {
+    r.userData.active = false;
+    r.visible = false;
+    r.material.opacity = 0;
+  });
   altitude = 0;
   velocity = 0;
   pitchAngle = 0;
@@ -3079,6 +3110,12 @@ function reset() {
   coreDetached = false;
   maxQPassed = false;
   engineCutoff = false;
+  maxQRingTimer = 0;
+  if (maxQRings) maxQRings.forEach(r => {
+    r.userData.active = false;
+    r.visible = false;
+    r.material.opacity = 0;
+  });
   altitude = 0;
   velocity = 0;
   pitchAngle = 0;
@@ -3274,16 +3311,29 @@ function animate() {
   if (isFlying) {
     const el = t - launchTime;
     flightT = el;
-    fuelRemaining = Math.max(0, 1 - el / 175);
+
+    /* Fuel only burns while engines are lit */
+    if (!engineCutoff) {
+      fuelRemaining = Math.max(0, 1 - el / 175);
+    }
     const currentMass = dryMassVal + (initialMass - dryMassVal) * fuelRemaining;
-    const currentTwr = thrustN / (currentMass * G0);
-    if (currentTwr > peakTwr) peakTwr = currentTwr;
+    const currentTwr = engineCutoff ? 0 : thrustN / (currentMass * G0);
+    if (!engineCutoff && currentTwr > peakTwr) peakTwr = currentTwr;
     document.getElementById('hudTwr').textContent = 'TWR ' + currentTwr.toFixed(2);
     document.getElementById('liveTwrVal').textContent = currentTwr.toFixed(2);
 
+    /* Hard MECO before / at edge of space — no fire or thrust in vacuum */
+    if (!engineCutoff && (fuelRemaining <= 0.02 || altitude > 92000 || velocity > 2550)) {
+      cutoffEngines(altitude > 90000 ? 'MECO · engines off · vacuum' : 'MECO · fuel depleted');
+      const hs = document.getElementById('hudStage');
+      if (hs) hs.textContent = 'COAST · SAFE';
+      document.getElementById('hudPhase').textContent = 'MECO · COASTING';
+      document.getElementById('hudPhase').style.color = '#188038';
+    }
+
     const dens = Math.exp(-altitude / 8500);
     const drag = 0.5 * dens * (velocity * velocity) * 0.0005;
-    let rawAccel = Math.max(0, (currentTwr - 1) * G0 * 1.3 - drag);
+    let rawAccel = engineCutoff ? 0 : Math.max(0, (currentTwr - 1) * G0 * 1.3 - drag);
 
     /* ==========================================================
        NEW: REAL GRAVITY TURN (like actual launches)
@@ -3419,10 +3469,6 @@ function animate() {
     if (altitude > 70000 && !fairingGone) doFairing();
     if (altitude > 92000 && !coreDetached) doCoreDetach();
 
-    if (altitude > 95000 && fireP.visible) {
-      fireP.material.opacity = Math.max(0.12, 0.95 - (altitude - 95000) / 70000);
-    }
-
     if (teleT.length < 300) {
       teleT.push(el);
       teleAlt.push(altitude);
@@ -3430,74 +3476,123 @@ function animate() {
       teleTwr.push(currentTwr);
     }
 
-    plume.children.forEach((c, i) => {
-      if (!c.visible) return;
-      const s = 1 + Math.sin(t * 18 + i) * 0.28;
-      c.scale.set(s, s, s);
-      c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
+    /* ===== Engine FX only while engines are lit ===== */
+    if (!engineCutoff) {
+      plume.children.forEach((c, i) => {
+        if (!c.visible) return;
+        const s = 1 + Math.sin(t * 18 + i) * 0.28;
+        c.scale.set(s, s, s);
+        c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
+      });
+
+      if (fireP.visible) {
+        const pos = fireP.geometry.attributes.position.array;
+        const vel = fireP.userData.v;
+        for (let i = 0; i < vel.length; i++) {
+          if (stageSeparated && vel[i].eng !== 0) {
+            pos[i * 3 + 1] = -999;
+            continue;
+          }
+          pos[i * 3] += vel[i].x * dt * 10;
+          pos[i * 3 + 1] += vel[i].y * dt * 36;
+          pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
+          vel[i].life -= dt * 0.18;
+          if (vel[i].life <= 0) {
+            const eng = vel[i].eng || 0;
+            const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
+            pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
+            pos[i * 3 + 1] = -0.8 - Math.random() * 5;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
+            vel[i].y = -(12 + Math.random() * 20);
+            vel[i].life = 1;
+          }
+        }
+        fireP.geometry.attributes.position.needsUpdate = true;
+      }
+
+      if (smokeP.visible && altitude < 85000) {
+        const pos = smokeP.geometry.attributes.position.array;
+        const vel = smokeP.userData.v;
+        for (let i = 0; i < vel.length; i++) {
+          pos[i * 3] += vel[i].x * dt * 9;
+          pos[i * 3 + 1] += vel[i].y * dt * 8;
+          pos[i * 3 + 2] += vel[i].z * dt * 9;
+          vel[i].life -= dt * 0.09;
+          if (vel[i].life <= 0) {
+            pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
+            pos[i * 3 + 1] = rocketGroup.position.y - 5;
+            pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
+            vel[i].life = 1;
+          }
+        }
+        smokeP.geometry.attributes.position.needsUpdate = true;
+      } else if (smokeP.visible && altitude >= 85000) {
+        smokeP.visible = false; // no smoke in near-vacuum
+      }
+
+      if (steamP.visible && altitude < 450) {
+        const pos = steamP.geometry.attributes.position.array;
+        const vel = steamP.userData.v;
+        for (let i = 0; i < vel.length; i++) {
+          pos[i * 3] += vel[i].x * dt * 6;
+          pos[i * 3 + 1] += vel[i].y * dt * 8;
+          pos[i * 3 + 2] += vel[i].z * dt * 6;
+          vel[i].life -= dt * 0.16;
+          if (vel[i].life <= 0) {
+            pos[i * 3] = (Math.random() - 0.5) * 45;
+            pos[i * 3 + 1] = 2 + Math.random() * 5;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 45 - 10;
+            vel[i].life = 1;
+          }
+        }
+        steamP.geometry.attributes.position.needsUpdate = true;
+      } else if (altitude >= 450) {
+        steamP.visible = false;
+      }
+    }
+
+    /* ===== Max-Q expanding shock rings (nose → aft, grow, fade, loop) ===== */
+    if (maxQPassed && altitude > 10500 && altitude < 22000 && !engineCutoff) {
+      maxQRingTimer += dt;
+      if (maxQRingTimer > 0.55) {
+        maxQRingTimer = 0;
+        const free = maxQRings.find(r => !r.userData.active);
+        if (free) {
+          free.userData.active = true;
+          free.userData.life = 1.0;
+          free.scale.set(0.35, 0.35, 0.35);
+          free.position.set(0, 82, 0); // near nose tip
+          free.material.opacity = 0.55;
+          free.visible = true;
+        }
+      }
+    }
+    maxQRings.forEach(r => {
+      if (!r.userData.active) return;
+      r.userData.life -= dt * 0.55;
+      // expand + drift slightly aft + slow down as they grow
+      const grow = 1 + (1 - r.userData.life) * 4.2;
+      r.scale.set(grow, grow, grow);
+      r.position.y -= dt * (2.8 + (1 - r.userData.life) * 1.5);
+      r.material.opacity = Math.max(0, r.userData.life * 0.55);
+      if (r.userData.life <= 0) {
+        r.userData.active = false;
+        r.visible = false;
+        r.material.opacity = 0;
+      }
     });
 
-    if (fireP.visible) {
-      const pos = fireP.geometry.attributes.position.array;
-      const vel = fireP.userData.v;
-      for (let i = 0; i < vel.length; i++) {
-        if (stageSeparated && vel[i].eng !== 0) {
-          pos[i * 3 + 1] = -999;
-          continue;
-        }
-        pos[i * 3] += vel[i].x * dt * 10;
-        pos[i * 3 + 1] += vel[i].y * dt * 36;
-        pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
-        vel[i].life -= dt * 0.18;
-        if (vel[i].life <= 0) {
-          const eng = vel[i].eng || 0;
-          const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
-          pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
-          pos[i * 3 + 1] = -0.8 - Math.random() * 5;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
-          vel[i].y = -(12 + Math.random() * 20);
-          vel[i].life = 1;
-        }
-      }
-      fireP.geometry.attributes.position.needsUpdate = true;
-    }
-
-    if (smokeP.visible) {
-      const pos = smokeP.geometry.attributes.position.array;
-      const vel = smokeP.userData.v;
-      for (let i = 0; i < vel.length; i++) {
-        pos[i * 3] += vel[i].x * dt * 9;
-        pos[i * 3 + 1] += vel[i].y * dt * 8;
-        pos[i * 3 + 2] += vel[i].z * dt * 9;
-        vel[i].life -= dt * 0.09;
-        if (vel[i].life <= 0) {
-          pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
-          pos[i * 3 + 1] = rocketGroup.position.y - 5;
-          pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
-          vel[i].life = 1;
-        }
-      }
-      smokeP.geometry.attributes.position.needsUpdate = true;
-    }
-
-    if (steamP.visible && altitude < 450) {
-      const pos = steamP.geometry.attributes.position.array;
-      const vel = steamP.userData.v;
-      for (let i = 0; i < vel.length; i++) {
-        pos[i * 3] += vel[i].x * dt * 6;
-        pos[i * 3 + 1] += vel[i].y * dt * 8;
-        pos[i * 3 + 2] += vel[i].z * dt * 6;
-        vel[i].life -= dt * 0.16;
-        if (vel[i].life <= 0) {
-          pos[i * 3] = (Math.random() - 0.5) * 45;
-          pos[i * 3 + 1] = 2 + Math.random() * 5;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * 45 - 10;
-          vel[i].life = 1;
-        }
-      }
-      steamP.geometry.attributes.position.needsUpdate = true;
-    } else if (altitude >= 450) {
-      steamP.visible = false;
+    /* Better planet framing — consistent relative distance */
+    if (earthMesh && earthMesh.visible) {
+      const info = PLANETS[currentPlanet] || PLANETS.earth;
+      const k = Math.min(1, altitude / 90000);
+      // keep planet large enough in frame, slightly offset behind/below rocket
+      const dist = info.size * (1.35 + k * 0.45);
+      earthMesh.position.set(
+        rocketGroup.position.x * 0.35 - dist * 0.15,
+        rocketGroup.position.y - dist * 0.85 - k * 80,
+        rocketGroup.position.z - dist * 0.25
+      );
     }
 
     checkSuccess();
