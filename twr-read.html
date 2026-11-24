@@ -2770,6 +2770,421 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     SIXTH SECTION: TARGET WORLD & GRAVITY TWR (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrSixthSection" aria-labelledby="slTwrSixthHeading">
+  <style>
+    #slTwrSixthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 20% 22%, rgba(120, 165, 255, 0.07) 0%, transparent 48%),
+        radial-gradient(circle at 82% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrSixthSection .sl-twr6-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrSixthSection .sl-twr6-head {
+      max-width: 780px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrSixthSection.is-revealed .sl-twr6-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSixthSection .sl-twr6-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrSixthSection .sl-twr6-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrSixthSection .sl-twr6-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrSixthSection .sl-twr6-planets {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.76s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+    }
+
+    #slTwrSixthSection.is-revealed .sl-twr6-planets {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-btn {
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      color: #f5f7fb;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition:
+        background-color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-btn:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.26);
+      transform: translateY(-2px);
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-btn.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-kicker {
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-btn.is-active .sl-twr6-planet-kicker {
+      color: rgba(8, 11, 16, 0.62);
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-name {
+      font-size: 22px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-tag {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    #slTwrSixthSection .sl-twr6-planet-btn.is-active .sl-twr6-planet-tag {
+      color: rgba(8, 11, 16, 0.78);
+    }
+
+    #slTwrSixthSection .sl-twr6-dossier {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+      gap: 36px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.16s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
+    }
+
+    #slTwrSixthSection.is-revealed .sl-twr6-dossier {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSixthSection .sl-twr6-dos-label {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 10px;
+    }
+
+    #slTwrSixthSection .sl-twr6-dos-title {
+      font-size: clamp(26px, 2.8vw, 36px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #slTwrSixthSection .sl-twr6-dos-copy {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    #slTwrSixthSection .sl-twr6-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    #slTwrSixthSection .sl-twr6-stat {
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slTwrSixthSection .sl-twr6-stat-label {
+      display: block;
+      font-size: 13px;
+      color: rgba(245, 247, 251, 0.58);
+      margin-bottom: 6px;
+    }
+
+    #slTwrSixthSection .sl-twr6-stat-val {
+      font-size: 17.5px;
+      font-weight: 400;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    @media (max-width: 980px) {
+      #slTwrSixthSection {
+        padding: 92px 22px;
+      }
+      #slTwrSixthSection .sl-twr6-planets {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      #slTwrSixthSection .sl-twr6-dossier {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      #slTwrSixthSection .sl-twr6-planets {
+        grid-template-columns: 1fr;
+      }
+      #slTwrSixthSection .sl-twr6-stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="sl-twr6-wrap">
+    <div class="sl-twr6-head">
+      <span class="sl-twr6-tag">06 &middot; Target World &amp; Gravity</span>
+      <h2 class="sl-twr6-title" id="slTwrSixthHeading">Local gravity changes liftoff TWR</h2>
+      <p class="sl-twr6-sub">
+        The same rocket and engine thrust can feel sluggish on Earth yet leap off a lower-gravity world. Select a destination to compare.
+      </p>
+    </div>
+
+    <div class="sl-twr6-planets" role="tablist" aria-label="Target worlds for TWR comparison">
+      <button type="button" class="sl-twr6-planet-btn is-active" data-twr-world="0" role="tab" aria-selected="true">
+        <span class="sl-twr6-planet-kicker">01 &middot; Home World</span>
+        <span class="sl-twr6-planet-name">Earth</span>
+        <span class="sl-twr6-planet-tag">9.81 m/s&sup2; gravity</span>
+      </button>
+
+      <button type="button" class="sl-twr6-planet-btn" data-twr-world="1" role="tab" aria-selected="false">
+        <span class="sl-twr6-planet-kicker">02 &middot; Red Planet</span>
+        <span class="sl-twr6-planet-name">Mars</span>
+        <span class="sl-twr6-planet-tag">3.72 m/s&sup2; gravity</span>
+      </button>
+
+      <button type="button" class="sl-twr6-planet-btn" data-twr-world="2" role="tab" aria-selected="false">
+        <span class="sl-twr6-planet-kicker">03 &middot; Lunar Surface</span>
+        <span class="sl-twr6-planet-name">Moon</span>
+        <span class="sl-twr6-planet-tag">1.62 m/s&sup2; gravity</span>
+      </button>
+
+      <button type="button" class="sl-twr6-planet-btn" data-twr-world="3" role="tab" aria-selected="false">
+        <span class="sl-twr6-planet-kicker">04 &middot; Saturnian Moon</span>
+        <span class="sl-twr6-planet-name">Titan</span>
+        <span class="sl-twr6-planet-tag">1.35 m/s&sup2; gravity</span>
+      </button>
+    </div>
+
+    <div class="sl-twr6-dossier">
+      <div>
+        <span class="sl-twr6-dos-label" id="slTwr6DosLabel">World Profile &middot; Earth</span>
+        <h3 class="sl-twr6-dos-title" id="slTwr6DosTitle">Stronger gravity demands higher thrust for liftoff</h3>
+        <p class="sl-twr6-dos-copy" id="slTwr6DosCopy">
+          Earth's 9.81 m/s&sup2; surface gravity gives a rocket heavy downward weight, requiring high-thrust first stages to clear the launch pad and climb through dense air.
+        </p>
+      </div>
+
+      <div class="sl-twr6-stats">
+        <div class="sl-twr6-stat">
+          <span class="sl-twr6-stat-label">Surface Gravity</span>
+          <span class="sl-twr6-stat-val" id="slTwr6StatGrav">9.81 m/s&sup2;</span>
+        </div>
+        <div class="sl-twr6-stat">
+          <span class="sl-twr6-stat-label">Relative Weight</span>
+          <span class="sl-twr6-stat-val" id="slTwr6StatWeight">100% (Baseline)</span>
+        </div>
+        <div class="sl-twr6-stat">
+          <span class="sl-twr6-stat-label">Liftoff Demand</span>
+          <span class="sl-twr6-stat-val" id="slTwr6StatDemand">High Thrust Needed</span>
+        </div>
+        <div class="sl-twr6-stat">
+          <span class="sl-twr6-stat-label">Same-Engine TWR</span>
+          <span class="sl-twr6-stat-val" id="slTwr6StatTwr">1.00&times; Baseline</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrSixthSection');
+      if (!section) return;
+
+      const buttons = section.querySelectorAll('.sl-twr6-planet-btn');
+      const labelEl = document.getElementById('slTwr6DosLabel');
+      const titleEl = document.getElementById('slTwr6DosTitle');
+      const copyEl = document.getElementById('slTwr6DosCopy');
+      const gravEl = document.getElementById('slTwr6StatGrav');
+      const weightEl = document.getElementById('slTwr6StatWeight');
+      const demandEl = document.getElementById('slTwr6StatDemand');
+      const twrEl = document.getElementById('slTwr6StatTwr');
+
+      const worlds = [
+        {
+          label: 'World Profile \u00B7 Earth',
+          title: 'Stronger gravity demands higher thrust for liftoff',
+          copy: "Earth's 9.81 m/s\u00B2 surface gravity gives a rocket heavy downward weight, requiring high-thrust first stages to clear the launch pad and climb through dense air.",
+          grav: '9.81 m/s\u00B2',
+          weight: '100% (Baseline)',
+          demand: 'High Thrust Needed',
+          twr: '1.00\u00D7 Baseline'
+        },
+        {
+          label: 'World Profile \u00B7 Mars',
+          title: 'About 38% of Earth gravity lightens weight significantly',
+          copy: 'On Mars, a given rocket mass weighs roughly 38% as much as on Earth, multiplying the TWR of the same engine thrust by about 2.64\u00D7.',
+          grav: '3.72 m/s\u00B2',
+          weight: '~38% of Earth',
+          demand: 'Moderate Ascent Thrust',
+          twr: '~2.64\u00D7 Earth TWR'
+        },
+        {
+          label: 'World Profile \u00B7 Moon',
+          title: 'Low lunar gravity makes vertical lift six times easier',
+          copy: 'With surface gravity near 1.62 m/s\u00B2, the same rocket weighs only about one-sixth as much as on Earth, giving generous climb acceleration from modest thrust.',
+          grav: '1.62 m/s\u00B2',
+          weight: '~17% of Earth',
+          demand: 'Low Lift Thrust',
+          twr: '~6.05\u00D7 Earth TWR'
+        },
+        {
+          label: 'World Profile \u00B7 Titan',
+          title: 'Low gravity combines with thick air for ascent trade-offs',
+          copy: "Titan's low gravity (~1.35 m/s\u00B2) reduces weight strongly, while its thick atmosphere adds aerodynamic drag during climbing.",
+          grav: '1.35 m/s\u00B2',
+          weight: '~14% of Earth',
+          demand: 'Low Gravity + Air Drag',
+          twr: '~7.26\u00D7 Earth TWR'
+        }
+      ];
+
+      buttons.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const item = worlds[idx];
+          if (!item) return;
+
+          buttons.forEach((b, bIdx) => {
+            const active = bIdx === idx;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', String(active));
+          });
+
+          if (labelEl) labelEl.textContent = item.label;
+          if (titleEl) titleEl.textContent = item.title;
+          if (copyEl) copyEl.textContent = item.copy;
+          if (gravEl) gravEl.textContent = item.grav;
+          if (weightEl) weightEl.textContent = item.weight;
+          if (demandEl) demandEl.textContent = item.demand;
+          if (twrEl) twrEl.textContent = item.twr;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
