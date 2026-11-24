@@ -1603,6 +1603,560 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     THIRD SECTION: TWR ACROSS FLIGHT STAGES (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrThirdSection" aria-labelledby="slTwrThirdHeading">
+  <style>
+    #slTwrThirdSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 82% 28%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 18% 76%, rgba(120, 165, 255, 0.06) 0%, transparent 50%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrThirdSection .sl-twr3-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrThirdSection .sl-twr3-head {
+      max-width: 760px;
+      margin-bottom: 56px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrThirdSection.is-revealed .sl-twr3-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrThirdSection .sl-twr3-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrThirdSection .sl-twr3-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrThirdSection .sl-twr3-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrThirdSection .sl-twr3-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: 48px;
+      align-items: stretch;
+    }
+
+    #slTwrThirdSection .sl-twr3-timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.78s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+        transform 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+    }
+
+    #slTwrThirdSection.is-revealed .sl-twr3-timeline {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrThirdSection .sl-twr3-step {
+      width: 100%;
+      text-align: left;
+      padding: 20px 24px;
+      border-radius: 20px;
+      background: rgba(11, 15, 24, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #f5f7fb;
+      font-family: inherit;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition:
+        background-color 0.22s ease,
+        border-color 0.22s ease,
+        transform 0.22s ease;
+    }
+
+    #slTwrThirdSection .sl-twr3-step:hover {
+      background: rgba(16, 22, 35, 0.85);
+      border-color: rgba(255, 255, 255, 0.24);
+      transform: translateX(4px);
+    }
+
+    #slTwrThirdSection .sl-twr3-step.is-active {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.42);
+      transform: translateX(6px);
+    }
+
+    #slTwrThirdSection .sl-twr3-step-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    #slTwrThirdSection .sl-twr3-step-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(5, 7, 12, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.85);
+      flex-shrink: 0;
+      transition: background-color 0.22s ease, color 0.22s ease, border-color 0.22s ease;
+    }
+
+    #slTwrThirdSection .sl-twr3-step.is-active .sl-twr3-step-dot {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slTwrThirdSection .sl-twr3-step-name {
+      font-size: 19px;
+      font-weight: 400;
+      color: #ffffff;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    #slTwrThirdSection .sl-twr3-step-alt {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.62);
+    }
+
+    #slTwrThirdSection .sl-twr3-step-arrow {
+      font-size: 18px;
+      color: rgba(245, 247, 251, 0.5);
+      transition: transform 0.22s ease, color 0.22s ease;
+    }
+
+    #slTwrThirdSection .sl-twr3-step.is-active .sl-twr3-step-arrow {
+      color: #ffffff;
+      transform: translateX(3px);
+    }
+
+    #slTwrThirdSection .sl-twr3-panel {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.82s cubic-bezier(0.22, 1, 0.36, 1) 0.18s,
+        transform 0.86s cubic-bezier(0.22, 1, 0.36, 1) 0.18s;
+    }
+
+    #slTwrThirdSection.is-revealed .sl-twr3-panel {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrThirdSection .sl-twr3-panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    #slTwrThirdSection .sl-twr3-phase-badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+    }
+
+    #slTwrThirdSection .sl-twr3-next-btn {
+      padding: 7px 15px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      font-family: inherit;
+      font-size: 13.5px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slTwrThirdSection .sl-twr3-next-btn:hover {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #slTwrThirdSection .sl-twr3-panel-title {
+      font-size: clamp(26px, 2.8vw, 34px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+
+    #slTwrThirdSection .sl-twr3-panel-desc {
+      font-size: 17px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    #slTwrThirdSection .sl-twr3-bar-box {
+      padding: 18px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slTwrThirdSection .sl-twr3-bar-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.68);
+      margin-bottom: 10px;
+    }
+
+    #slTwrThirdSection .sl-twr3-bar-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+
+    #slTwrThirdSection .sl-twr3-bar-fill {
+      height: 100%;
+      width: 25%;
+      border-radius: 999px;
+      background: #ffffff;
+      transition: width 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrThirdSection .sl-twr3-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #slTwrThirdSection .sl-twr3-metric {
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+    }
+
+    #slTwrThirdSection .sl-twr3-metric-label {
+      display: block;
+      font-size: 12.5px;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 4px;
+    }
+
+    #slTwrThirdSection .sl-twr3-metric-val {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      #slTwrThirdSection {
+        padding: 92px 22px;
+      }
+      #slTwrThirdSection .sl-twr3-layout {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+      #slTwrThirdSection .sl-twr3-step:hover,
+      #slTwrThirdSection .sl-twr3-step.is-active {
+        transform: none;
+      }
+      #slTwrThirdSection .sl-twr3-panel {
+        padding: 26px 20px;
+        border-radius: 22px;
+      }
+      #slTwrThirdSection .sl-twr3-metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="sl-twr3-wrap">
+    <div class="sl-twr3-head">
+      <span class="sl-twr3-tag">03 · Step-by-Step Burn</span>
+      <h2 class="sl-twr3-title" id="slTwrThirdHeading">Four stages across a launch burn</h2>
+      <p class="sl-twr3-sub">
+        Select each stage along the ascent to see how mass, TWR, and climb acceleration shift from pad ignition to stage cutoff.
+      </p>
+    </div>
+
+    <div class="sl-twr3-layout">
+      <div class="sl-twr3-timeline" role="tablist" aria-label="Launch burn stages">
+        <button type="button" class="sl-twr3-step is-active" data-twr-phase="0" role="tab" aria-selected="true">
+          <span class="sl-twr3-step-left">
+            <span class="sl-twr3-step-dot">1</span>
+            <span>
+              <span class="sl-twr3-step-name">Pad Ignition</span>
+              <span class="sl-twr3-step-alt">Full wet mass &middot; Hold-down check</span>
+            </span>
+          </span>
+          <span class="sl-twr3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+
+        <button type="button" class="sl-twr3-step" data-twr-phase="1" role="tab" aria-selected="false">
+          <span class="sl-twr3-step-left">
+            <span class="sl-twr3-step-dot">2</span>
+            <span>
+              <span class="sl-twr3-step-name">Initial Liftoff</span>
+              <span class="sl-twr3-step-alt">TWR &gt; 1.00 &middot; Vertical rise begins</span>
+            </span>
+          </span>
+          <span class="sl-twr3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+
+        <button type="button" class="sl-twr3-step" data-twr-phase="2" role="tab" aria-selected="false">
+          <span class="sl-twr3-step-left">
+            <span class="sl-twr3-step-dot">3</span>
+            <span>
+              <span class="sl-twr3-step-name">Propellant Burn</span>
+              <span class="sl-twr3-step-alt">Mass drops &middot; TWR climbs steadily</span>
+            </span>
+          </span>
+          <span class="sl-twr3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+
+        <button type="button" class="sl-twr3-step" data-twr-phase="3" role="tab" aria-selected="false">
+          <span class="sl-twr3-step-left">
+            <span class="sl-twr3-step-dot">4</span>
+            <span>
+              <span class="sl-twr3-step-name">Pre-Cutoff Peak</span>
+              <span class="sl-twr3-step-alt">Near-empty tanks &middot; Highest stage TWR</span>
+            </span>
+          </span>
+          <span class="sl-twr3-step-arrow" aria-hidden="true">&#8594;</span>
+        </button>
+      </div>
+
+      <div class="sl-twr3-panel">
+        <div>
+          <div class="sl-twr3-panel-top">
+            <span class="sl-twr3-phase-badge" id="slTwr3Badge">Stage 1 of 4 &middot; Pad Ignition</span>
+            <button type="button" class="sl-twr3-next-btn" id="slTwr3NextBtn">Next Stage &#8594;</button>
+          </div>
+          <h3 class="sl-twr3-panel-title" id="slTwr3PanelTitle" style="margin-top: 18px;">
+            Engines ramp up while the rocket is at maximum mass
+          </h3>
+          <p class="sl-twr3-panel-desc" id="slTwr3PanelDesc">
+            At ignition, fuel tanks are full so weight is at its highest. Clamps hold the rocket until thrust reaches a safe margin above weight.
+          </p>
+        </div>
+
+        <div class="sl-twr3-bar-box">
+          <div class="sl-twr3-bar-meta">
+            <span>Stage Propellant Depletion</span>
+            <span id="slTwr3ProgressLabel">0% Burned</span>
+          </div>
+          <div class="sl-twr3-bar-track">
+            <div class="sl-twr3-bar-fill" id="slTwr3BarFill"></div>
+          </div>
+        </div>
+
+        <div class="sl-twr3-metrics">
+          <div class="sl-twr3-metric">
+            <span class="sl-twr3-metric-label">Vehicle Mass</span>
+            <span class="sl-twr3-metric-val" id="slTwr3MetricMass">100% Wet Mass</span>
+          </div>
+          <div class="sl-twr3-metric">
+            <span class="sl-twr3-metric-label">TWR Trend</span>
+            <span class="sl-twr3-metric-val" id="slTwr3MetricTwr">Baseline TWR&#8320;</span>
+          </div>
+          <div class="sl-twr3-metric">
+            <span class="sl-twr3-metric-label">Flight Focus</span>
+            <span class="sl-twr3-metric-val" id="slTwr3MetricFocus">Thrust Verification</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrThirdSection');
+      if (!section) return;
+
+      const steps = section.querySelectorAll('.sl-twr3-step');
+      const nextBtn = document.getElementById('slTwr3NextBtn');
+      const badgeEl = document.getElementById('slTwr3Badge');
+      const titleEl = document.getElementById('slTwr3PanelTitle');
+      const descEl = document.getElementById('slTwr3PanelDesc');
+      const progressLabelEl = document.getElementById('slTwr3ProgressLabel');
+      const barFillEl = document.getElementById('slTwr3BarFill');
+      const massEl = document.getElementById('slTwr3MetricMass');
+      const twrEl = document.getElementById('slTwr3MetricTwr');
+      const focusEl = document.getElementById('slTwr3MetricFocus');
+
+      const phases = [
+        {
+          badge: 'Stage 1 of 4 \u00B7 Pad Ignition',
+          title: 'Engines ramp up while the rocket is at maximum mass',
+          desc: 'At ignition, fuel tanks are full so weight is at its highest. Clamps hold the rocket until thrust reaches a safe margin above weight.',
+          progress: '0%',
+          progressText: '0% Burned',
+          mass: '100% Wet Mass',
+          twr: 'Baseline TWR\u2080',
+          focus: 'Thrust Verification'
+        },
+        {
+          badge: 'Stage 2 of 4 \u00B7 Initial Liftoff',
+          title: 'Net upward force clears the tower and starts rising',
+          desc: 'Once TWR exceeds 1.00, upward thrust beats gravity and the rocket accelerates off the pad, beginning its climb and gravity turn.',
+          progress: '20%',
+          progressText: '20% Burned',
+          mass: 'Heavy & Climbing',
+          twr: 'Rising Above 1.0',
+          focus: 'Pad Clearance'
+        },
+        {
+          badge: 'Stage 3 of 4 \u00B7 Propellant Burn',
+          title: 'Burning fuel lightens the craft and boosts TWR',
+          desc: 'As propellant exits the nozzle, rocket mass drops quickly. With constant thrust, TWR rises and acceleration increases.',
+          progress: '62%',
+          progressText: '62% Burned',
+          mass: 'Mass Dropping Fast',
+          twr: 'Steadily Increasing',
+          focus: 'Climb Acceleration'
+        },
+        {
+          badge: 'Stage 4 of 4 \u00B7 Pre-Cutoff Peak',
+          title: 'Near-empty tanks bring peak stage TWR and G-load',
+          desc: 'Just before stage burnout or throttling, the rocket is lightest—giving its highest TWR of the burn and strongest axial push.',
+          progress: '95%',
+          progressText: '95% Burned',
+          mass: 'Near Dry Mass',
+          twr: 'Peak Stage TWR',
+          focus: 'Throttle / Cutoff'
+        }
+      ];
+
+      let currentIndex = 0;
+
+      function setPhase(index) {
+        const item = phases[index];
+        if (!item) return;
+        currentIndex = index;
+
+        steps.forEach((step, idx) => {
+          const active = idx === index;
+          step.classList.toggle('is-active', active);
+          step.setAttribute('aria-selected', String(active));
+        });
+
+        if (badgeEl) badgeEl.textContent = item.badge;
+        if (titleEl) titleEl.textContent = item.title;
+        if (descEl) descEl.textContent = item.desc;
+        if (progressLabelEl) progressLabelEl.textContent = item.progressText;
+        if (barFillEl) barFillEl.style.width = item.progress;
+        if (massEl) massEl.textContent = item.mass;
+        if (twrEl) twrEl.textContent = item.twr;
+        if (focusEl) focusEl.textContent = item.focus;
+      }
+
+      steps.forEach((step, idx) => {
+        step.addEventListener('click', () => setPhase(idx));
+      });
+
+      if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+          setPhase((currentIndex + 1) % phases.length);
+        });
+      }
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
