@@ -3541,6 +3541,603 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     EIGHTH SECTION: GRAVITY LOSSES & THROTTLING (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrEighthSection" aria-labelledby="slTwrEighthHeading">
+  <style>
+    #slTwrEighthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 22% 26%, rgba(255, 255, 255, 0.05) 0%, transparent 48%),
+        radial-gradient(circle at 80% 78%, rgba(120, 165, 255, 0.06) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrEighthSection .sl-twr8-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrEighthSection .sl-twr8-head {
+      max-width: 780px;
+      margin-bottom: 48px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrEighthSection.is-revealed .sl-twr8-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrEighthSection .sl-twr8-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrEighthSection .sl-twr8-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrEighthSection .sl-twr8-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrEighthSection .sl-twr8-bands {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.76s cubic-bezier(0.22, 1, 0.36, 1) 0.08s,
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.08s;
+    }
+
+    #slTwrEighthSection.is-revealed .sl-twr8-bands {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrEighthSection .sl-twr8-band-btn {
+      padding: 20px 22px;
+      border-radius: 22px;
+      background: rgba(11, 15, 24, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      color: #f5f7fb;
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: background-color 0.22s ease, border-color 0.22s ease, transform 0.22s ease;
+    }
+
+    #slTwrEighthSection .sl-twr8-band-btn:hover {
+      background: rgba(16, 22, 35, 0.9);
+      border-color: rgba(255, 255, 255, 0.26);
+      transform: translateY(-2px);
+    }
+
+    #slTwrEighthSection .sl-twr8-band-btn.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slTwrEighthSection .sl-twr8-band-speed {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.04em;
+      color: rgba(245, 247, 251, 0.58);
+    }
+
+    #slTwrEighthSection .sl-twr8-band-btn.is-active .sl-twr8-band-speed {
+      color: rgba(8, 11, 16, 0.65);
+    }
+
+    #slTwrEighthSection .sl-twr8-band-name {
+      font-size: 21px;
+      font-weight: 400;
+      letter-spacing: -0.015em;
+    }
+
+    #slTwrEighthSection .sl-twr8-band-note {
+      font-size: 14px;
+      font-weight: 300;
+      color: rgba(245, 247, 251, 0.72);
+    }
+
+    #slTwrEighthSection .sl-twr8-band-btn.is-active .sl-twr8-band-note {
+      color: rgba(8, 11, 16, 0.78);
+    }
+
+    #slTwrEighthSection .sl-twr8-detail {
+      padding: 32px 34px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      flex-wrap: wrap;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.16s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.16s;
+    }
+
+    #slTwrEighthSection.is-revealed .sl-twr8-detail {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrEighthSection .sl-twr8-detail-title {
+      font-size: clamp(24px, 2.5vw, 32px);
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 8px;
+      letter-spacing: -0.015em;
+    }
+
+    #slTwrEighthSection .sl-twr8-detail-copy {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.8);
+      max-width: 780px;
+    }
+
+    #slTwrEighthSection .sl-twr8-pill-stat {
+      padding: 14px 20px;
+      border-radius: 18px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      min-width: 200px;
+    }
+
+    #slTwrEighthSection .sl-twr8-pill-stat span {
+      display: block;
+      font-size: 12.5px;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 4px;
+    }
+
+    #slTwrEighthSection .sl-twr8-pill-stat strong {
+      font-size: 17px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    @media (max-width: 980px) {
+      #slTwrEighthSection {
+        padding: 92px 22px;
+      }
+      #slTwrEighthSection .sl-twr8-bands {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      #slTwrEighthSection .sl-twr8-detail {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+    }
+
+    @media (max-width: 540px) {
+      #slTwrEighthSection .sl-twr8-bands {
+        grid-template-columns: 1fr;
+      }
+      #slTwrEighthSection .sl-twr8-pill-stat {
+        width: 100%;
+      }
+    }
+  </style>
+
+  <div class="sl-twr8-wrap">
+    <div class="sl-twr8-head">
+      <span class="sl-twr8-tag">08 &middot; Gravity Losses &amp; Throttling</span>
+      <h2 class="sl-twr8-title" id="slTwrEighthHeading">How climb path and throttle shape TWR</h2>
+      <p class="sl-twr8-sub">
+        Climbing vertically against gravity costs velocity margin, while tilting downrange and throttling engines keep loads controlled during ascent.
+      </p>
+    </div>
+
+    <div class="sl-twr8-bands" role="tablist" aria-label="Ascent and throttling regimes">
+      <button type="button" class="sl-twr8-band-btn is-active" data-twr-reg="0" role="tab" aria-selected="true">
+        <span class="sl-twr8-band-speed">Vertical Rise</span>
+        <span class="sl-twr8-band-name">Gravity Loss</span>
+        <span class="sl-twr8-band-note">Fighting g early in climb</span>
+      </button>
+
+      <button type="button" class="sl-twr8-band-btn" data-twr-reg="1" role="tab" aria-selected="false">
+        <span class="sl-twr8-band-speed">Dynamic Pressure</span>
+        <span class="sl-twr8-band-name">Max-Q Throttle</span>
+        <span class="sl-twr8-band-note">Easing thrust in dense air</span>
+      </button>
+
+      <button type="button" class="sl-twr8-band-btn" data-twr-reg="2" role="tab" aria-selected="false">
+        <span class="sl-twr8-band-speed">Pitch Program</span>
+        <span class="sl-twr8-band-name">Gravity Turn</span>
+        <span class="sl-twr8-band-note">Building sideways speed</span>
+      </button>
+
+      <button type="button" class="sl-twr8-band-btn" data-twr-reg="3" role="tab" aria-selected="false">
+        <span class="sl-twr8-band-speed">Light Vehicle</span>
+        <span class="sl-twr8-band-name">Burnout G-Load</span>
+        <span class="sl-twr8-band-note">Peak acceleration before MECO</span>
+      </button>
+    </div>
+
+    <div class="sl-twr8-detail">
+      <div>
+        <h3 class="sl-twr8-detail-title" id="slTwr8DetailTitle">Slow vertical climbs spend extra propellant fighting gravity</h3>
+        <p class="sl-twr8-detail-copy" id="slTwrEighthCopy">
+          While a rocket climbs slowly against gravity, engines expend propellant just to offset weight—reducing net velocity gained per unit of fuel burned.
+        </p>
+      </div>
+
+      <div class="sl-twr8-pill-stat">
+        <span>Key Ascent Effect</span>
+        <strong id="slTwr8EffectOut">Velocity Margin Cost</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrEighthSection');
+      if (!section) return;
+
+      const btns = section.querySelectorAll('.sl-twr8-band-btn');
+      const titleEl = document.getElementById('slTwr8DetailTitle');
+      const copyEl = document.getElementById('slTwrEighthCopy');
+      const effectEl = document.getElementById('slTwr8EffectOut');
+
+      const regimes = [
+        {
+          title: 'Slow vertical climbs spend extra propellant fighting gravity',
+          copy: 'While a rocket climbs slowly against gravity, engines expend propellant just to offset weight—reducing net velocity gained per unit of fuel burned.',
+          effect: 'Velocity Margin Cost'
+        },
+        {
+          title: 'Throttling lowers thrust when air pressure peaks',
+          copy: 'Around maximum dynamic pressure (Max-Q), reducing engine thrust temporarily lowers TWR and aerodynamic stress while the rocket passes through peak air loads.',
+          effect: 'Reduced Structural Load'
+        },
+        {
+          title: 'Tilting toward horizontal turns thrust into orbital speed',
+          copy: 'A smooth gravity turn pitches the flight path downrange so thrust builds horizontal orbital velocity instead of climbing straight up forever.',
+          effect: 'Horizontal Speed Gain'
+        },
+        {
+          title: 'Low remaining mass pushes acceleration highest near cutoff',
+          copy: 'As tanks empty near main engine cutoff (MECO), the same engine thrust acts on a much smaller mass, driving TWR and G-load to their stage peak.',
+          effect: 'Peak Stage G-Force'
+        }
+      ];
+
+      btns.forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const item = regimes[idx];
+          if (!item) return;
+
+          btns.forEach((b, bIdx) => {
+            const active = bIdx === idx;
+            b.classList.toggle('is-active', active);
+            b.setAttribute('aria-selected', String(active));
+          });
+
+          if (titleEl) titleEl.textContent = item.title;
+          if (copyEl) copyEl.textContent = item.copy;
+          if (effectEl) effectEl.textContent = item.effect;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
+<!-- ============================================================
+     NINTH SECTION: KEY TWR FORMULAS & QUICK CHECKS (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrNinthSection" aria-labelledby="slTwrNinthHeading">
+  <style>
+    #slTwrNinthSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 78% 22%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 18% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrNinthSection .sl-twr9-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrNinthSection .sl-twr9-head {
+      max-width: 780px;
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrNinthSection.is-revealed .sl-twr9-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrNinthSection .sl-twr9-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrNinthSection .sl-twr9-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrNinthSection .sl-twr9-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrNinthSection .sl-twr9-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 24px;
+    }
+
+    #slTwrNinthSection .sl-twr9-card {
+      padding: 30px 26px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.76s cubic-bezier(0.22, 1, 0.36, 1),
+        border-color 0.25s ease,
+        background-color 0.25s ease;
+    }
+
+    #slTwrNinthSection .sl-twr9-card:nth-child(2) {
+      transition-delay: 0.1s;
+    }
+
+    #slTwrNinthSection .sl-twr9-card:nth-child(3) {
+      transition-delay: 0.2s;
+    }
+
+    #slTwrNinthSection.is-revealed .sl-twr9-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrNinthSection .sl-twr9-card:hover {
+      background: rgba(16, 22, 35, 0.92);
+      border-color: rgba(255, 255, 255, 0.26);
+    }
+
+    #slTwrNinthSection .sl-twr9-kicker {
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    #slTwrNinthSection .sl-twr9-eq {
+      padding: 16px 18px;
+      border-radius: 16px;
+      background: rgba(5, 7, 12, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 20px;
+      font-weight: 400;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    #slTwrNinthSection .sl-twr9-desc {
+      font-size: 15.8px;
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrNinthSection .sl-twr9-unit {
+      font-size: 13.5px;
+      color: rgba(245, 247, 251, 0.6);
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    @media (max-width: 960px) {
+      #slTwrNinthSection {
+        padding: 92px 22px;
+      }
+      #slTwrNinthSection .sl-twr9-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      #slTwrNinthSection .sl-twr9-card {
+        padding: 24px 20px;
+        border-radius: 20px;
+      }
+    }
+  </style>
+
+  <div class="sl-twr9-wrap">
+    <div class="sl-twr9-head">
+      <span class="sl-twr9-tag">09 &middot; Formulas &amp; Quick Checks</span>
+      <h2 class="sl-twr9-title" id="slTwrNinthHeading">Core relationships to keep handy</h2>
+      <p class="sl-twr9-sub">
+        Use consistent SI units—newtons for force, kilograms for mass, and meters per second squared for local gravity—when checking TWR and climb acceleration.
+      </p>
+    </div>
+
+    <div class="sl-twr9-grid">
+      <article class="sl-twr9-card">
+        <div>
+          <span class="sl-twr9-kicker">Formula 01 &middot; Thrust-to-Weight</span>
+          <div class="sl-twr9-eq">TWR = F<sub>thrust</sub> / (m &middot; g)</div>
+          <p class="sl-twr9-desc">
+            Divides upward engine thrust by downward gravitational weight. Values above 1.00 mean upward lift exceeds weight.
+          </p>
+        </div>
+        <div class="sl-twr9-unit">Dimensionless ratio (N / N)</div>
+      </article>
+
+      <article class="sl-twr9-card">
+        <div>
+          <span class="sl-twr9-kicker">Formula 02 &middot; Vertical Climb Accel</span>
+          <div class="sl-twr9-eq">a<sub>net</sub> = (F<sub>thrust</sub> &minus; m &middot; g) / m</div>
+          <p class="sl-twr9-desc">
+            Shows initial upward acceleration right after liftoff by subtracting weight from thrust and dividing by vehicle mass (ignoring drag).
+          </p>
+        </div>
+        <div class="sl-twr9-unit">Measured in m/s&sup2;</div>
+      </article>
+
+      <article class="sl-twr9-card">
+        <div>
+          <span class="sl-twr9-kicker">Formula 03 &middot; Mass Depletion Effect</span>
+          <div class="sl-twr9-eq">TWR<sub>1</sub> = F<sub>thrust</sub> / (m<sub>dry</sub> &middot; g)</div>
+          <p class="sl-twr9-desc">
+            As propellant burns down toward dry mass (m<sub>dry</sub>), weight drops while thrust stays steady—raising TWR toward burnout.
+          </p>
+        </div>
+        <div class="sl-twr9-unit">Higher as m &rarr; m<sub>dry</sub></div>
+      </article>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrNinthSection');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
