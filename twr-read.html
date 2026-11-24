@@ -1284,6 +1284,325 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     SECOND SECTION: THRUST, WEIGHT & NET LIFT (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrSecondSection" aria-labelledby="slTwrSecondHeading">
+  <style>
+    #slTwrSecondSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 15% 30%, rgba(255, 255, 255, 0.04) 0%, transparent 48%),
+        radial-gradient(circle at 85% 78%, rgba(120, 165, 255, 0.06) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #080b13 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrSecondSection .sl-twr2-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrSecondSection .sl-twr2-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
+      gap: 56px;
+      align-items: start;
+    }
+
+    #slTwrSecondSection .sl-twr2-left {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrSecondSection.is-revealed .sl-twr2-left {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSecondSection .sl-twr2-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrSecondSection .sl-twr2-title {
+      font-size: clamp(36px, 4.5vw, 58px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrSecondSection .sl-twr2-lead {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.78);
+      margin-bottom: 28px;
+    }
+
+    #slTwrSecondSection .sl-twr2-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #slTwrSecondSection .sl-twr2-pill {
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(245, 247, 251, 0.82);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #slTwrSecondSection .sl-twr2-pill:hover {
+      border-color: rgba(255, 255, 255, 0.32);
+      color: #ffffff;
+    }
+
+    #slTwrSecondSection .sl-twr2-pill.is-active {
+      background: #ffffff;
+      color: #080b10;
+      border-color: #ffffff;
+    }
+
+    #slTwrSecondSection .sl-twr2-right {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    #slTwrSecondSection.is-revealed .sl-twr2-right {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSecondSection .sl-twr2-spotlight {
+      padding: 30px 28px;
+      border-radius: 26px;
+      background: rgba(12, 17, 28, 0.86);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    }
+
+    #slTwrSecondSection .sl-twr2-spot-label {
+      display: inline-block;
+      font-size: 12.5px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.62);
+      margin-bottom: 10px;
+    }
+
+    #slTwrSecondSection .sl-twr2-spot-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.015em;
+    }
+
+    #slTwrSecondSection .sl-twr2-spot-copy {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.65;
+      color: rgba(245, 247, 251, 0.8);
+    }
+
+    #slTwrSecondSection .sl-twr2-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    #slTwrSecondSection .sl-twr2-mini {
+      padding: 22px 22px;
+      border-radius: 20px;
+      background: rgba(11, 15, 24, 0.68);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slTwrSecondSection .sl-twr2-mini-title {
+      font-size: 18.5px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+
+    #slTwrSecondSection .sl-twr2-mini-desc {
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.74);
+    }
+
+    @media (max-width: 960px) {
+      #slTwrSecondSection {
+        padding: 92px 22px;
+      }
+      #slTwrSecondSection .sl-twr2-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      #slTwrSecondSection .sl-twr2-spotlight {
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slTwrSecondSection .sl-twr2-steps {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+    }
+  </style>
+
+  <div class="sl-twr2-wrap">
+    <div class="sl-twr2-grid">
+      <div class="sl-twr2-left">
+        <span class="sl-twr2-tag">02 · Thrust, Weight &amp; Net Lift</span>
+        <h2 class="sl-twr2-title" id="slTwrSecondHeading">How thrust overcomes weight</h2>
+        <p class="sl-twr2-lead">
+          Liftoff is a tug-of-war between downward gravity and upward reaction force. The wider the gap above weight, the faster the rocket accelerates upward.
+        </p>
+
+        <div class="sl-twr2-pills" role="tablist" aria-label="Thrust and weight concepts">
+          <button type="button" class="sl-twr2-pill is-active" data-twr-topic="0" role="tab" aria-selected="true">Thrust Force</button>
+          <button type="button" class="sl-twr2-pill" data-twr-topic="1" role="tab" aria-selected="false">Weight Force</button>
+          <button type="button" class="sl-twr2-pill" data-twr-topic="2" role="tab" aria-selected="false">Net Climb</button>
+        </div>
+      </div>
+
+      <div class="sl-twr2-right">
+        <div class="sl-twr2-spotlight">
+          <span class="sl-twr2-spot-label" id="slTwr2SpotLabel">Focused Concept · 01</span>
+          <h3 class="sl-twr2-spot-title" id="slTwr2SpotTitle">Expelling mass backward pushes the rocket forward</h3>
+          <p class="sl-twr2-spot-copy" id="slTwr2SpotCopy">
+            Engines accelerate hot exhaust gas downward at high speed. By Newton's third law, the rocket experiences an equal and opposite upward thrust force.
+          </p>
+        </div>
+
+        <div class="sl-twr2-steps">
+          <div class="sl-twr2-mini">
+            <h3 class="sl-twr2-mini-title">Mass vs. weight</h3>
+            <p class="sl-twr2-mini-desc">
+              Mass stays the same anywhere, while weight depends on local gravity (W = m &times; g).
+            </p>
+          </div>
+          <div class="sl-twr2-mini">
+            <h3 class="sl-twr2-mini-title">Gravity penalty</h3>
+            <p class="sl-twr2-mini-desc">
+              Part of early thrust goes simply to holding the rocket up against gravity instead of building speed.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrSecondSection');
+      if (!section) return;
+
+      const pills = section.querySelectorAll('.sl-twr2-pill');
+      const labelEl = document.getElementById('slTwr2SpotLabel');
+      const titleEl = document.getElementById('slTwr2SpotTitle');
+      const copyEl = document.getElementById('slTwr2SpotCopy');
+
+      const topics = [
+        {
+          label: 'Focused Concept · 01',
+          title: 'Expelling mass backward pushes the rocket forward',
+          copy: "Engines accelerate hot exhaust gas downward at high speed. By Newton's third law, the rocket experiences an equal and opposite upward thrust force."
+        },
+        {
+          label: 'Focused Concept · 02',
+          title: 'Gravity pulls total vehicle mass downward',
+          copy: 'Every kilogram of tank structure, propellant, and payload experiences downward weight, so heavier rockets need more thrust for the same TWR.'
+        },
+        {
+          label: 'Focused Concept · 03',
+          title: 'Extra thrust above weight drives upward acceleration',
+          copy: 'When thrust exceeds weight, the leftover net force accelerates the rocket upward according to F_net = m &times; a.'
+        }
+      ];
+
+      pills.forEach((pill, idx) => {
+        pill.addEventListener('click', () => {
+          const item = topics[idx];
+          if (!item) return;
+
+          pills.forEach((p, pIdx) => {
+            const active = pIdx === idx;
+            p.classList.toggle('is-active', active);
+            p.setAttribute('aria-selected', String(active));
+          });
+
+          if (labelEl) labelEl.textContent = item.label;
+          if (titleEl) titleEl.textContent = item.title;
+          if (copyEl) copyEl.textContent = item.copy;
+        });
+      });
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
