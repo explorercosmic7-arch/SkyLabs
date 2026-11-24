@@ -116,7 +116,6 @@ html, body {
   color: #000000;
   font-size: 20.2px;
 }
-/* Unified thin Google-style font weight for EVERYTHING */
 *, *::before, *::after {
   font-weight: 300 !important;
   font-family: "Google Sans", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -180,8 +179,6 @@ header {
   flex-wrap: nowrap;
   padding: 0 12px;
 }
-/* FIX: pills size to their own content, clamp + ellipsis so long text
-   (e.g. ORBITAL INSERTION SUCCESS) can never spill into neighbours */
 .header-nav .hud-badge {
   pointer-events: none;
   font-size: 14.5px;
@@ -201,7 +198,6 @@ header {
   flex-shrink: 0;
   margin-left: auto;
 }
-/* Custom tip chips (not browser title) — shown BELOW the icon with flip */
 .sl-tip {
   position: fixed;
   z-index: 9999;
@@ -233,8 +229,6 @@ header {
   display: flex; align-items: center; justify-content: center;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
-/* FIX: hover matches the reference — full solid blue circle, white icon,
-   with a visible outline ring around the circle */
 .icon-btn:hover,
 .icon-btn:focus-visible {
   background: #1a73e8;
@@ -250,7 +244,6 @@ header {
 .icon-btn:hover .material-symbols-outlined,
 .icon-btn:focus-visible .material-symbols-outlined { color: #ffffff; }
 
-/* Floating canvas HUD hidden — metrics live in header */
 .hud { display: none !important; }
 .hud-badge {
   display: inline-flex;
@@ -462,7 +455,6 @@ label {
 }
 .calc-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; color: #000000; }
 .calc-row span:first-child { white-space: nowrap; }
-/* Scoped to DIRECT children only — inner odometer chars must never be re-colored */
 .calc-row > span:last-child { color: #1a73e8; font-weight: 500; white-space: nowrap; text-align: right; margin-left: 12px; word-break: keep-all; }
 
 .flag-grid {
@@ -532,7 +524,6 @@ label {
   color: #ffffff;
   box-shadow: none;
 }
-/* Time of Day chips: colored, icon-only, tooltip on hover */
 .time-presets .chip { position: relative; border: 1.5px solid #000000; }
 .time-presets .chip .material-symbols-outlined { font-size: 26px; }
 .time-presets .chip[data-t="day"] { background: #fbbc04; color: #201d0a; }
@@ -565,7 +556,6 @@ label {
 }
 .time-presets .chip:hover::after { opacity: 1; }
 
-/* Target Planet chips: each styled like its planet */
 #planetChips .chip { position: relative; border: 1.5px solid #000000; overflow: hidden; }
 #planetChips .chip { font-size: 0; color: transparent; }
 #planetChips .chip.active {
@@ -1139,7 +1129,6 @@ input[type=range] { width: 100%; accent-color: #1a73e8; height: 5px; cursor: poi
   .ai-panel { right: 12px; left: 12px; width: auto; bottom: 82px; height: 430px; }
 }
 
-/* Fullscreen choice popup */
 .fs-choice {
   position: fixed;
   inset: 0;
@@ -1233,7 +1222,6 @@ body.fs-sim-only .right-panel {
 }
 body.fs-sim-only .meters-stack { top: 14px; }
 
-/* Odometer rolling digit counter */
 .odo-digit {
   display: inline-block;
   height: 1.18em;
@@ -1266,7 +1254,6 @@ body.fs-sim-only .meters-stack { top: 14px; }
   to { opacity: 1; }
 }
 
-/* Custom color picker panel — rebuilt, Apply always inside the box */
 .color-panel {
   position: fixed;
   z-index: 1200;
@@ -1325,7 +1312,6 @@ body.fs-sim-only .meters-stack { top: 14px; }
 .color-panel .color-custom { width: 30px; height: 30px; padding: 0; border: 1.5px solid #000000; border-radius: 6px; cursor: pointer; background: none; flex-shrink: 0; }
 .color-panel .color-custom::-webkit-color-swatch-wrapper { padding: 0; }
 
-/* Mobile first-load notice */
 #mobileLagNotice {
   display: none;
   position: fixed;
@@ -1680,7 +1666,7 @@ const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) |
 let scene, camera, renderer, clock;
 let rocketGroup, coreGroup, boosterL, boosterR, upperStage, earthMesh, saturnRings = [];
 let umbilicals = [], plume, fireP, smokeP, steamP, expP;
-let flagMesh, flagPole, padLights = [], starField, nameMesh;
+let flagMesh, flagPole, padLights = [], starField, nameMesh, moonMesh;
 let isLaunching = false, isFlying = false, isExploded = false, isSuccess = false;
 let stageSeparated = false, fairingGone = false, maxQPassed = false, coreDetached = false;
 let launchTime = 0, altitude = 0, velocity = 0, phase = 'standby';
@@ -1695,7 +1681,6 @@ let fuelRemaining = 1;
 let initialMass = 402000;
 let dryMassVal = 22000;
 let thrustN = 7600000;
-/* NEW: realistic gravity-turn state */
 let downrange = 0;
 let enginesOff = false;
 
@@ -1719,8 +1704,6 @@ const PAYLOADS = {
   crew:     { add: 12000, tgt: 9400 }
 };
 
-/* FIX: real high-quality planet maps, same as the reentry lab,
-   each with a fallback mirror URL. */
 const PLANETS = {
   earth:   { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/earthmap1k.jpg',   texFb: 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg', size: 2200, name: 'Earth',   color: 0x2244aa, atmoColor: 0x6eb5ff },
   moon:    { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/moonmap1k.jpg',    texFb: 'https://threejs.org/examples/textures/planets/moon_1024.jpg',       size: 900,  name: 'Moon',    color: 0x888888, atmoColor: null },
@@ -1751,13 +1734,10 @@ function flagIconUrl(code) {
 }
 let selFlag = 'US', selPayload = 'starlink';
 
-/* NEW: realistic gravity-turn pitch program.
-   0° (straight up) below 7 km, then a smooth eased tilt to ~82°
-   by ~87 km, so the vehicle arcs over into orbit like a real ascent. */
 function gravityTurnPitch(alt) {
   if (alt < 7000) return 0;
   const k = Math.min(1, (alt - 7000) / 80000);
-  const eased = k * k * (3 - 2 * k); // smoothstep
+  const eased = k * k * (3 - 2 * k);
   return eased * (82 * Math.PI / 180);
 }
 
@@ -1912,7 +1892,8 @@ function createSaturnRings(parent, planetSize) {
       transparent: true,
       opacity: opacity,
       sizeAttenuation: true,
-      depthWrite: false
+      depthWrite: false,
+      fog: false
     });
     const mesh = new THREE.Points(geo, mat);
     mesh.rotation.x = 0.42;
@@ -1926,8 +1907,6 @@ function createSaturnRings(parent, planetSize) {
   makeRing(82 * s, 98 * s, 0xa09070, 12000, 2.6, 0.45);
 }
 
-/* FIX: cache-first texture loading — anything preloaded at page load
-   is applied instantly, zero wait when the space view appears. */
 const planetTexCache = {};
 function loadPlanetTex(key, cb) {
   const info = PLANETS[key] || PLANETS.earth;
@@ -1949,7 +1928,7 @@ function applyPlanetAtmosphere(key) {
   if (info.atmoColor) {
     const atmo = new THREE.Mesh(
       new THREE.SphereGeometry(info.size * 1.022, 64, 64),
-      new THREE.MeshBasicMaterial({ color: info.atmoColor, transparent: true, opacity: 0.13, side: THREE.BackSide })
+      new THREE.MeshBasicMaterial({ color: info.atmoColor, transparent: true, opacity: 0.13, side: THREE.BackSide, fog: false })
     );
     earthMesh.add(atmo);
     earthMesh.userData.atmo = atmo;
@@ -2081,7 +2060,7 @@ function initThree() {
   const cont = document.getElementById('three-container');
   scene = new THREE.Scene();
   clock = new THREE.Clock();
-  camera = new THREE.PerspectiveCamera(50, cont.clientWidth / Math.max(cont.clientHeight, 1), 0.5, 120000);
+  camera = new THREE.PerspectiveCamera(50, cont.clientWidth / Math.max(cont.clientHeight, 1), 0.5, 200000);
   camera.position.set(110, 55, 170);
   renderer = new THREE.WebGLRenderer({ antialias: !IS_MOBILE, powerPreference: 'high-performance' });
   renderer.setSize(cont.clientWidth, cont.clientHeight);
@@ -2351,29 +2330,6 @@ function buildRocket() {
   updName();
 }
 
-function updName() {
-  if (nameMesh) {
-    rocketGroup.remove(nameMesh);
-    nameMesh = null;
-  }
-  const name = (document.getElementById('rocketName').value || 'SKYLABS-1').toUpperCase().slice(0, 14);
-  const c = document.createElement('canvas');
-  c.width = 512; c.height = 64;
-  const ctx = c.getContext('2d');
-  ctx.clearRect(0, 0, 512, 64);
-  ctx.font = 'bold 34px "Google Sans", Helvetica, Arial, sans-serif';
-  ctx.fillStyle = '#111111';
-  ctx.textAlign = 'center';
-  ctx.fillText(name, 256, 44);
-  const tex = new THREE.CanvasTexture(c);
-  const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
-  const geo = new THREE.CylinderGeometry(3.74, 3.74, 1.5, 32, 1, true, 0, Math.PI * 0.75);
-  nameMesh = new THREE.Mesh(geo, mat);
-  nameMesh.position.set(0, 42, 0);
-  nameMesh.rotation.y = -Math.PI * 0.12;
-  rocketGroup.add(nameMesh);
-}
-
 function buildTowers() {
   umbilicals.forEach(u => scene.remove(u));
   umbilicals = [];
@@ -2553,19 +2509,28 @@ function buildLights() {
   });
 }
 
+/* CAMERA FIX: the star dome is now a huge sphere shell (radius 25000-45000)
+   centered on the origin, with fog disabled — instead of a thin slab at
+   y=100-2700 the rocket used to fly straight past. In animate() the dome
+   recenters on the camera every frame while in space, so stars are ALWAYS
+   around the rocket no matter how high it climbs. */
 function buildStars() {
   const g = new THREE.BufferGeometry();
   const pts = [], cols = [];
-  const count = IS_MOBILE ? 3500 : 10000;
+  const count = IS_MOBILE ? 4500 : 12000;
   for (let i = 0; i < count; i++) {
-    pts.push((Math.random() - 0.5) * 6500, Math.random() * 2600 + 100, (Math.random() - 0.5) * 6500);
+    const R = 25000 + Math.random() * 20000;
+    const th = Math.random() * Math.PI * 2;
+    const ph = Math.acos(2 * Math.random() - 1);
+    pts.push(R * Math.sin(ph) * Math.cos(th), R * Math.cos(ph), R * Math.sin(ph) * Math.sin(th));
     const c = 0.7 + Math.random() * 0.3;
     cols.push(c, c, c * 0.95);
   }
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
   g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
   starField = new THREE.Points(g, new THREE.PointsMaterial({
-    size: 1.4, vertexColors: true, transparent: true, opacity: 0.9
+    size: 2.2, vertexColors: true, transparent: true, opacity: 0.95,
+    sizeAttenuation: false, fog: false, depthWrite: false
   }));
   starField.visible = false;
   scene.add(starField);
@@ -2576,10 +2541,10 @@ function buildStars() {
     new THREE.MeshStandardMaterial({
       color: 0xffffff,
       roughness: 0.85,
-      metalness: 0.05
+      metalness: 0.05,
+      fog: false
     })
   );
-  /* Load immediately — by the time the launch reaches space it is ready */
   loadPlanetTex('earth', (tex) => {
     if (!earthMesh) return;
     if (tex) { earthMesh.material.map = tex; earthMesh.material.color.setHex(0xffffff); }
@@ -2590,8 +2555,17 @@ function buildStars() {
   earthMesh.visible = false;
   scene.add(earthMesh);
 
+  /* Space view bonus: a small distant Moon-like body drifting in the scene */
+  moonMesh = new THREE.Mesh(
+    new THREE.SphereGeometry(60, 24, 24),
+    new THREE.MeshStandardMaterial({ color: 0xb9b08a, roughness: 1, metalness: 0, fog: false })
+  );
+  moonMesh.position.set(2600, 900, -1800);
+  moonMesh.visible = false;
+  scene.add(moonMesh);
+
   const sunGeo = new THREE.SphereGeometry(55, 16, 16);
-  const sunMat = new THREE.MeshBasicMaterial({ color: 0xffee88 });
+  const sunMat = new THREE.MeshBasicMaterial({ color: 0xffee88, fog: false });
   window.sunMesh = new THREE.Mesh(sunGeo, sunMat);
   window.sunMesh.position.set(2800, 1400, -3200);
   window.sunMesh.visible = false;
@@ -2610,7 +2584,7 @@ function buildFX() {
       new THREE.SphereGeometry(3.6 + i * 2.2, 12, 12),
       new THREE.MeshBasicMaterial({
         color: glowCols[Math.min(i, 4)], transparent: true, opacity: 0.4 - i * 0.05,
-        depthWrite: false, blending: THREE.AdditiveBlending
+        depthWrite: false, blending: THREE.AdditiveBlending, fog: false
       })
     );
     g.position.y = -5 - i * 7.5;
@@ -2622,7 +2596,7 @@ function buildFX() {
       new THREE.SphereGeometry(3.0, 10, 10),
       new THREE.MeshBasicMaterial({
         color: 0xffaa44, transparent: true, opacity: 0.45,
-        depthWrite: false, blending: THREE.AdditiveBlending
+        depthWrite: false, blending: THREE.AdditiveBlending, fog: false
       })
     );
     g.position.set(sx, -5, 0);
@@ -2653,7 +2627,7 @@ function buildFX() {
   fg.setAttribute('position', new THREE.BufferAttribute(fp, 3));
   fireP = new THREE.Points(fg, new THREE.PointsMaterial({
     color: 0xffaa33, size: IS_MOBILE ? 4.2 : 5.2, transparent: true, opacity: 0.95,
-    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true, fog: false
   }));
   fireP.userData.v = fv;
   fireP.visible = false;
@@ -2721,7 +2695,7 @@ function buildFX() {
   eg.setAttribute('position', new THREE.BufferAttribute(ep, 3));
   expP = new THREE.Points(eg, new THREE.PointsMaterial({
     color: 0xff4400, size: 4.2, transparent: true, opacity: 0.9,
-    depthWrite: false, blending: THREE.AdditiveBlending
+    depthWrite: false, blending: THREE.AdditiveBlending, fog: false
   }));
   expP.userData.v = ev;
   expP.visible = false;
@@ -2734,45 +2708,38 @@ function setTime(m) {
     c.classList.toggle('active', c.dataset.t === m)
   );
   const sun = window.sunL;
-  if (starField) starField.visible = m === 'night';
+  const inFlight = (isFlying && altitude > 30000) || isSuccess;
 
   if (m === 'day') {
-    scene.background.set(0x87ceeb);
-    scene.fog.color.set(0x87ceeb);
-    scene.fog.density = 0.0015;
+    if (!inFlight) { scene.background.set(0x87ceeb); scene.fog.color.set(0x87ceeb); scene.fog.density = 0.0015; }
     sun.intensity = 1.65;
     sun.color.set(0xfff5e0);
     sun.position.set(150, 210, 110);
     renderer.toneMappingExposure = 1.12;
     padLights.forEach(p => p.l.intensity = 0);
   } else if (m === 'evening') {
-    scene.background.set(0xff8c42);
-    scene.fog.color.set(0xff8c42);
-    scene.fog.density = 0.0019;
+    if (!inFlight) { scene.background.set(0xff8c42); scene.fog.color.set(0xff8c42); scene.fog.density = 0.0019; }
     sun.intensity = 1;
     sun.color.set(0xff6b35);
     sun.position.set(-110, 55, 130);
     renderer.toneMappingExposure = 0.92;
     padLights.forEach(p => p.l.intensity = 1.1);
   } else if (m === 'night') {
-    scene.background.set(0x02020a);
-    scene.fog.color.set(0x02020a);
-    scene.fog.density = 0.0007;
+    if (!inFlight) { scene.background.set(0x02020a); scene.fog.color.set(0x02020a); scene.fog.density = 0.0007; }
     sun.intensity = 0.08;
     sun.color.set(0x8899bb);
     sun.position.set(-80, 90, -110);
     renderer.toneMappingExposure = 0.55;
     padLights.forEach(p => p.l.intensity = 2.6);
   } else {
-    scene.background.set(0xffb347);
-    scene.fog.color.set(0xffb347);
-    scene.fog.density = 0.0017;
+    if (!inFlight) { scene.background.set(0xffb347); scene.fog.color.set(0xffb347); scene.fog.density = 0.0017; }
     sun.intensity = 0.9;
     sun.color.set(0xffcc88);
     sun.position.set(90, 35, 150);
     renderer.toneMappingExposure = 0.88;
     padLights.forEach(p => p.l.intensity = 0.4);
   }
+  if (starField) starField.visible = m === 'night';
   speak(m + ' lighting set', 1.05);
 }
 
@@ -2854,7 +2821,6 @@ function retract() {
     const isCrane = arm.userData && arm.userData.isCrane;
     const rotTgt = isCrane ? -0.55 : (i % 2 ? -0.95 : 0.95);
     const xPull = isCrane ? 12 : 8;
-    let e = 0;
     if (arm.userData && arm.userData.cables) {
       arm.userData.cables.forEach((cable, ci) => {
         let ce = 0;
@@ -2871,14 +2837,18 @@ function retract() {
       });
     }
     const an = () => {
-      e += 0.02;
-      const k = Math.min(1, e / 1.5);
-      const ease = 1 - Math.pow(1 - k, 3);
-      arm.rotation.z = st + (rotTgt - st) * ease;
-      arm.position.x = sx - ease * xPull;
-      if (k < 1) requestAnimationFrame(an);
+      let e = 0;
+      const tick = () => {
+        e += 0.02;
+        const k = Math.min(1, e / 1.5);
+        const ease = 1 - Math.pow(1 - k, 3);
+        arm.rotation.z = st + (rotTgt - st) * ease;
+        arm.position.x = sx - ease * xPull;
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      setTimeout(tick, 160 + i * 40);
     };
-    setTimeout(() => requestAnimationFrame(an), 160 + i * 40);
+    an();
   });
 }
 
@@ -2905,9 +2875,6 @@ function ignite() {
   }, 900);
 }
 
-/* NEW: safe, realistic engine shutdown (MECO).
-   Plume, fire, smoke and steam all cut off together,
-   exactly once, like a real main engine cutoff. */
 function doMeco() {
   if (enginesOff) return;
   enginesOff = true;
@@ -2997,7 +2964,6 @@ function checkSuccess() {
   if (altitude > 105000 && velocity > 2450 && !isSuccess) {
     isSuccess = true;
     phase = 'orbit';
-    /* Realistic: engines are already off at insertion — never relight in space */
     doMeco();
     document.getElementById('hudPhase').textContent = 'ORBITAL INSERTION SUCCESS';
     document.getElementById('hudPhase').style.color = '#188038';
@@ -3008,13 +2974,18 @@ function checkSuccess() {
     const explanation = 'Mission success. Your vehicle reached a peak thrust-to-weight of ' + peakTwr.toFixed(2) + '. That TWR profile, combined with sufficient delta-v, enabled orbital insertion.';
     speak(explanation, 0.88);
     scene.background.set(0x010108);
-    scene.fog.density = 0.00015;
+    scene.fog.density = 0.000015;
     if (starField) starField.visible = true;
     if (earthMesh) {
       earthMesh.visible = true;
       const info = PLANETS[currentPlanet] || PLANETS.earth;
       earthMesh.position.set(0, rocketGroup.position.y - (info.size * 1.6), 0);
     }
+    if (moonMesh) {
+      moonMesh.visible = true;
+      moonMesh.position.set(rocketGroup.position.x + 2200, rocketGroup.position.y + 500, rocketGroup.position.z - 1500);
+    }
+    if (window.sunMesh) window.sunMesh.visible = true;
     if (terrainMesh) terrainMesh.visible = false;
     if (oceanMesh) oceanMesh.visible = false;
     if (oceanFar) oceanFar.visible = false;
@@ -3148,6 +3119,7 @@ function reset() {
   if (oceanMesh) oceanMesh.visible = true;
   if (oceanFar) oceanFar.visible = true;
   if (earthMesh) earthMesh.visible = false;
+  if (moonMesh) moonMesh.visible = false;
   if (window.sunMesh) window.sunMesh.visible = false;
   if (starField) starField.visible = (timeOfDay === 'night');
   renderer.toneMappingExposure = 1.0;
@@ -3160,8 +3132,7 @@ function reset() {
   speak('Pad reset. Ready for next mission.', 1);
 }
 
-// Inert wrapper kept so the floating HUD element stays defined; values render in header pills.
-function hud() {}
+const _odoApply = (el, text) => { if (window._odoSet) window._odoSet(el, text); else el.textContent = text; };
 
 function animate() {
   requestAnimationFrame(animate);
@@ -3178,7 +3149,6 @@ function animate() {
     pos.needsUpdate = true;
   }
 
-  // Subtle ocean motion for infinite-sea feel
   if (oceanMesh) {
     oceanMesh.position.y = -2.8 + Math.sin(t * 0.35) * 0.18;
     oceanMesh.rotation.z = Math.sin(t * 0.08) * 0.004;
@@ -3187,7 +3157,6 @@ function animate() {
     oceanFar.position.y = -4.5 + Math.sin(t * 0.22) * 0.25;
   }
 
-  // Slow Saturn ring rotation
   if (saturnRings && saturnRings.length) {
     saturnRings.forEach((r, i) => {
       r.rotation.y += (0.0008 + i * 0.0003);
@@ -3218,6 +3187,10 @@ function animate() {
     camera.position.lerp(new THREE.Vector3(55, 32, 85), 0.05);
     camera.lookAt(rocketGroup.position.x, rocketGroup.position.y + 28, rocketGroup.position.z);
   } else if (isFlying && !isSuccess) {
+    /* CAMERA FIX: keep the rocket in frame at ALL altitudes.
+       - Offsets tighten as altitude grows (cinematic pull-in in space).
+       - Lerp factor is faster (0.09) so the rocket never slides out of view.
+       - lookAt always tracks the vehicle body exactly. */
     const midY = rocketGroup.position.y + (isSmallRocket ? 18 : 30);
     let ox, oy, oz;
     if (isSmallRocket) {
@@ -3235,21 +3208,33 @@ function animate() {
       else if (camMode === 4) { ox = 95; oy = 28; oz = 115; }
       else { ox = 55; oy = -5; oz = 80; }
     }
+    /* In space (above ~50 km) pull the camera closer so the rocket,
+       plume and planet limb all stay nicely framed */
+    if (altitude > 50000) {
+      const csp = Math.max(0.38, 1 - (altitude - 50000) / 120000);
+      ox *= csp; oy *= csp; oz *= csp;
+    }
     camera.position.lerp(new THREE.Vector3(
       rocketGroup.position.x + ox,
       midY + oy,
       rocketGroup.position.z + oz
-    ), 0.06);
+    ), 0.09);
     camera.lookAt(rocketGroup.position.x, midY + (isSmallRocket ? 15 : 40), rocketGroup.position.z);
   } else if (isSuccess) {
+    /* Success view: slow drift that keeps BOTH the rocket and the planet
+       limb in frame — the money shot. */
     camera.position.lerp(new THREE.Vector3(
-      rocketGroup.position.x + 220,
-      rocketGroup.position.y + 160,
-      rocketGroup.position.z + 280
-    ), 0.015);
-    camera.lookAt(rocketGroup.position.x, rocketGroup.position.y + 80, rocketGroup.position.z);
+      rocketGroup.position.x + 260,
+      rocketGroup.position.y + 190,
+      rocketGroup.position.z + 320
+    ), 0.02);
+    camera.lookAt(rocketGroup.position.x + 40, rocketGroup.position.y + 30, rocketGroup.position.z);
     if (earthMesh) earthMesh.visible = true;
     if (window.sunMesh) window.sunMesh.visible = true;
+    if (moonMesh) {
+      moonMesh.visible = true;
+      moonMesh.rotation.y += dt * 0.05;
+    }
   } else if (isExploded) {
     camera.position.lerp(new THREE.Vector3(75, 48, 105), 0.03);
     camera.lookAt(0, 28, 0);
@@ -3259,12 +3244,6 @@ function animate() {
     const el = t - launchTime;
     flightT = el;
 
-    /* NEW GRAVITY-TURN ASCENT — realistic profile:
-       1) Fly straight up until ~7 km.
-       2) Smoothly pitch over (gravity turn) toward horizontal.
-       3) Thrust splits into vertical + horizontal components.
-       4) MECO when fuel is gone or orbital velocity is reached;
-          afterwards the vehicle coasts, no flame in space. */
     const pitch = gravityTurnPitch(altitude);
     const cosP = Math.cos(pitch), sinP = Math.sin(pitch);
 
@@ -3287,17 +3266,14 @@ function animate() {
       velocity *= (1 - 0.012 * dt);
     }
 
-    /* MECO: fuel exhausted, or targets reached (orbital speed / edge of space) */
     if (!enginesOff && (fuelRemaining <= 0 || velocity >= 2600 || (altitude > 100000 && velocity > 2450))) {
       doMeco();
       accel = 0;
     }
 
-    /* Split acceleration along and across the velocity vector */
-    const vAccel = accel * cosP;   // vertical push
-    const hAccel = accel * sinP;   // downrange push
+    const vAccel = accel * cosP;
+    const hAccel = accel * sinP;
 
-    /* Gravity slowly bends the coasting trajectory back down above the atmosphere */
     if (enginesOff && altitude > 100000) velocity *= (1 - 0.004 * dt);
     if (altitude > 130000) velocity *= (1 - 0.02 * dt);
 
@@ -3309,10 +3285,8 @@ function animate() {
 
     const visualScale = altitude > 100000 ? 0.012 : 0.038;
     rocketGroup.position.set(downrange * visualScale, 6 + altitude * visualScale, 0);
-    /* Nose points along the flight path — the classic gravity-turn arc */
     rocketGroup.rotation.z = -pitch;
 
-    /* Pitch callouts during the turn */
     if (!enginesOff && altitude > 7200 && altitude < 7600) {
       document.getElementById('hudPhase').textContent = 'GRAVITY TURN · PITCHING OVER';
     }
@@ -3321,7 +3295,15 @@ function animate() {
     }
 
     {
+      /* SKY→SPACE CROSSFADE FIX:
+         - Starts earlier (from 25 km) so the sky never just "goes blank".
+         - Stars appear from k > 0.18 and the star dome follows the camera,
+           so deep space is always populated.
+         - Planet limb rises from k > 0.25, below the rocket.
+         - Fog is nearly zeroed in space so the planet and stars stay crisp. */
       const k = Math.min(1, altitude / 90000);
+      const inVacuum = k > 0.25;
+      if (inVacuum) scene.fog.density = 0.00002;
       if (timeOfDay !== 'night' || k > 0.3) {
         const base = timeOfDay === 'night' ? [2, 2, 10] : [135, 206, 235];
         const r = Math.round(base[0] * (1 - k) + 1 * k);
@@ -3329,24 +3311,43 @@ function animate() {
         const b = Math.round(base[2] * (1 - k) + 8 * k);
         scene.background.setRGB(r / 255, g / 255, b / 255);
         scene.fog.color.copy(scene.background);
-        scene.fog.density = 0.0015 * (1 - k * 0.96);
+        if (!inVacuum) scene.fog.density = 0.0015 * (1 - k);
       }
-      if (starField) starField.visible = (timeOfDay === 'night') || k > 0.45;
-      if (k > 0.75) renderer.toneMappingExposure = 0.38;
+      if (starField) starField.visible = (timeOfDay === 'night') || k > 0.18;
+      if (k > 0.75) renderer.toneMappingExposure = 0.55;
       if (terrainMesh) terrainMesh.visible = k < 0.4;
       if (oceanMesh) oceanMesh.visible = k < 0.4;
       if (oceanFar) oceanFar.visible = k < 0.4;
       if (earthMesh) {
-        if (k > 0.42) {
+        if (k > 0.25) {
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
           earthMesh.position.set(0, rocketGroup.position.y - (info.size * 1.55) - k * 200, 0);
-          if (window.sunMesh) window.sunMesh.visible = true;
           earthMesh.rotation.y += dt * 0.012;
         } else {
           earthMesh.visible = false;
         }
       }
+      if (moonMesh) {
+        if (k > 0.35) {
+          moonMesh.visible = true;
+          moonMesh.position.set(
+            rocketGroup.position.x + 2600,
+            rocketGroup.position.y + 800,
+            rocketGroup.position.z - 1800
+          );
+          moonMesh.rotation.y += dt * 0.03;
+        } else {
+          moonMesh.visible = false;
+        }
+      }
+      if (k > 0.25 && window.sunMesh) window.sunMesh.visible = true;
+    }
+
+    /* STAR DOME follows the camera in space: stars can never "run out"
+       no matter how far the rocket travels. */
+    if (starField && starField.visible) {
+      starField.position.set(camera.position.x, camera.position.y, camera.position.z);
     }
 
     [boosterL, boosterR].forEach(b => {
@@ -3412,14 +3413,24 @@ function animate() {
       teleTwr.push(currentTwr);
     }
 
-    /* Engine effects only render while engines are lit */
+    /* ENGINE FX FIX: flames stay bright and visible in space.
+       - No more opacity fade after 95 km.
+       - In vacuum the plume expands (wider, bigger particles), like a
+         real vacuum nozzle.
+       - Smoke cuts above 60 km (no air in vacuum) so it never hides
+         the fire or looks wrong in space. */
     if (!enginesOff) {
+      const vacuum = altitude > 55000;
       plume.children.forEach((c, i) => {
         if (!c.visible) return;
-        const s = 1 + Math.sin(t * 18 + i) * 0.28;
+        const s = (vacuum ? 2.0 : 1) * (1 + Math.sin(t * 18 + i) * 0.28);
         c.scale.set(s, s, s);
-        c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
+        c.material.opacity = (vacuum ? 0.36 : 0.26) + Math.sin(t * 12 + i) * 0.1;
       });
+
+      if (vacuum && fireP.material.size < 9) fireP.material.size = 9;
+      if (!vacuum && fireP.material.size > 8) scaleFire(currentRocketKey);
+      if (smokeP.visible && vacuum) smokeP.visible = false;
 
       if (fireP.visible) {
         const pos = fireP.geometry.attributes.position.array;
@@ -3429,24 +3440,24 @@ function animate() {
             pos[i * 3 + 1] = -999;
             continue;
           }
-          pos[i * 3] += vel[i].x * dt * 10;
+          const spread = vacuum ? 2.6 : 1.0;
+          pos[i * 3] += vel[i].x * dt * 10 * spread;
           pos[i * 3 + 1] += vel[i].y * dt * 36;
-          pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
+          pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10 * spread;
           vel[i].life -= dt * 0.18;
           if (vel[i].life <= 0) {
             const eng = vel[i].eng || 0;
             const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
-            pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
+            const w = vacuum ? 5.5 : 3.2;
+            pos[i * 3] = ox + (Math.random() - 0.5) * w;
             pos[i * 3 + 1] = -0.8 - Math.random() * 5;
-            pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * w;
             vel[i].y = -(12 + Math.random() * 20);
             vel[i].life = 1;
           }
         }
         fireP.geometry.attributes.position.needsUpdate = true;
-        if (altitude > 95000) {
-          fireP.material.opacity = Math.max(0.12, 0.95 - (altitude - 95000) / 70000);
-        }
+        fireP.material.opacity = 1.0;
       }
 
       if (smokeP.visible) {
@@ -3645,32 +3656,22 @@ document.getElementById('mobBack').onclick = () => {
   });
 })();
 
-/* ===== Meters hide/show (stack in bottom-right area) ===== */
+/* ===== Meters hide/show ===== */
 (function () {
   const stack = document.getElementById('metersStack');
   const toggle = document.getElementById('metersToggle');
-  const hideBtn = document.getElementById('metersHideBtn');
   if (!stack || !toggle) return;
 
   let hideKey = 'twrMetersHidden';
   try { hideKey = 'twrMetersHidden_' + (window.location.pathname || 'x'); } catch (e) {}
 
-  function restoreHeap() {
-    stack.style.position = '';
-    stack.style.bottom = '';
-    stack.style.top = '';
-    document.body.appendChild(stack);
-  }
   function applyHide(hidden) {
     stack.classList.toggle('hidden-right', hidden);
     toggle.classList.toggle('show', hidden);
-    if (hideBtn) hideBtn.classList.toggle('hidden', hidden);
     try { localStorage.setItem(hideKey, hidden ? '1' : '0'); } catch (e) {}
   }
-  function currentHidden() { return stack.classList.contains('hidden-right') || stack.classList.contains('hidden-left'); }
 
   toggle.addEventListener('click', () => applyHide(false));
-  if (hideBtn) hideBtn.addEventListener('click', () => applyHide(true));
 
   window.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight') {
@@ -3719,8 +3720,6 @@ document.getElementById('mobBack').onclick = () => {
 
   let currentTarget = null;
 
-  /* Fixed positioning: measured on the open panel, centered on the button,
-     clamped on screen, flips above when there is no room below. */
   function showPicker(targetBtn) {
     currentTarget = targetBtn;
     panel.classList.add('show');
@@ -4146,7 +4145,7 @@ aiInput.addEventListener('keypress', e => {
   }
 });
 
-/* ===== Tooltip system (below the element, flip above only if no room) ===== */
+/* ===== Tooltip system ===== */
 (function () {
   const tipEl = document.createElement('div');
   tipEl.className = 'sl-tip';
@@ -4165,9 +4164,9 @@ aiInput.addEventListener('keypress', e => {
       const tw = tipEl.offsetWidth || 60;
       let x = rect.left + rect.width / 2 - tw / 2;
       x = Math.max(8, Math.min(window.innerWidth - tw - 8, x));
-      let y = rect.bottom + 8;                       // below the button
+      let y = rect.bottom + 8;
       if (y + tipEl.offsetHeight > window.innerHeight - 8) {
-        y = Math.max(8, rect.top - tipEl.offsetHeight - 8);  // flip only if no room
+        y = Math.max(8, rect.top - tipEl.offsetHeight - 8);
       }
       tipEl.style.left = x + 'px';
       tipEl.style.top = y + 'px';
@@ -4192,9 +4191,7 @@ aiInput.addEventListener('keypress', e => {
   window.addEventListener('blur', hideTip);
 })();
 
-/* ===== Odometer: smooth reentry-style rolling digits =====
-   Digits glide in place (no DOM rebuild, no stutter), spaces are
-   preserved with no-break spaces so header pills never collapse. */
+/* ===== Odometer: smooth rolling digits ===== */
 (function () {
   function isDig(c) { return c >= '0' && c <= '9'; }
   var EM = 1.18;
@@ -4224,7 +4221,7 @@ aiInput.addEventListener('keypress', e => {
           el._odoDigits[i] = +ch;
         } else {
           var st = document.createElement('span'); st.className = 'odo-static';
-          st.textContent = (ch === ' ') ? '\u00A0' : ch;   // spaces stay real
+          st.textContent = (ch === ' ') ? '\u00A0' : ch;
           el.appendChild(st);
         }
       });
