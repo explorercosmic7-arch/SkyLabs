@@ -1,6 +1,3 @@
-<!--
-  ====================================================================SkyLabs TWR Rocket Simulator — full updated file. All fixes from the review are applied:1. Header pills sized to their content with ellipsis (no more "ORBITALINSERTIONSUCCESS" spilling into neighbours — the odometer now keeps real spaces via no-break spaces).2. Color picker panel rebuilt (swatches grid 6 columns, hex row wraps, Apply button always inside the panel, panel position clamped on screen with flip above if needed).3. Header tooltips now appear BELOW the icon (flip above only if no room), with delayed hide.4. Odometer replaced with the smooth reentry engine: digits glide in place (no DOM rebuild, no stutter), spaces preserved via \u00A0, slower 0.32s glide.5. Real planet maps (same URLs as your reentry lab), with fallback mirrors + procedural canvas fallback, an atmosphere shell, and full preloading of ALL planet textures at page load so the planet is ready the instant the camera reaches space.====================================================================
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -187,16 +184,16 @@ header {
    (e.g. ORBITAL INSERTION SUCCESS) can never spill into neighbours */
 .header-nav .hud-badge {
   pointer-events: none;
-  font-size: 13px;
-  padding: 8px 10px;
-  min-height: 32px;
+  font-size: 14.5px;
+  padding: 10px 14px;
+  min-height: 38px;
   flex: 0 0 auto;
-  max-width: 200px;
+  max-width: 250px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#hudPhase { max-width: 250px; }
+#hudPhase { max-width: 290px; }
 .header-actions {
   display: flex;
   align-items: center;
@@ -234,9 +231,24 @@ header {
   border-radius: 50%; cursor: pointer;
   color: #5f6368;
   display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.2s;
 }
-.icon-btn:hover { background: rgba(26,115,232,0.14); color: #1a73e8; }
-.icon-btn .material-symbols-outlined { font-size: 22px; }
+/* FIX: hover matches the reference — full solid blue circle, white icon,
+   with a visible outline ring around the circle */
+.icon-btn:hover,
+.icon-btn:focus-visible {
+  background: #1a73e8;
+  color: #ffffff;
+  box-shadow:
+    0 0 0 2px #ffffff inset,
+    0 0 0 3.5px #1a73e8,
+    0 4px 14px rgba(26,115,232,0.45);
+  transform: scale(1.05);
+}
+.icon-btn:active { transform: scale(0.97); }
+.icon-btn .material-symbols-outlined { font-size: 22px; transition: color 0.2s; }
+.icon-btn:hover .material-symbols-outlined,
+.icon-btn:focus-visible .material-symbols-outlined { color: #ffffff; }
 
 /* Floating canvas HUD hidden — metrics live in header */
 .hud { display: none !important; }
@@ -1063,13 +1075,13 @@ input[type=range] { width: 100%; accent-color: #1a73e8; height: 5px; cursor: poi
 @media (max-width: 900px) {
   .logo-name { font-size: 15px; }
   .header-nav { gap: 6px; padding: 0 4px; }
-  .header-nav .hud-badge { font-size: 11.5px; padding: 5px 9px; min-height: 30px; max-width: 160px; }
+  .header-nav .hud-badge { font-size: 12.5px; padding: 7px 11px; min-height: 34px; max-width: 190px; }
 
   header { min-height: 52px; padding: 6px 10px; gap: 8px; flex-wrap: wrap; }
   .logo img { height: 32px; }
   .header-vhr { height: 22px; }
   .header-nav { order: 3; width: 100%; justify-content: flex-start; gap: 6px; padding: 4px 0 2px; overflow-x: auto; }
-  .header-nav .hud-badge { font-size: 11.5px; padding: 5px 9px; flex-shrink: 0; }
+  .header-nav .hud-badge { font-size: 12.5px; padding: 7px 11px; flex-shrink: 0; }
   .header-actions { gap: 4px; }
   .icon-btn { width: 40px; height: 40px; }
   .icon-btn .material-symbols-outlined { font-size: 24px; }
@@ -1683,6 +1695,9 @@ let fuelRemaining = 1;
 let initialMass = 402000;
 let dryMassVal = 22000;
 let thrustN = 7600000;
+/* NEW: realistic gravity-turn state */
+let downrange = 0;
+let enginesOff = false;
 
 const PRESETS = {
   f9:       { dry: 22000,  fuel: 380000,  isp: 282, thrust: 7600  },
@@ -1735,6 +1750,16 @@ function flagIconUrl(code) {
   return 'https://flagcdn.com/80x60/' + String(code).toLowerCase() + '.png';
 }
 let selFlag = 'US', selPayload = 'starlink';
+
+/* NEW: realistic gravity-turn pitch program.
+   0° (straight up) below 7 km, then a smooth eased tilt to ~82°
+   by ~87 km, so the vehicle arcs over into orbit like a real ascent. */
+function gravityTurnPitch(alt) {
+  if (alt < 7000) return 0;
+  const k = Math.min(1, (alt - 7000) / 80000);
+  const eased = k * k * (3 - 2 * k); // smoothstep
+  return eased * (82 * Math.PI / 180);
+}
 
 function toast(m) {
   const t = document.getElementById('toast');
@@ -2764,6 +2789,8 @@ function startLaunch() {
   maxQPassed = false;
   altitude = 0;
   velocity = 0;
+  downrange = 0;
+  enginesOff = false;
   maxAlt = 0;
   maxVel = 0;
   flightT = 0;
@@ -2776,6 +2803,7 @@ function startLaunch() {
   document.getElementById('banner').classList.remove('show', 'success', 'fail');
   document.getElementById('report').classList.remove('show');
   document.getElementById('hudMaxQ').style.display = 'none';
+  rocketGroup.rotation.set(0, 0, 0);
 
   const cd = +document.getElementById('countdownSec').value || 5;
   const d = document.getElementById('cdDisp');
@@ -2862,6 +2890,7 @@ function ignite() {
   fireP.visible = true;
   smokeP.visible = true;
   steamP.visible = true;
+  fireP.material.opacity = 0.95;
   const fail = tw < 1.07 || achDv < 6000 || Math.random() < 0.015;
   setTimeout(() => {
     if (fail) explode();
@@ -2869,11 +2898,28 @@ function ignite() {
       phase = 'ascent';
       isFlying = true;
       launchTime = clock.getElapsedTime();
-      document.getElementById('hudPhase').textContent = 'ASCENT · THROTTLE UP';
+      document.getElementById('hudPhase').textContent = 'ASCENT · VERTICAL';
       document.getElementById('hudPhase').style.color = '#1e8e3e';
-      speak('Ascent. Throttle up. Live TWR tracking active.', 0.95);
+      speak('Ascent. Throttle up. Gravity turn begins at seven kilometers.', 0.95);
     }
   }, 900);
+}
+
+/* NEW: safe, realistic engine shutdown (MECO).
+   Plume, fire, smoke and steam all cut off together,
+   exactly once, like a real main engine cutoff. */
+function doMeco() {
+  if (enginesOff) return;
+  enginesOff = true;
+  plume.children.forEach(c => c.visible = false);
+  fireP.visible = false;
+  smokeP.visible = false;
+  steamP.visible = false;
+  phase = 'meco';
+  document.getElementById('hudPhase').textContent = 'MECO · COASTING TO ORBIT';
+  document.getElementById('hudPhase').style.color = '#1a73e8';
+  toast('MECO · engines cut off');
+  speak('Main engine cutoff. Target velocity reached. Coasting to orbital insertion.', 0.92);
 }
 
 function explode() {
@@ -2943,7 +2989,7 @@ function doCoreDetach() {
   if (nameMesh) nameMesh.visible = false;
   document.getElementById('hudPhase').textContent = 'CORE STAGE DONE · UPPER STAGE';
   document.getElementById('hudStage').textContent = 'UPPER · SPACECRAFT';
-  speak('Core stage separation. Upper stage continues.', 0.92);
+  speak('Core stage separation. Upper stage continues to orbit.', 0.92);
   toast('Core detached · spacecraft mode');
 }
 
@@ -2951,6 +2997,8 @@ function checkSuccess() {
   if (altitude > 105000 && velocity > 2450 && !isSuccess) {
     isSuccess = true;
     phase = 'orbit';
+    /* Realistic: engines are already off at insertion — never relight in space */
+    doMeco();
     document.getElementById('hudPhase').textContent = 'ORBITAL INSERTION SUCCESS';
     document.getElementById('hudPhase').style.color = '#188038';
     const b = document.getElementById('banner');
@@ -3013,11 +3061,12 @@ function abort() {
   isLaunching = false;
   isFlying = false;
   phase = 'aborted';
+  doMeco();
   document.getElementById('hudPhase').textContent = 'ABORT · SAFE HOLD';
   document.getElementById('hudPhase').style.color = '#b06000';
   document.getElementById('btnAbort').disabled = true;
   document.getElementById('btnLaunch').disabled = false;
-  speak('Launch abort. Safe hold.', 0.95);
+  speak('Launch abort. Engines shut down. Safe hold.', 0.95);
   toast('Aborted');
 }
 
@@ -3033,6 +3082,8 @@ function reset() {
   maxQPassed = false;
   altitude = 0;
   velocity = 0;
+  downrange = 0;
+  enginesOff = false;
   fuelRemaining = 1;
   phase = 'standby';
   rocketGroup.visible = true;
@@ -3054,6 +3105,7 @@ function reset() {
   }
   plume.children.forEach(c => c.visible = false);
   fireP.visible = false;
+  fireP.material.opacity = 0.95;
   smokeP.visible = false;
   steamP.visible = false;
   expP.visible = false;
@@ -3206,34 +3258,67 @@ function animate() {
   if (isFlying) {
     const el = t - launchTime;
     flightT = el;
-    fuelRemaining = Math.max(0, 1 - el / 175);
+
+    /* NEW GRAVITY-TURN ASCENT — realistic profile:
+       1) Fly straight up until ~7 km.
+       2) Smoothly pitch over (gravity turn) toward horizontal.
+       3) Thrust splits into vertical + horizontal components.
+       4) MECO when fuel is gone or orbital velocity is reached;
+          afterwards the vehicle coasts, no flame in space. */
+    const pitch = gravityTurnPitch(altitude);
+    const cosP = Math.cos(pitch), sinP = Math.sin(pitch);
+
+    if (!enginesOff) fuelRemaining = Math.max(0, 1 - el / 175);
     const currentMass = dryMassVal + (initialMass - dryMassVal) * fuelRemaining;
-    const currentTwr = thrustN / (currentMass * G0);
-    if (currentTwr > peakTwr) peakTwr = currentTwr;
+    const currentTwr = enginesOff ? 0 : thrustN / (currentMass * G0);
+    if (!enginesOff && currentTwr > peakTwr) peakTwr = currentTwr;
     document.getElementById('hudTwr').textContent = 'TWR ' + currentTwr.toFixed(2);
     document.getElementById('liveTwrVal').textContent = currentTwr.toFixed(2);
+    if (enginesOff) document.getElementById('liveTwrVal').textContent = '0.00';
 
     const dens = Math.exp(-altitude / 8500);
     const drag = 0.5 * dens * (velocity * velocity) * 0.0005;
-    let accel = Math.max(0, (currentTwr - 1) * G0 * 1.3 - drag);
 
-    if (altitude > 90000) {
+    let accel = 0;
+    if (!enginesOff) accel = Math.max(0, (currentTwr - 1) * G0 * 1.3 - drag);
+
+    if (!enginesOff && altitude > 90000) {
       accel *= 0.22;
       velocity *= (1 - 0.012 * dt);
     }
-    if (altitude > 120000) {
+
+    /* MECO: fuel exhausted, or targets reached (orbital speed / edge of space) */
+    if (!enginesOff && (fuelRemaining <= 0 || velocity >= 2600 || (altitude > 100000 && velocity > 2450))) {
+      doMeco();
       accel = 0;
-      velocity *= (1 - 0.025 * dt);
     }
 
-    velocity += accel * dt;
-    altitude += velocity * dt;
+    /* Split acceleration along and across the velocity vector */
+    const vAccel = accel * cosP;   // vertical push
+    const hAccel = accel * sinP;   // downrange push
+
+    /* Gravity slowly bends the coasting trajectory back down above the atmosphere */
+    if (enginesOff && altitude > 100000) velocity *= (1 - 0.004 * dt);
+    if (altitude > 130000) velocity *= (1 - 0.02 * dt);
+
+    velocity += vAccel * dt;
+    altitude += velocity * cosP * dt;
+    downrange += velocity * sinP * dt;
     if (altitude > maxAlt) maxAlt = altitude;
     if (velocity > maxVel) maxVel = velocity;
 
     const visualScale = altitude > 100000 ? 0.012 : 0.038;
-    rocketGroup.position.set(0, 6 + altitude * visualScale, 0);
-    rocketGroup.rotation.set(0, 0, 0);
+    rocketGroup.position.set(downrange * visualScale, 6 + altitude * visualScale, 0);
+    /* Nose points along the flight path — the classic gravity-turn arc */
+    rocketGroup.rotation.z = -pitch;
+
+    /* Pitch callouts during the turn */
+    if (!enginesOff && altitude > 7200 && altitude < 7600) {
+      document.getElementById('hudPhase').textContent = 'GRAVITY TURN · PITCHING OVER';
+    }
+    if (!enginesOff && altitude > 60000 && altitude < 61000) {
+      document.getElementById('hudPhase').textContent = 'ASCENT · ARCVING TO ORBIT';
+    }
 
     {
       const k = Math.min(1, altitude / 90000);
@@ -3284,7 +3369,8 @@ function animate() {
     if (amb) amb.style.width = Math.min(100, (altitude / 120000) * 100) + '%';
     if (ams) {
       const km = (altitude / 1000).toFixed(1);
-      ams.textContent = altitude < 100 ? 'Pad' : altitude < 12000 ? km + ' km · Dense air' : altitude < 50000 ? km + ' km · Stratosphere' : altitude < 100000 ? km + ' km · Edge of space' : km + ' km · Space';
+      const dr = downrange > 500 ? ' · DR ' + (downrange / 1000).toFixed(0) + ' km' : '';
+      ams.textContent = altitude < 100 ? 'Pad' : altitude < 12000 ? km + ' km · Dense air' + dr : altitude < 50000 ? km + ' km · Gravity turn' : altitude < 100000 ? km + ' km · Arcing to orbit' : km + ' km · Space' + dr;
     }
     document.getElementById('hudVel').textContent = 'VEL ' + Math.round(velocity) + ' m/s';
     const mach = velocity / 340;
@@ -3296,7 +3382,8 @@ function animate() {
     if (hf) hf.textContent = 'FUEL ' + Math.round(fuelPct) + '%';
     const hs = document.getElementById('hudStage');
     if (hs) {
-      if (!stageSeparated) hs.textContent = 'STAGE 1 · BOOSTERS';
+      if (enginesOff) hs.textContent = 'COAST · SAFE';
+      else if (!stageSeparated) hs.textContent = 'STAGE 1 · BOOSTERS';
       else if (!fairingGone) hs.textContent = 'STAGE 2 · CORE';
       else if (!coreDetached) hs.textContent = 'UPPER · DEEP SPACE';
       else hs.textContent = 'SPACECRAFT ONLY';
@@ -3312,15 +3399,11 @@ function animate() {
       document.getElementById('hudMaxQ').style.display = 'inline-flex';
       document.getElementById('hudPhase').textContent = 'MAX-Q';
       toast('Max-Q passed');
-      speak('Max Q. Maximum dynamic pressure. Throttle holds.', 0.95);
+      speak('Max Q. Maximum dynamic pressure. Vehicle holds together.', 0.95);
     }
     if (altitude > 35000 && !stageSeparated) doStageSep();
     if (altitude > 70000 && !fairingGone) doFairing();
     if (altitude > 92000 && !coreDetached) doCoreDetach();
-
-    if (altitude > 95000 && fireP.visible) {
-      fireP.material.opacity = Math.max(0.12, 0.95 - (altitude - 95000) / 70000);
-    }
 
     if (teleT.length < 300) {
       teleT.push(el);
@@ -3329,74 +3412,80 @@ function animate() {
       teleTwr.push(currentTwr);
     }
 
-    plume.children.forEach((c, i) => {
-      if (!c.visible) return;
-      const s = 1 + Math.sin(t * 18 + i) * 0.28;
-      c.scale.set(s, s, s);
-      c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
-    });
+    /* Engine effects only render while engines are lit */
+    if (!enginesOff) {
+      plume.children.forEach((c, i) => {
+        if (!c.visible) return;
+        const s = 1 + Math.sin(t * 18 + i) * 0.28;
+        c.scale.set(s, s, s);
+        c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
+      });
 
-    if (fireP.visible) {
-      const pos = fireP.geometry.attributes.position.array;
-      const vel = fireP.userData.v;
-      for (let i = 0; i < vel.length; i++) {
-        if (stageSeparated && vel[i].eng !== 0) {
-          pos[i * 3 + 1] = -999;
-          continue;
+      if (fireP.visible) {
+        const pos = fireP.geometry.attributes.position.array;
+        const vel = fireP.userData.v;
+        for (let i = 0; i < vel.length; i++) {
+          if (stageSeparated && vel[i].eng !== 0) {
+            pos[i * 3 + 1] = -999;
+            continue;
+          }
+          pos[i * 3] += vel[i].x * dt * 10;
+          pos[i * 3 + 1] += vel[i].y * dt * 36;
+          pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
+          vel[i].life -= dt * 0.18;
+          if (vel[i].life <= 0) {
+            const eng = vel[i].eng || 0;
+            const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
+            pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
+            pos[i * 3 + 1] = -0.8 - Math.random() * 5;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
+            vel[i].y = -(12 + Math.random() * 20);
+            vel[i].life = 1;
+          }
         }
-        pos[i * 3] += vel[i].x * dt * 10;
-        pos[i * 3 + 1] += vel[i].y * dt * 36;
-        pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
-        vel[i].life -= dt * 0.18;
-        if (vel[i].life <= 0) {
-          const eng = vel[i].eng || 0;
-          const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
-          pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
-          pos[i * 3 + 1] = -0.8 - Math.random() * 5;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
-          vel[i].y = -(12 + Math.random() * 20);
-          vel[i].life = 1;
+        fireP.geometry.attributes.position.needsUpdate = true;
+        if (altitude > 95000) {
+          fireP.material.opacity = Math.max(0.12, 0.95 - (altitude - 95000) / 70000);
         }
       }
-      fireP.geometry.attributes.position.needsUpdate = true;
-    }
 
-    if (smokeP.visible) {
-      const pos = smokeP.geometry.attributes.position.array;
-      const vel = smokeP.userData.v;
-      for (let i = 0; i < vel.length; i++) {
-        pos[i * 3] += vel[i].x * dt * 9;
-        pos[i * 3 + 1] += vel[i].y * dt * 8;
-        pos[i * 3 + 2] += vel[i].z * dt * 9;
-        vel[i].life -= dt * 0.09;
-        if (vel[i].life <= 0) {
-          pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
-          pos[i * 3 + 1] = rocketGroup.position.y - 5;
-          pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
-          vel[i].life = 1;
+      if (smokeP.visible) {
+        const pos = smokeP.geometry.attributes.position.array;
+        const vel = smokeP.userData.v;
+        for (let i = 0; i < vel.length; i++) {
+          pos[i * 3] += vel[i].x * dt * 9;
+          pos[i * 3 + 1] += vel[i].y * dt * 8;
+          pos[i * 3 + 2] += vel[i].z * dt * 9;
+          vel[i].life -= dt * 0.09;
+          if (vel[i].life <= 0) {
+            pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
+            pos[i * 3 + 1] = rocketGroup.position.y - 5;
+            pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
+            vel[i].life = 1;
+          }
         }
+        smokeP.geometry.attributes.position.needsUpdate = true;
       }
-      smokeP.geometry.attributes.position.needsUpdate = true;
-    }
 
-    if (steamP.visible && altitude < 450) {
-      const pos = steamP.geometry.attributes.position.array;
-      const vel = steamP.userData.v;
-      for (let i = 0; i < vel.length; i++) {
-        pos[i * 3] += vel[i].x * dt * 6;
-        pos[i * 3 + 1] += vel[i].y * dt * 8;
-        pos[i * 3 + 2] += vel[i].z * dt * 6;
-        vel[i].life -= dt * 0.16;
-        if (vel[i].life <= 0) {
-          pos[i * 3] = (Math.random() - 0.5) * 45;
-          pos[i * 3 + 1] = 2 + Math.random() * 5;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * 45 - 10;
-          vel[i].life = 1;
+      if (steamP.visible && altitude < 450) {
+        const pos = steamP.geometry.attributes.position.array;
+        const vel = steamP.userData.v;
+        for (let i = 0; i < vel.length; i++) {
+          pos[i * 3] += vel[i].x * dt * 6;
+          pos[i * 3 + 1] += vel[i].y * dt * 8;
+          pos[i * 3 + 2] += vel[i].z * dt * 6;
+          vel[i].life -= dt * 0.16;
+          if (vel[i].life <= 0) {
+            pos[i * 3] = (Math.random() - 0.5) * 45;
+            pos[i * 3 + 1] = 2 + Math.random() * 5;
+            pos[i * 3 + 2] = (Math.random() - 0.5) * 45 - 10;
+            vel[i].life = 1;
+          }
         }
+        steamP.geometry.attributes.position.needsUpdate = true;
+      } else if (altitude >= 450) {
+        steamP.visible = false;
       }
-      steamP.geometry.attributes.position.needsUpdate = true;
-    } else if (altitude >= 450) {
-      steamP.visible = false;
     }
 
     checkSuccess();
@@ -3990,6 +4079,8 @@ async function sendToAI(userText) {
 This is a university-grade browser rocket lab focused on Thrust-to-Weight Ratio (TWR).
 Key concepts:
 • TWR = Thrust / (mass × g₀). Must be > 1.05 to lift off. Rises as fuel burns.
+• Gravity turn: straight up to 7 km, then a smooth pitch-over into orbit.
+• MECO (main engine cutoff) happens when fuel is gone or orbital velocity is reached.
 • Δv is still calculated but the main teaching focus is TWR.
 • Max-Q is maximum aerodynamic pressure.
 • Stage separation, fairing jettison, core detach.
