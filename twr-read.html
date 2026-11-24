@@ -3185,6 +3185,362 @@
   </script>
 </section>
 <hr>
+<hr>
+<!-- ============================================================
+     SEVENTH SECTION: INTERACTIVE TWR MARGIN EXPLORER (HTML + CSS + JS)
+     ============================================================ -->
+<section id="slTwrSeventhSection" aria-labelledby="slTwrSeventhHeading">
+  <style>
+    #slTwrSeventhSection {
+      position: relative;
+      width: 100%;
+      padding: 132px 36px;
+      background:
+        radial-gradient(circle at 78% 24%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', 'Inter', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #slTwrSeventhSection .sl-twr7-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #slTwrSeventhSection .sl-twr7-head {
+      max-width: 780px;
+      margin-bottom: 52px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #slTwrSeventhSection.is-revealed .sl-twr7-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSeventhSection .sl-twr7-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.86);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #slTwrSeventhSection .sl-twr7-title {
+      font-size: clamp(38px, 4.8vw, 64px);
+      font-weight: 400;
+      line-height: 1.06;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 16px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-sub {
+      font-size: clamp(17px, 1.45vw, 20px);
+      font-weight: 300;
+      line-height: 1.64;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    #slTwrSeventhSection .sl-twr7-box {
+      padding: 36px 34px;
+      border-radius: 28px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 28px 72px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+      gap: 40px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s;
+    }
+
+    #slTwrSeventhSection.is-revealed .sl-twr7-box {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #slTwrSeventhSection .sl-twr7-readout-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-val {
+      font-size: clamp(44px, 5vw, 62px);
+      font-weight: 400;
+      letter-spacing: -0.03em;
+      color: #ffffff;
+      line-height: 1;
+    }
+
+    #slTwrSeventhSection .sl-twr7-zone {
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 13.5px;
+      font-weight: 400;
+      color: rgba(245, 247, 251, 0.9);
+    }
+
+    #slTwrSeventhSection .sl-twr7-slider {
+      width: 100%;
+      accent-color: #ffffff;
+      cursor: pointer;
+      margin: 10px 0 18px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-preset {
+      padding: 9px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.04);
+      color: rgba(245, 247, 251, 0.84);
+      font-family: inherit;
+      font-size: 14.5px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    #slTwrSeventhSection .sl-twr7-preset:hover {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #slTwrSeventhSection .sl-twr7-note-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: #ffffff;
+      margin-bottom: 10px;
+      letter-spacing: -0.015em;
+    }
+
+    #slTwrSeventhSection .sl-twr7-note-copy {
+      font-size: 16.5px;
+      font-weight: 300;
+      line-height: 1.66;
+      color: rgba(245, 247, 251, 0.78);
+      margin-bottom: 20px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-mini-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-mini {
+      padding: 15px 17px;
+      border-radius: 16px;
+      background: rgba(5, 7, 12, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    #slTwrSeventhSection .sl-twr7-mini span {
+      display: block;
+      font-size: 12.5px;
+      color: rgba(245, 247, 251, 0.56);
+      margin-bottom: 4px;
+    }
+
+    #slTwrSeventhSection .sl-twr7-mini strong {
+      font-size: 16px;
+      font-weight: 400;
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      #slTwrSeventhSection {
+        padding: 92px 22px;
+      }
+      #slTwrSeventhSection .sl-twr7-box {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 24px 20px;
+        border-radius: 22px;
+      }
+      #slTwrSeventhSection .sl-twr7-mini-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <div class="sl-twr7-wrap">
+    <div class="sl-twr7-head">
+      <span class="sl-twr7-tag">07 &middot; TWR Margin Explorer</span>
+      <h2 class="sl-twr7-title" id="slTwrSeventhHeading">How TWR shapes climb performance</h2>
+      <p class="sl-twr7-sub">
+        Slide across TWR values on Earth (g = 9.81 m/s&sup2;) to see how liftoff capability, initial upward acceleration, and climb margin change.
+      </p>
+    </div>
+
+    <div class="sl-twr7-box">
+      <div>
+        <div class="sl-twr7-readout-top">
+          <span class="sl-twr7-val" id="slTwr7Val">1.40</span>
+          <span class="sl-twr7-zone" id="slTwr7ZoneBadge">Healthy Liftoff</span>
+        </div>
+
+        <input
+          type="range"
+          min="0.50"
+          max="3.00"
+          step="0.05"
+          value="1.40"
+          class="sl-twr7-slider"
+          id="slTwr7Slider"
+          aria-label="Thrust to weight ratio value"
+        />
+
+        <div class="sl-twr7-presets">
+          <button type="button" class="sl-twr7-preset" data-twr="0.85">0.85 Grounded</button>
+          <button type="button" class="sl-twr7-preset" data-twr="1.40">1.40 Climb</button>
+          <button type="button" class="sl-twr7-preset" data-twr="2.40">2.40 High-Thrust</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 class="sl-twr7-note-title" id="slTwr7NoteTitle">Clean liftoff with steady vertical climb</h3>
+        <p class="sl-twr7-note-copy" id="slTwr7NoteCopy">
+          A TWR around 1.40 clears the pad smoothly and builds upward velocity without excessive early drag or harsh G-loads.
+        </p>
+
+        <div class="sl-twr7-mini-row">
+          <div class="sl-twr7-mini">
+            <span>Initial Climb Accel (Earth)</span>
+            <strong id="slTwr7AccelOut">3.92 m/s&sup2;</strong>
+          </div>
+          <div class="sl-twr7-mini">
+            <span>Liftoff Margin</span>
+            <strong id="slTwr7MarginOut">+0.40 above 1.00</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('slTwrSeventhSection');
+      if (!section) return;
+
+      const slider = document.getElementById('slTwr7Slider');
+      const valEl = document.getElementById('slTwr7Val');
+      const zoneBadge = document.getElementById('slTwr7ZoneBadge');
+      const noteTitle = document.getElementById('slTwr7NoteTitle');
+      const noteCopy = document.getElementById('slTwr7NoteCopy');
+      const accelOut = document.getElementById('slTwr7AccelOut');
+      const marginOut = document.getElementById('slTwr7MarginOut');
+      const presets = section.querySelectorAll('.sl-twr7-preset');
+
+      const gEarth = 9.80665;
+
+      function updateTwr(rawVal) {
+        const twr = Number(rawVal);
+        if (!Number.isFinite(twr)) return;
+
+        if (valEl) valEl.textContent = twr.toFixed(2);
+        if (slider && Number(slider.value) !== twr) slider.value = twr.toFixed(2);
+
+        const netAccel = Math.max(0, (twr - 1) * gEarth);
+        if (accelOut) accelOut.textContent = netAccel.toFixed(2) + ' m/s\u00B2';
+
+        const diff = twr - 1;
+        if (marginOut) {
+          marginOut.textContent = diff >= 0
+            ? '+' + diff.toFixed(2) + ' above 1.00'
+            : diff.toFixed(2) + ' below 1.00';
+        }
+
+        if (twr < 1.0) {
+          if (zoneBadge) zoneBadge.textContent = 'Insufficient Lift';
+          if (noteTitle) noteTitle.textContent = 'Rocket stays on the launch pad';
+          if (noteCopy) noteCopy.textContent = 'When TWR is below 1.00, gravity pulls harder than the engines push upward, so the vehicle cannot rise off the pad.';
+        } else if (twr < 1.2) {
+          if (zoneBadge) zoneBadge.textContent = 'Low Climb Margin';
+          if (noteTitle) noteTitle.textContent = 'Slow initial rise and higher gravity loss';
+          if (noteCopy) noteCopy.textContent = 'Just above 1.00, the rocket lifts off slowly—spending a large share of early thrust fighting gravity before gaining speed.';
+        } else if (twr <= 1.8) {
+          if (zoneBadge) zoneBadge.textContent = 'Healthy Liftoff';
+          if (noteTitle) noteTitle.textContent = 'Clean liftoff with steady vertical climb';
+          if (noteCopy) noteCopy.textContent = 'A TWR in this range clears the pad smoothly and builds upward velocity without excessive early drag or harsh G-loads.';
+        } else {
+          if (zoneBadge) zoneBadge.textContent = 'High-Thrust Burn';
+          if (noteTitle) noteTitle.textContent = 'Rapid acceleration and rising G-loads';
+          if (noteCopy) noteCopy.textContent = 'High TWR produces strong upward acceleration right away—and as fuel burns off, acceleration climbs even higher before cutoff.';
+        }
+      }
+
+      if (slider) {
+        slider.addEventListener('input', (e) => updateTwr(e.target.value));
+      }
+
+      presets.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-twr');
+          if (target !== null) updateTwr(target);
+        });
+      });
+
+      updateTwr(1.4);
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+<hr>
 
 
 
