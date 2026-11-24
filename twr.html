@@ -1831,6 +1831,32 @@ function updFlag() {
   );
 }
 
+/* FIX 1: updName was called everywhere but never defined, which crashed
+   initThree() and left the simulation blank. It now draws the mission
+   name onto the rocket body as a canvas texture. */
+function updName() {
+  if (!rocketGroup || !coreGroup) return;
+  const val = (document.getElementById('rocketName')?.value || 'SKYLABS-1').toUpperCase();
+  if (nameMesh && nameMesh.parent) { nameMesh.parent.remove(nameMesh); }
+  if (nameMesh && nameMesh.material && nameMesh.material.map) nameMesh.material.map.dispose();
+  const c = document.createElement('canvas');
+  c.width = 512; c.height = 128;
+  const ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, 512, 128);
+  ctx.fillStyle = '#174ea6';
+  ctx.font = '52px "Google Sans", Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(val, 256, 64);
+  const tex = new THREE.CanvasTexture(c);
+  nameMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(7, 1.75),
+    new THREE.MeshBasicMaterial({ map: tex, transparent: true })
+  );
+  nameMesh.position.set(0, 40, 3.78);
+  coreGroup.add(nameMesh);
+}
+
 function applyRocket(k) {
   currentRocketKey = k;
   const p = PRESETS[k];
@@ -2084,7 +2110,11 @@ function initThree() {
   }
   scene.add(sun);
   window.sunL = sun;
-  scene.add(new THREE.DirectionalLight(0x88aacc, 0.2).position.set(-100, 60, -80));
+  /* FIX 2: the old line chained .position.set() on the constructor and
+     added the returned Vector3 instead of the light. Build it properly. */
+  const fill = new THREE.DirectionalLight(0x88aacc, 0.2);
+  fill.position.set(-100, 60, -80);
+  scene.add(fill);
 
   scene.background = new THREE.Color(0x87ceeb);
   scene.fog = new THREE.FogExp2(0x87ceeb, 0.0015);
