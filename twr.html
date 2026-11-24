@@ -1680,8 +1680,6 @@ let pitchAngle = 0;        // 0 = straight up, ~80 deg = orbital
 let hVelocity = 0;         // horizontal velocity (m/s)
 let downrange = 0;         // horizontal distance travelled (m)
 let engineCutoff = false;  // MECO: engines cut in space / at orbit
-let maxQRings = [];        // expanding shock rings during Max-Q
-let maxQRingTimer = 0;
 
 const PRESETS = {
   f9:       { dry: 22000,  fuel: 380000,  isp: 282, thrust: 7600  },
@@ -2534,34 +2532,35 @@ function buildLights() {
 }
 
 function buildStars() {
-  /* Full spherical star field — dense, even, same small size everywhere.
-     Covers the entire sky so high-altitude / orbital views never show empty black. */
+  /* Camera-centered star sphere.
+     Stars always surround the viewer → no black voids at any altitude or angle.
+     sizeAttenuation OFF so every star stays the same pixel size across the whole sky. */
   const g = new THREE.BufferGeometry();
   const pts = [], cols = [];
-  const count = IS_MOBILE ? 4500 : 14000;
-  const R = 4800;
+  const count = IS_MOBILE ? 7000 : 20000;
+  const R = 800;
   for (let i = 0; i < count; i++) {
-    // uniform sphere distribution (rejection-free)
     const u = Math.random();
     const v = Math.random();
     const theta = 2 * Math.PI * u;
     const phi = Math.acos(2 * v - 1);
-    const r = R * (0.82 + Math.random() * 0.18); // thin shell so depth parallax is subtle
-    const x = r * Math.sin(phi) * Math.cos(theta);
-    const y = r * Math.sin(phi) * Math.sin(theta);
-    const z = r * Math.cos(phi);
-    pts.push(x, y, z);
-    const c = 0.65 + Math.random() * 0.35;
-    cols.push(c, c, c * 0.92);
+    const r = R * (0.94 + Math.random() * 0.06);
+    pts.push(
+      r * Math.sin(phi) * Math.cos(theta),
+      r * Math.sin(phi) * Math.sin(theta),
+      r * Math.cos(phi)
+    );
+    const c = 0.5 + Math.random() * 0.5;
+    cols.push(c, c, c * 0.88);
   }
   g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
   g.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
   starField = new THREE.Points(g, new THREE.PointsMaterial({
-    size: 1.05,
+    size: 1.6,
     vertexColors: true,
     transparent: true,
-    opacity: 0.95,
-    sizeAttenuation: true,
+    opacity: 0.98,
+    sizeAttenuation: false,
     depthWrite: false
   }));
   starField.visible = false;
@@ -2628,26 +2627,6 @@ function buildFX() {
   });
   plume.position.y = 5;
   rocketGroup.add(plume);
-
-  /* Max-Q shock rings — start at nose, expand + drift aft, fade, loop */
-  maxQRings = [];
-  for (let i = 0; i < 5; i++) {
-    const ring = new THREE.Mesh(
-      new THREE.TorusGeometry(0.6, 0.07, 8, 48),
-      new THREE.MeshBasicMaterial({
-        color: 0xaaccff,
-        transparent: true,
-        opacity: 0,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      })
-    );
-    ring.rotation.x = Math.PI / 2;
-    ring.visible = false;
-    ring.userData = { life: 0, active: false };
-    rocketGroup.add(ring);
-    maxQRings.push(ring);
-  }
 
   const fc = IS_MOBILE ? 6000 : 16000;
   const fg = new THREE.BufferGeometry();
@@ -2745,15 +2724,13 @@ function buildFX() {
   scene.add(expP);
 }
 
-/* Hard MECO / SECO — engines, plume, fire and smoke fully off (no vacuum flames) */
+/* Gradual MECO / SECO — plume & fire fade over ~1.6 s, then fully off */
+let engineFade = 0;
 function cutoffEngines(msg) {
   if (engineCutoff) return;
   engineCutoff = true;
-  if (plume) plume.children.forEach(c => { c.visible = false; });
-  if (fireP) fireP.visible = false;
-  if (smokeP) smokeP.visible = false;
+  engineFade = 1;
   if (steamP) steamP.visible = false;
-  // freeze live TWR display at 0 after cutoff
   const live = document.getElementById('liveTwrVal');
   if (live) live.textContent = '0.00';
   const ht = document.getElementById('hudTwr');
@@ -2821,12 +2798,7 @@ function startLaunch() {
   coreDetached = false;
   maxQPassed = false;
   engineCutoff = false;
-  maxQRingTimer = 0;
-  if (maxQRings) maxQRings.forEach(r => {
-    r.userData.active = false;
-    r.visible = false;
-    r.material.opacity = 0;
-  });
+  engineFade = 0;
   altitude = 0;
   velocity = 0;
   pitchAngle = 0;
@@ -2986,18 +2958,15 @@ function doStageSep() {
   [boosterL, boosterR].forEach(b => {
     if (!b) return;
     b.userData.spinning = true;
-    b.userData.vx = (b.userData.side || 1) * (0.85 + Math.random() * 0.4);
-    b.userData.vy = -0.35 - Math.random() * 0.2;
-    b.userData.vz = (Math.random() - 0.5) * 0.4;
+    // slower, more cinematic separation
+    b.userData.vx = (b.userData.side || 1) * (0.35 + Math.random() * 0.18);
+    b.userData.vy = -0.12 - Math.random() * 0.08;
+    b.userData.vz = (Math.random() - 0.5) * 0.15;
   });
-  // Booster engines cut at separation
   plume.children.forEach((c, i) => { if (i >= 4) c.visible = false; });
-  if (fireP && fireP.userData && fireP.userData.v) {
-    fireP.userData.v.forEach(v => { if (v.eng !== 0 && fireP.visible) { /* booster flame pooled below */ } });
-  }
   document.getElementById('hudPhase').textContent = 'STAGE SEPARATION';
   speak('Stage separation confirmed. Boosters shutting down and separating cleanly.', 0.95);
-  toast('MECO · boosters separating');
+  toast('Boosters separating');
 }
 function doFairing() {
   if (fairingGone || !isFlying) return;
@@ -3009,9 +2978,14 @@ function doFairing() {
 function doCoreDetach() {
   if (coreDetached || !isFlying) return;
   coreDetached = true;
-  if (coreGroup) coreGroup.visible = false;
+  // core drifts away slowly instead of vanishing
+  if (coreGroup) {
+    coreGroup.userData.spinning = true;
+    coreGroup.userData.vx = -0.15 - Math.random() * 0.1;
+    coreGroup.userData.vy = -0.08;
+    coreGroup.userData.vz = 0.05;
+  }
   if (nameMesh) nameMesh.visible = false;
-  // Core engine cuts; vacuum engine keeps a smaller, tighter plume
   plume.children.forEach((c, i) => {
     c.visible = (i === 0 || i === 1);
     if (c.visible) c.scale.set(0.55, 0.8, 0.55);
@@ -3019,7 +2993,7 @@ function doCoreDetach() {
   document.getElementById('hudPhase').textContent = 'CORE STAGE DONE · UPPER STAGE';
   document.getElementById('hudStage').textContent = 'UPPER · SPACECRAFT';
   speak('Core stage separation. Vacuum engine continues the burn.', 0.92);
-  toast('Core detached · spacecraft mode');
+  toast('Core detaching');
 }
 
 function checkSuccess() {
@@ -3110,12 +3084,7 @@ function reset() {
   coreDetached = false;
   maxQPassed = false;
   engineCutoff = false;
-  maxQRingTimer = 0;
-  if (maxQRings) maxQRings.forEach(r => {
-    r.userData.active = false;
-    r.visible = false;
-    r.material.opacity = 0;
-  });
+  engineFade = 0;
   altitude = 0;
   velocity = 0;
   pitchAngle = 0;
@@ -3287,7 +3256,12 @@ function animate() {
     }
     ox *= distScale; oy *= distScale; oz *= distScale;
 
-    // gentle extra lift when high so we don't stare into pure black
+    // Max-Q / transonic: bias strongly toward the nose so shock rings are in frame
+    if (altitude > 9000 && altitude < 25000) {
+      oy += isSmallRocket ? 18 : 28;
+      lookY += isSmallRocket ? 12 : 18;
+      ox *= 0.85; oz *= 0.85;
+    }
     if (isHigh) oy += isSmallRocket ? 8 : 14;
 
     camera.position.lerp(new THREE.Vector3(rp.x + ox, lookY + oy, rp.z + oz), 0.065);
@@ -3312,7 +3286,6 @@ function animate() {
     const el = t - launchTime;
     flightT = el;
 
-    /* Fuel only burns while engines are lit */
     if (!engineCutoff) {
       fuelRemaining = Math.max(0, 1 - el / 175);
     }
@@ -3322,13 +3295,30 @@ function animate() {
     document.getElementById('hudTwr').textContent = 'TWR ' + currentTwr.toFixed(2);
     document.getElementById('liveTwrVal').textContent = currentTwr.toFixed(2);
 
-    /* Hard MECO before / at edge of space — no fire or thrust in vacuum */
+    /* MECO before / at edge of space */
     if (!engineCutoff && (fuelRemaining <= 0.02 || altitude > 92000 || velocity > 2550)) {
       cutoffEngines(altitude > 90000 ? 'MECO · engines off · vacuum' : 'MECO · fuel depleted');
-      const hs = document.getElementById('hudStage');
-      if (hs) hs.textContent = 'COAST · SAFE';
       document.getElementById('hudPhase').textContent = 'MECO · COASTING';
       document.getElementById('hudPhase').style.color = '#188038';
+    }
+
+    /* Gradual flame fade after MECO */
+    if (engineCutoff && engineFade > 0) {
+      engineFade = Math.max(0, engineFade - dt * 0.62);
+      if (plume) {
+        plume.children.forEach(c => {
+          if (c.material) c.material.opacity = Math.max(0, (0.26) * engineFade);
+          if (engineFade <= 0.02) c.visible = false;
+        });
+      }
+      if (fireP) {
+        fireP.material.opacity = Math.max(0, 0.9 * engineFade);
+        if (engineFade <= 0.02) fireP.visible = false;
+      }
+      if (smokeP) {
+        smokeP.material.opacity = Math.max(0, 0.35 * engineFade);
+        if (engineFade <= 0.05) smokeP.visible = false;
+      }
     }
 
     const dens = Math.exp(-altitude / 8500);
@@ -3391,33 +3381,47 @@ function animate() {
         scene.fog.color.copy(scene.background);
         scene.fog.density = 0.0015 * (1 - k * 0.96);
       }
-      if (starField) starField.visible = (timeOfDay === 'night') || k > 0.45;
-      if (k > 0.75) renderer.toneMappingExposure = 0.38;
-      if (terrainMesh) terrainMesh.visible = k < 0.4;
-      if (oceanMesh) oceanMesh.visible = k < 0.4;
-      if (oceanFar) oceanFar.visible = k < 0.4;
+      /* Stars fill the sky once atmosphere thins; full black + stars only in true space */
+      if (starField) starField.visible = (timeOfDay === 'night') || k > 0.40;
+      if (k > 0.70) {
+        renderer.toneMappingExposure = 0.32;
+        scene.background.setRGB(0.004, 0.004, 0.012);
+        scene.fog.density = 0.00008;
+      }
+      if (terrainMesh) terrainMesh.visible = k < 0.35;
+      if (oceanMesh) oceanMesh.visible = k < 0.35;
+      if (oceanFar) oceanFar.visible = k < 0.35;
+      /* Planet only when clearly in space (avoids "atmosphere + far planet" contradiction) */
       if (earthMesh) {
-        if (k > 0.42) {
+        if (k > 0.58) {
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
-          earthMesh.position.set(rocketGroup.position.x * 0.5, rocketGroup.position.y - (info.size * 1.55) - k * 200, 0);
+          const dist = info.size * (1.4 + k * 0.5);
+          earthMesh.position.set(
+            rocketGroup.position.x * 0.3 - dist * 0.12,
+            rocketGroup.position.y - dist * 0.9,
+            rocketGroup.position.z - dist * 0.2
+          );
           if (window.sunMesh) window.sunMesh.visible = true;
           earthMesh.rotation.y += dt * 0.012;
         } else {
           earthMesh.visible = false;
+          if (window.sunMesh) window.sunMesh.visible = false;
         }
       }
     }
 
-    [boosterL, boosterR].forEach(b => {
-      if (b && b.userData.spinning) {
-        b.position.x += b.userData.vx * dt * 3;
-        b.position.y += b.userData.vy * dt * 3;
-        b.position.z += b.userData.vz * dt * 3;
-        b.userData.vy -= 3.5 * dt;
-        b.rotation.z += b.userData.vx * dt * 0.15;
-        b.rotation.x += dt * 0.2;
-        if (b.position.y < -120) b.visible = false;
+    /* Slower cinematic drift for boosters + core */
+    [boosterL, boosterR, coreGroup].forEach(b => {
+      if (b && b.userData && b.userData.spinning) {
+        b.position.x += b.userData.vx * dt * 1.6;
+        b.position.y += b.userData.vy * dt * 1.6;
+        b.position.z += b.userData.vz * dt * 1.6;
+        b.userData.vy -= 1.4 * dt;
+        b.rotation.z += (b.userData.vx || 0) * dt * 0.08;
+        b.rotation.x += dt * 0.12;
+        // stay visible longer while drifting away
+        if (b.position.y < -280) b.visible = false;
       }
     });
 
@@ -3469,6 +3473,10 @@ function animate() {
     if (altitude > 70000 && !fairingGone) doFairing();
     if (altitude > 92000 && !coreDetached) doCoreDetach();
 
+    if (altitude > 95000 && fireP.visible) {
+      fireP.material.opacity = Math.max(0.12, 0.95 - (altitude - 95000) / 70000);
+    }
+
     if (teleT.length < 300) {
       teleT.push(el);
       teleAlt.push(altitude);
@@ -3476,123 +3484,74 @@ function animate() {
       teleTwr.push(currentTwr);
     }
 
-    /* ===== Engine FX only while engines are lit ===== */
-    if (!engineCutoff) {
-      plume.children.forEach((c, i) => {
-        if (!c.visible) return;
-        const s = 1 + Math.sin(t * 18 + i) * 0.28;
-        c.scale.set(s, s, s);
-        c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
-      });
-
-      if (fireP.visible) {
-        const pos = fireP.geometry.attributes.position.array;
-        const vel = fireP.userData.v;
-        for (let i = 0; i < vel.length; i++) {
-          if (stageSeparated && vel[i].eng !== 0) {
-            pos[i * 3 + 1] = -999;
-            continue;
-          }
-          pos[i * 3] += vel[i].x * dt * 10;
-          pos[i * 3 + 1] += vel[i].y * dt * 36;
-          pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
-          vel[i].life -= dt * 0.18;
-          if (vel[i].life <= 0) {
-            const eng = vel[i].eng || 0;
-            const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
-            pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
-            pos[i * 3 + 1] = -0.8 - Math.random() * 5;
-            pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
-            vel[i].y = -(12 + Math.random() * 20);
-            vel[i].life = 1;
-          }
-        }
-        fireP.geometry.attributes.position.needsUpdate = true;
-      }
-
-      if (smokeP.visible && altitude < 85000) {
-        const pos = smokeP.geometry.attributes.position.array;
-        const vel = smokeP.userData.v;
-        for (let i = 0; i < vel.length; i++) {
-          pos[i * 3] += vel[i].x * dt * 9;
-          pos[i * 3 + 1] += vel[i].y * dt * 8;
-          pos[i * 3 + 2] += vel[i].z * dt * 9;
-          vel[i].life -= dt * 0.09;
-          if (vel[i].life <= 0) {
-            pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
-            pos[i * 3 + 1] = rocketGroup.position.y - 5;
-            pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
-            vel[i].life = 1;
-          }
-        }
-        smokeP.geometry.attributes.position.needsUpdate = true;
-      } else if (smokeP.visible && altitude >= 85000) {
-        smokeP.visible = false; // no smoke in near-vacuum
-      }
-
-      if (steamP.visible && altitude < 450) {
-        const pos = steamP.geometry.attributes.position.array;
-        const vel = steamP.userData.v;
-        for (let i = 0; i < vel.length; i++) {
-          pos[i * 3] += vel[i].x * dt * 6;
-          pos[i * 3 + 1] += vel[i].y * dt * 8;
-          pos[i * 3 + 2] += vel[i].z * dt * 6;
-          vel[i].life -= dt * 0.16;
-          if (vel[i].life <= 0) {
-            pos[i * 3] = (Math.random() - 0.5) * 45;
-            pos[i * 3 + 1] = 2 + Math.random() * 5;
-            pos[i * 3 + 2] = (Math.random() - 0.5) * 45 - 10;
-            vel[i].life = 1;
-          }
-        }
-        steamP.geometry.attributes.position.needsUpdate = true;
-      } else if (altitude >= 450) {
-        steamP.visible = false;
-      }
-    }
-
-    /* ===== Max-Q expanding shock rings (nose → aft, grow, fade, loop) ===== */
-    if (maxQPassed && altitude > 10500 && altitude < 22000 && !engineCutoff) {
-      maxQRingTimer += dt;
-      if (maxQRingTimer > 0.55) {
-        maxQRingTimer = 0;
-        const free = maxQRings.find(r => !r.userData.active);
-        if (free) {
-          free.userData.active = true;
-          free.userData.life = 1.0;
-          free.scale.set(0.35, 0.35, 0.35);
-          free.position.set(0, 82, 0); // near nose tip
-          free.material.opacity = 0.55;
-          free.visible = true;
-        }
-      }
-    }
-    maxQRings.forEach(r => {
-      if (!r.userData.active) return;
-      r.userData.life -= dt * 0.55;
-      // expand + drift slightly aft + slow down as they grow
-      const grow = 1 + (1 - r.userData.life) * 4.2;
-      r.scale.set(grow, grow, grow);
-      r.position.y -= dt * (2.8 + (1 - r.userData.life) * 1.5);
-      r.material.opacity = Math.max(0, r.userData.life * 0.55);
-      if (r.userData.life <= 0) {
-        r.userData.active = false;
-        r.visible = false;
-        r.material.opacity = 0;
-      }
+    plume.children.forEach((c, i) => {
+      if (!c.visible) return;
+      const s = 1 + Math.sin(t * 18 + i) * 0.28;
+      c.scale.set(s, s, s);
+      c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
     });
 
-    /* Better planet framing — consistent relative distance */
-    if (earthMesh && earthMesh.visible) {
-      const info = PLANETS[currentPlanet] || PLANETS.earth;
-      const k = Math.min(1, altitude / 90000);
-      // keep planet large enough in frame, slightly offset behind/below rocket
-      const dist = info.size * (1.35 + k * 0.45);
-      earthMesh.position.set(
-        rocketGroup.position.x * 0.35 - dist * 0.15,
-        rocketGroup.position.y - dist * 0.85 - k * 80,
-        rocketGroup.position.z - dist * 0.25
-      );
+    if (fireP.visible) {
+      const pos = fireP.geometry.attributes.position.array;
+      const vel = fireP.userData.v;
+      for (let i = 0; i < vel.length; i++) {
+        if (stageSeparated && vel[i].eng !== 0) {
+          pos[i * 3 + 1] = -999;
+          continue;
+        }
+        pos[i * 3] += vel[i].x * dt * 10;
+        pos[i * 3 + 1] += vel[i].y * dt * 36;
+        pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
+        vel[i].life -= dt * 0.18;
+        if (vel[i].life <= 0) {
+          const eng = vel[i].eng || 0;
+          const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
+          pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
+          pos[i * 3 + 1] = -0.8 - Math.random() * 5;
+          pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
+          vel[i].y = -(12 + Math.random() * 20);
+          vel[i].life = 1;
+        }
+      }
+      fireP.geometry.attributes.position.needsUpdate = true;
+    }
+
+    if (smokeP.visible) {
+      const pos = smokeP.geometry.attributes.position.array;
+      const vel = smokeP.userData.v;
+      for (let i = 0; i < vel.length; i++) {
+        pos[i * 3] += vel[i].x * dt * 9;
+        pos[i * 3 + 1] += vel[i].y * dt * 8;
+        pos[i * 3 + 2] += vel[i].z * dt * 9;
+        vel[i].life -= dt * 0.09;
+        if (vel[i].life <= 0) {
+          pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
+          pos[i * 3 + 1] = rocketGroup.position.y - 5;
+          pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
+          vel[i].life = 1;
+        }
+      }
+      smokeP.geometry.attributes.position.needsUpdate = true;
+    }
+
+    if (steamP.visible && altitude < 450) {
+      const pos = steamP.geometry.attributes.position.array;
+      const vel = steamP.userData.v;
+      for (let i = 0; i < vel.length; i++) {
+        pos[i * 3] += vel[i].x * dt * 6;
+        pos[i * 3 + 1] += vel[i].y * dt * 8;
+        pos[i * 3 + 2] += vel[i].z * dt * 6;
+        vel[i].life -= dt * 0.16;
+        if (vel[i].life <= 0) {
+          pos[i * 3] = (Math.random() - 0.5) * 45;
+          pos[i * 3 + 1] = 2 + Math.random() * 5;
+          pos[i * 3 + 2] = (Math.random() - 0.5) * 45 - 10;
+          vel[i].life = 1;
+        }
+      }
+      steamP.geometry.attributes.position.needsUpdate = true;
+    } else if (altitude >= 450) {
+      steamP.visible = false;
     }
 
     checkSuccess();
@@ -3615,6 +3574,11 @@ function animate() {
     expP.geometry.attributes.position.needsUpdate = true;
     expP.material.opacity = Math.max(0, a / vel.length);
     if (a < 8) expP.visible = false;
+  }
+
+  /* Stars always centered on camera so the whole sky is filled */
+  if (starField && starField.visible) {
+    starField.position.copy(camera.position);
   }
 
   renderer.render(scene, camera);
