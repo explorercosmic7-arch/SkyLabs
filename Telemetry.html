@@ -1380,6 +1380,315 @@
   </script>
 </section>
 <hr>
+
+<!-- ============================================================
+     SECTION 2: TELEMETRY INDEX — TWR LAB ONLY (HTML + CSS + JS)
+     ============================================================ -->
+<section id="telemetry-index-2" aria-labelledby="slRltSec2Heading">
+  <style>
+    #telemetry-index-2 {
+      position: relative;
+      width: 100%;
+      padding: 120px 36px;
+      background:
+        radial-gradient(circle at 18% 20%, rgba(120, 165, 255, 0.06) 0%, transparent 48%),
+        radial-gradient(circle at 82% 82%, rgba(255, 255, 255, 0.04) 0%, transparent 52%),
+        linear-gradient(180deg, #05070c 0%, #070a11 50%, #05070c 100%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      color: #f5f7fb;
+      font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 300;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    #telemetry-index-2 .sl-rlt2-wrap {
+      width: 100%;
+      max-width: 1320px;
+      margin: 0 auto;
+    }
+
+    #telemetry-index-2 .sl-rlt2-head {
+      max-width: 780px;
+      margin-bottom: 44px;
+      opacity: 0;
+      transform: translateY(22px);
+      transition:
+        opacity 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #telemetry-index-2.is-revealed .sl-rlt2-head {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #telemetry-index-2 .sl-rlt2-tag {
+      display: inline-block;
+      margin-bottom: 14px;
+      padding: 6px 15px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.88);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    #telemetry-index-2 .sl-rlt2-title {
+      font-size: clamp(36px, 4.5vw, 60px);
+      font-weight: 400;
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      color: #ffffff;
+      margin-bottom: 14px;
+    }
+
+    #telemetry-index-2 .sl-rlt2-sub {
+      font-size: clamp(17px, 1.4vw, 20px);
+      font-weight: 300;
+      line-height: 1.62;
+      color: rgba(245, 247, 251, 0.78);
+    }
+
+    /* Horizontal Telemetry Strip Card */
+    #telemetry-index-2 .sl-rlt2-card {
+      padding: 22px 24px;
+      border-radius: 26px;
+      background: rgba(11, 15, 24, 0.84);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.72);
+      display: grid;
+      grid-template-columns: 180px minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        transform 0.85s cubic-bezier(0.22, 1, 0.36, 1) 0.12s,
+        border-color 0.24s ease;
+    }
+
+    #telemetry-index-2.is-revealed .sl-rlt2-card {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    #telemetry-index-2 .sl-rlt2-card:hover {
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    #telemetry-index-2 .sl-rlt2-thumb {
+      position: relative;
+      width: 180px;
+      height: 124px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #05070c;
+    }
+
+    #telemetry-index-2 .sl-rlt2-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    #telemetry-index-2 .sl-rlt2-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+
+    #telemetry-index-2 .sl-rlt2-code {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: rgba(245, 247, 251, 0.56);
+    }
+
+    #telemetry-index-2 .sl-rlt2-badge {
+      padding: 4px 11px;
+      border-radius: 999px;
+      background: #ffffff;
+      color: #080b10;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    #telemetry-index-2 .sl-rlt2-name {
+      font-size: clamp(24px, 2.2vw, 32px);
+      font-weight: 400;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      margin-bottom: 8px;
+    }
+
+    #telemetry-index-2 .sl-rlt2-info {
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.58;
+      color: rgba(245, 247, 251, 0.78);
+      max-width: 620px;
+    }
+
+    /* 3 Action Links: Lab, Guide, Calculator */
+    #telemetry-index-2 .sl-rlt2-links {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-width: 196px;
+    }
+
+    #telemetry-index-2 .sl-rlt2-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 18px;
+      border-radius: 999px;
+      font-size: 15px;
+      font-weight: 400;
+      text-decoration: none;
+      transition: transform 0.2s ease, background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+    #telemetry-index-2 .sl-rlt2-link-lab {
+      background: #ffffff;
+      color: #080b10;
+    }
+
+    #telemetry-index-2 .sl-rlt2-link-lab:hover {
+      background: #e9eef8;
+      transform: translateX(3px);
+    }
+
+    #telemetry-index-2 .sl-rlt2-link-sub {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    #telemetry-index-2 .sl-rlt2-link-sub:hover {
+      background: rgba(255, 255, 255, 0.14);
+      border-color: rgba(255, 255, 255, 0.32);
+      transform: translateX(3px);
+    }
+
+    @media (max-width: 980px) {
+      #telemetry-index-2 {
+        padding: 92px 22px;
+      }
+      #telemetry-index-2 .sl-rlt2-card {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+        border-radius: 22px;
+      }
+      #telemetry-index-2 .sl-rlt2-thumb {
+        width: 100%;
+        height: 190px;
+      }
+      #telemetry-index-2 .sl-rlt2-links {
+        flex-direction: row;
+        flex-wrap: wrap;
+        min-width: 0;
+      }
+      #telemetry-index-2 .sl-rlt2-link {
+        flex: 1 1 150px;
+      }
+    }
+  </style>
+
+  <div class="sl-rlt2-wrap">
+    <div class="sl-rlt2-head">
+      <span class="sl-rlt2-tag">Telemetry Index · 02</span>
+      <h2 class="sl-rlt2-title" id="slRltSec2Heading">Thrust-to-Weight Ratio (TWR)</h2>
+      <p class="sl-rlt2-sub">
+        Open the interactive TWR lab, read the step-by-step guide, or run thrust-to-weight calculations.
+      </p>
+    </div>
+
+    <article class="sl-rlt2-card">
+      <div class="sl-rlt2-thumb">
+        <img
+          src="https://plus.unsplash.com/premium_vector-1754029090817-92b24c82d730?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+          alt="Thrust-to-Weight Ratio Telemetry"
+          loading="lazy"
+        />
+      </div>
+
+      <div>
+        <div class="sl-rlt2-meta">
+          <span class="sl-rlt2-code">Topic 02 · TWR</span>
+          <span class="sl-rlt2-badge">Active</span>
+        </div>
+        <h3 class="sl-rlt2-name">TWR Lab, Guide &amp; Calculator</h3>
+        <p class="sl-rlt2-info">
+          Balance engine thrust against vehicle mass and local gravity to see liftoff margin, initial acceleration, and climb performance.
+        </p>
+      </div>
+
+      <div class="sl-rlt2-links">
+        <a href="twr.html" class="sl-rlt2-link sl-rlt2-link-lab">
+          <span>TWR Lab</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+        <a href="twr-read.html" class="sl-rlt2-link sl-rlt2-link-sub">
+          <span>Reading Guide</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+        <a href="twr-calc.html" class="sl-rlt2-link sl-rlt2-link-sub">
+          <span>TWR Calculator</span>
+          <span aria-hidden="true">&#8594;</span>
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <script>
+    (function () {
+      const section = document.getElementById('telemetry-index-2');
+      if (!section) return;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+        section.classList.add('is-revealed');
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              section.classList.add('is-revealed');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        {
+          rootMargin: '0px 0px -75px 0px',
+          threshold: 0.12
+        }
+      );
+
+      observer.observe(section);
+    })();
+  </script>
+</section>
+
+
+<hr>
 <!-- Footer -->
 <footer id="slSimpleFooter" style="width: 100%; padding: 36px 24px; background: #05070c; border-top: 1px solid rgba(255, 255, 255, 0.08); color: #f5f7fb; font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 300;">
   <div style="max-width: 1320px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
