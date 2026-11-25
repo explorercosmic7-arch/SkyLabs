@@ -2788,21 +2788,21 @@ function clearMaxQRings() {
 }
 function spawnMaxQRing() {
   if (!rocketGroup) return;
-  // shock ring locked at nose tip only (air compression look)
-  const geo = new THREE.TorusGeometry(2.5, 0.07, 8, 48);
+  // true nose tip — tiny ring starts here
+  const noseY = isSmallRocket ? 48 : 83.5;
+  const geo = new THREE.TorusGeometry(1.1, 0.05, 8, 48);
   const mat = new THREE.MeshBasicMaterial({
-    color: 0xe8f2ff,
+    color: 0xffffff,
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.75,
     depthWrite: false,
     side: THREE.DoubleSide
   });
   const ring = new THREE.Mesh(geo, mat);
-  const noseY = isSmallRocket ? 46 : 84;
   ring.position.set(0, noseY, 0);
   ring.rotation.x = Math.PI / 2;
-  ring.scale.set(0.22, 0.22, 0.22);
-  ring.userData = { age: 0, maxAge: 1.5, noseY: noseY };
+  ring.scale.set(0.12, 0.12, 0.12);
+  ring.userData = { age: 0, maxAge: 1.3, noseY: noseY };
   rocketGroup.add(ring);
   maxQRings.push(ring);
 }
@@ -2810,7 +2810,8 @@ function updateMaxQRings(dt) {
   const inWindow = isFlying && altitude > 9000 && altitude < 25000 && !engineCutoff;
   if (inWindow) {
     maxQRingTimer += dt;
-    if (maxQRingTimer > 0.5) {
+    // tight gap = continuous wave of rings from the tip
+    if (maxQRingTimer > 0.16) {
       maxQRingTimer = 0;
       spawnMaxQRing();
     }
@@ -2826,12 +2827,13 @@ function updateMaxQRings(dt) {
       maxQRings.splice(i, 1);
       continue;
     }
-    // nose only: expand outward + soft fade (barely move down)
+    // tiny at tip → grow → fade (near nose only)
     const ease = t * t * (3 - 2 * t);
-    const scale = 0.22 + ease * 2.6;
+    const scale = 0.12 + ease * 3.0;
     r.scale.set(scale, scale, scale);
-    r.position.y = r.userData.noseY - ease * 5;
-    r.material.opacity = 0.6 * (1 - ease) * (1 - ease);
+    r.position.y = r.userData.noseY - ease * 7;
+    const fade = t < 0.45 ? 0.75 : 0.75 * (1 - (t - 0.45) / 0.55);
+    r.material.opacity = Math.max(0, fade);
   }
 }
 
@@ -3109,9 +3111,13 @@ function doCoreDetach() {
 
 function checkSuccess() {
   // Success once near edge of space after a solid climb — not stuck for minutes
+  // wait until stages have run and we are in space — clean success
   const reachedSpace = altitude >= 100000;
-  const coastOk = engineCutoff && altitude >= 92000;
+  const coastOk = engineCutoff && altitude >= 95000;
   if ((reachedSpace || coastOk) && !isSuccess) {
+    if (!stageSeparated) doStageSep();
+    if (!fairingGone) doFairing();
+    if (!coreDetached) doCoreDetach();
     isSuccess = true;
     phase = 'orbit';
     isFlying = false;
@@ -3123,8 +3129,11 @@ function checkSuccess() {
     const b = document.getElementById('banner');
     b.classList.add('show', 'success');
     document.getElementById('bTitle').textContent = 'MISSION SUCCESS';
-    document.getElementById('bSub').textContent = 'Peak TWR ' + peakTwr.toFixed(2) + ' · Orbit achieved';
-    const explanation = 'Mission success. Main engine cutoff in orbit. Your vehicle reached a peak thrust-to-weight of ' + peakTwr.toFixed(2) + '.';
+    document.getElementById('bSub').textContent =
+      'Peak TWR ' + peakTwr.toFixed(2) +
+      ' · Max alt ' + Math.round(maxAlt / 1000) + ' km' +
+      ' · Max vel ' + Math.round(maxVel) + ' m/s';
+    const explanation = 'Mission success. All stages complete. Peak thrust-to-weight ' + peakTwr.toFixed(2) + '.';
     speak(explanation, 0.88);
     scene.background.set(0x010108);
     scene.fog.density = 0.00008;
@@ -3135,11 +3144,11 @@ function checkSuccess() {
     if (earthMesh) {
       earthMesh.visible = true;
       const info = PLANETS[currentPlanet] || PLANETS.earth;
-      const dist = info.size * 1.15;
+      const dist = info.size * 1.4;
       earthMesh.position.set(
-        rocketGroup.position.x - dist * 0.15,
-        rocketGroup.position.y - dist * 0.7,
-        rocketGroup.position.z - dist * 0.2
+        rocketGroup.position.x - dist * 0.4,
+        rocketGroup.position.y - dist * 1.2,
+        rocketGroup.position.z - dist * 0.5
       );
     }
     if (window.sunMesh) window.sunMesh.visible = true;
@@ -3575,19 +3584,20 @@ function animate() {
         padLights.forEach(p => { if (p && p.l) p.l.intensity = 0; });
       }
 
-      /* Planet large & visible once space is black */
+      /* Planet as BACKGROUND only — never intersects rocket */
       if (earthMesh) {
-        if (k > 0.55) {
+        if (k > 0.58) {
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
-          const dist = info.size * (0.72 + k * 0.15); // larger on screen
+          // far below + offset so rocket never flies into the sphere
+          const dist = info.size * 1.35;
           earthMesh.position.set(
-            rocketGroup.position.x * 0.08 - dist * 0.05,
-            rocketGroup.position.y - dist * 0.55,
-            rocketGroup.position.z - dist * 0.1
+            rocketGroup.position.x - dist * 0.35,
+            rocketGroup.position.y - dist * 1.15,
+            rocketGroup.position.z - dist * 0.55
           );
           if (window.sunMesh) window.sunMesh.visible = true;
-          earthMesh.rotation.y += dt * 0.012;
+          earthMesh.rotation.y += dt * 0.01;
         } else {
           earthMesh.visible = false;
           if (window.sunMesh) window.sunMesh.visible = false;
