@@ -2166,6 +2166,7 @@ function buildTerrain() {
   pad.receiveShadow = !IS_MOBILE;
   pad.castShadow = !IS_MOBILE;
   scene.add(pad);
+  window.padMesh = pad;
 
   const trench = new THREE.Mesh(
     new THREE.BoxGeometry(26, 15, 62),
@@ -2173,6 +2174,7 @@ function buildTerrain() {
   );
   trench.position.set(0, -5.2, -15);
   scene.add(trench);
+  window.trenchMesh = trench;
 
   [[50, 0, 40], [-54, 0, 34], [44, 0, -50], [-40, 0, -42]].forEach(([x, y, z], i) => {
     const b = new THREE.Mesh(
@@ -2250,16 +2252,7 @@ function buildRocket() {
   stripe.position.y = 42;
   coreGroup.add(stripe);
 
-  for (let i = 0; i < 4; i++) {
-    const a = (i / 4) * Math.PI * 2;
-    const fin = new THREE.Mesh(
-      new THREE.BoxGeometry(0.12, 2.8, 3.2),
-      new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.7 })
-    );
-    fin.position.set(Math.cos(a) * 3.85, 52, Math.sin(a) * 3.85);
-    fin.rotation.y = a;
-    coreGroup.add(fin);
-  }
+  /* side fin plates removed — clean polished body */
 
   for (let i = 0; i < 9; i++) {
     const ang = (i / 9) * Math.PI * 2;
@@ -2383,6 +2376,7 @@ function buildTowers() {
     fss.add(p);
   }
   scene.add(fss);
+  window.fssMesh = fss;
 
   for (let i = 0; i < 4; i++) {
     const ang = (i / 4) * Math.PI * 2 + 0.3;
@@ -2651,8 +2645,20 @@ function buildFX() {
     });
   }
   fg.setAttribute('position', new THREE.BufferAttribute(fp, 3));
+  /* Soft circular sprite so exhaust is not a square block */
+  const fireCanvas = document.createElement('canvas');
+  fireCanvas.width = 64; fireCanvas.height = 64;
+  const fctx = fireCanvas.getContext('2d');
+  const fgrad = fctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  fgrad.addColorStop(0, 'rgba(255,255,255,1)');
+  fgrad.addColorStop(0.35, 'rgba(255,200,80,0.9)');
+  fgrad.addColorStop(0.7, 'rgba(255,120,20,0.35)');
+  fgrad.addColorStop(1, 'rgba(0,0,0,0)');
+  fctx.fillStyle = fgrad;
+  fctx.fillRect(0, 0, 64, 64);
+  const fireTex = new THREE.CanvasTexture(fireCanvas);
   fireP = new THREE.Points(fg, new THREE.PointsMaterial({
-    color: 0xffaa33, size: IS_MOBILE ? 4.2 : 5.2, transparent: true, opacity: 0.95,
+    map: fireTex, color: 0xffcc66, size: IS_MOBILE ? 3.6 : 4.4, transparent: true, opacity: 0.92,
     depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
   }));
   fireP.userData.v = fv;
@@ -2676,7 +2682,8 @@ function buildFX() {
   }
   sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
   smokeP = new THREE.Points(sg, new THREE.PointsMaterial({
-    color: 0x888888, size: IS_MOBILE ? 8 : 11, transparent: true, opacity: 0.48, depthWrite: false
+    color: 0x888888, size: IS_MOBILE ? 5 : 7, transparent: true, opacity: 0.38, depthWrite: false,
+    sizeAttenuation: true
   }));
   smokeP.userData.v = sv;
   smokeP.visible = false;
@@ -2846,14 +2853,18 @@ function setTime(m) {
     renderer.toneMappingExposure = 0.92;
     padLights.forEach(p => p.l.intensity = 1.1);
   } else if (m === 'night') {
-    scene.background.set(0x02020a);
-    scene.fog.color.set(0x02020a);
-    scene.fog.density = 0.0007;
-    sun.intensity = 0.08;
-    sun.color.set(0x8899bb);
+    scene.background.set(0x010108);
+    scene.fog.color.set(0x010108);
+    scene.fog.density = 0.0004;
+    sun.intensity = 0.06;
+    sun.color.set(0x7788aa);
     sun.position.set(-80, 90, -110);
-    renderer.toneMappingExposure = 0.55;
-    padLights.forEach(p => p.l.intensity = 2.6);
+    renderer.toneMappingExposure = 0.48;
+    if (starField) {
+      starField.visible = true;
+      if (starField.material) starField.material.opacity = 0.95;
+    }
+    padLights.forEach(p => p.l.intensity = 3.2);
   } else {
     scene.background.set(0xffb347);
     scene.fog.color.set(0xffb347);
@@ -2894,7 +2905,15 @@ function startLaunch() {
   fuelRemaining = 1;
   teleAlt = []; teleVel = []; teleT = []; teleTwr = [];
   phase = 'countdown';
+  rocketGroup.visible = true;
+  rocketGroup.position.set(0, 6, 0);
   rocketGroup.rotation.set(0, 0, 0);
+  if (coreGroup) { coreGroup.visible = true; coreGroup.position.set(0,0,0); coreGroup.rotation.set(0,0,0); coreGroup.userData.spinning = false; }
+  if (upperStage) { upperStage.visible = true; upperStage.position.set(0,0,0); upperStage.rotation.set(0,0,0); }
+  if (boosterL) { boosterL.visible = true; boosterL.position.set(-6.1,0,0); boosterL.rotation.set(0,0,0); boosterL.userData.spinning = false; }
+  if (boosterR) { boosterR.visible = true; boosterR.position.set(6.1,0,0); boosterR.rotation.set(0,0,0); boosterR.userData.spinning = false; }
+  if (nameMesh) nameMesh.visible = true;
+  if (typeof killEngineFX === 'function') killEngineFX();
   document.getElementById('btnLaunch').disabled = true;
   document.getElementById('btnAbort').disabled = false;
   document.getElementById('banner').classList.remove('show', 'success', 'fail');
@@ -3180,7 +3199,17 @@ function reset() {
   rocketGroup.visible = true;
   rocketGroup.position.set(0, 6, 0);
   rocketGroup.rotation.set(0, 0, 0);
-  if (coreGroup) coreGroup.visible = true;
+  if (coreGroup) {
+    coreGroup.visible = true;
+    coreGroup.position.set(0, 0, 0);
+    coreGroup.rotation.set(0, 0, 0);
+    coreGroup.userData.spinning = false;
+  }
+  if (upperStage) {
+    upperStage.visible = true;
+    upperStage.position.set(0, 0, 0);
+    upperStage.rotation.set(0, 0, 0);
+  }
   if (nameMesh) nameMesh.visible = true;
   if (boosterL) {
     boosterL.visible = true;
@@ -3194,12 +3223,21 @@ function reset() {
     boosterR.rotation.set(0, 0, 0);
     boosterR.userData.spinning = false;
   }
-  plume.children.forEach(c => { c.visible = false; c.scale.set(1, 1, 1); });
-  fireP.visible = false;
-  fireP.material.opacity = 0.95;
-  smokeP.visible = false;
-  steamP.visible = false;
-  expP.visible = false;
+  if (typeof killEngineFX === 'function') killEngineFX();
+  if (plume) plume.children.forEach(c => { c.visible = false; c.scale.set(1, 1, 1); });
+  if (fireP) { fireP.visible = false; if (fireP.material) fireP.material.opacity = 0.92; }
+  if (smokeP) smokeP.visible = false;
+  if (steamP) steamP.visible = false;
+  if (expP) expP.visible = false;
+  if (window.padMesh) window.padMesh.visible = true;
+  if (window.trenchMesh) window.trenchMesh.visible = true;
+  if (window.fssMesh) window.fssMesh.visible = true;
+  if (terrainMesh) terrainMesh.visible = true;
+  if (oceanMesh) oceanMesh.visible = true;
+  if (oceanFar) oceanFar.visible = true;
+  if (earthMesh) earthMesh.visible = false;
+  if (starField) starField.visible = (timeOfDay === 'night');
+  if (window.sunMesh) window.sunMesh.visible = false;
   umbilicals.forEach(a => {
     a.rotation.z = 0;
     a.position.x = a.userData.bx || -15.2;
@@ -3486,20 +3524,29 @@ function animate() {
         }
       }
 
-      if (terrainMesh) terrainMesh.visible = k < 0.32;
-      if (oceanMesh) oceanMesh.visible = k < 0.32;
-      if (oceanFar) oceanFar.visible = k < 0.32;
+      /* Ground / pad gone once atmosphere thins — never show pad fire in space */
+      const showGround = k < 0.28;
+      if (terrainMesh) terrainMesh.visible = showGround;
+      if (oceanMesh) oceanMesh.visible = showGround;
+      if (oceanFar) oceanFar.visible = showGround;
+      if (window.padMesh) window.padMesh.visible = showGround;
+      if (window.trenchMesh) window.trenchMesh.visible = showGround;
+      if (window.fssMesh) window.fssMesh.visible = showGround;
+      if (!showGround) {
+        if (steamP) steamP.visible = false;
+        padLights.forEach(p => { if (p && p.l) p.l.intensity = 0; });
+      }
 
-      /* Planet only after atmosphere is mostly gone — kept far so it never looks like a blob on the rocket */
+      /* Planet closer & larger so orbital view looks realistic (not a tiny distant marble) */
       if (earthMesh) {
-        if (k > 0.55) {
+        if (k > 0.50) {
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
-          const dist = info.size * (1.8 + k * 0.6);
+          const dist = info.size * (1.05 + k * 0.25);
           earthMesh.position.set(
-            rocketGroup.position.x * 0.15 - dist * 0.25,
-            rocketGroup.position.y - dist * 1.05,
-            rocketGroup.position.z - dist * 0.35
+            rocketGroup.position.x * 0.1 - dist * 0.08,
+            rocketGroup.position.y - dist * 0.72,
+            rocketGroup.position.z - dist * 0.15
           );
           if (window.sunMesh) window.sunMesh.visible = true;
           earthMesh.rotation.y += dt * 0.012;
@@ -3524,8 +3571,8 @@ function animate() {
       }
     });
 
-    /* Smooth HUD number animation (NASA-style, no laggy odometer) */
-    const smooth = Math.min(1, dt * 8);
+    /* Smooth HUD numbers — slower ease like reentry lab (avoids lag/freeze) */
+    const smooth = Math.min(1, dt * 3.2);
     const totalVel = velocity + hVelocity * 0.25;
     dispAlt += (altitude - dispAlt) * smooth;
     dispVel += (totalVel - dispVel) * smooth;
@@ -3583,9 +3630,18 @@ function animate() {
     if (altitude > 70000 && !fairingGone) doFairing();
     if (altitude > 92000 && !coreDetached) doCoreDetach();
 
-    /* Hard kill all engine FX in vacuum — no residual fire/smoke blob in space */
+    /* Hard kill engine FX + pad steam well before / in space */
+    if (altitude > 45000) {
+      if (smokeP) smokeP.visible = false;
+      if (steamP) steamP.visible = false;
+    }
     if (altitude > 85000 || (engineCutoff && engineFade <= 0)) {
       killEngineFX();
+    }
+    /* Max-Q badge only during Max-Q window */
+    if (maxQPassed && (altitude > 28000 || altitude < 9000)) {
+      const mq = document.getElementById('hudMaxQ');
+      if (mq) mq.style.display = 'none';
     }
 
     if (teleT.length < 300) {
@@ -4216,12 +4272,19 @@ function executeAIActions(text) {
       updFlag();
     }
   });
-  if (/launch|initiate|start.?launch|go.?for.?launch/i.test(lower) && !isLaunching) {
+  if (/launch|initiate|start.?launch|go.?for.?launch|begin.?mission|lift.?off/i.test(lower) && !isLaunching) {
     setTimeout(() => startLaunch(), 800);
   }
-  if (/abort/i.test(lower)) abort();
-  if (/reset|clear.?pad|pad.?reset/i.test(lower)) reset();
-  if (/reset.?color/i.test(lower)) resetColors();
+  if (/abort|stop.?launch|emergency/i.test(lower)) abort();
+  if (/reset|clear.?pad|pad.?reset|reset.?mission|try.?again|restart|another.?try|new.?mission/i.test(lower)) {
+    reset();
+    toast('Pad reset · vehicle restored');
+  }
+  if (/reset.?color|default.?color/i.test(lower)) resetColors();
+  if (/night|dark.?sky/i.test(lower)) setTime('night');
+  if (/\bday\b|daytime|sunny/i.test(lower) && !/birthday|today/i.test(lower)) setTime('day');
+  if (/evening|sunset/i.test(lower)) setTime('evening');
+  if (/dawn|sunrise/i.test(lower)) setTime('dawn');
 }
 
 async function callGroq(messages) {
