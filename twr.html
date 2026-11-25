@@ -2782,27 +2782,30 @@ function clearMaxQRings() {
 }
 function spawnMaxQRing() {
   if (!rocketGroup) return;
-  const geo = new THREE.TorusGeometry(2.2, 0.12, 8, 32);
+  const geo = new THREE.TorusGeometry(1.6, 0.08, 10, 40);
   const mat = new THREE.MeshBasicMaterial({
-    color: 0xaaccff,
+    color: 0xb8d4ff,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.5,
     depthWrite: false,
     side: THREE.DoubleSide
   });
   const ring = new THREE.Mesh(geo, mat);
-  // nose tip local Y (upper stage tip ~82)
-  ring.position.set(0, isSmallRocket ? 42 : 82, 0);
+  const startY = isSmallRocket ? 44 : 83;
+  ring.position.set(0, startY, 0);
   ring.rotation.x = Math.PI / 2;
-  ring.userData = { age: 0, maxAge: 1.8, startY: isSmallRocket ? 42 : 82 };
+  ring.scale.set(0.35, 0.35, 0.35);
+  // longer life = slow smooth small→big→fade down the body
+  ring.userData = { age: 0, maxAge: 2.8, startY: startY };
   rocketGroup.add(ring);
   maxQRings.push(ring);
 }
 function updateMaxQRings(dt) {
-  const inWindow = isFlying && altitude > 9000 && altitude < 28000 && !engineCutoff;
+  const inWindow = isFlying && altitude > 9000 && altitude < 26000 && !engineCutoff;
   if (inWindow) {
     maxQRingTimer += dt;
-    if (maxQRingTimer > 0.45) {
+    // fewer rings, spaced out for smooth wave not spam
+    if (maxQRingTimer > 0.85) {
       maxQRingTimer = 0;
       spawnMaxQRing();
     }
@@ -2810,7 +2813,7 @@ function updateMaxQRings(dt) {
   for (let i = maxQRings.length - 1; i >= 0; i--) {
     const r = maxQRings[i];
     r.userData.age += dt;
-    const t = r.userData.age / r.userData.maxAge;
+    const t = Math.min(1, r.userData.age / r.userData.maxAge);
     if (t >= 1) {
       if (r.parent) r.parent.remove(r);
       if (r.geometry) r.geometry.dispose();
@@ -2818,11 +2821,14 @@ function updateMaxQRings(dt) {
       maxQRings.splice(i, 1);
       continue;
     }
-    // expand + drift aft (down the body) + fade
-    const scale = 1 + t * 3.5;
+    // ease: small at nose → large mid-body → soft fade
+    const ease = t * t * (3 - 2 * t); // smoothstep
+    const scale = 0.35 + ease * 3.2;
     r.scale.set(scale, scale, scale);
-    r.position.y = r.userData.startY - t * (isSmallRocket ? 28 : 55);
-    r.material.opacity = 0.55 * (1 - t) * (1 - t);
+    r.position.y = r.userData.startY - ease * (isSmallRocket ? 32 : 60);
+    // fade mostly in last third
+    const fade = t < 0.55 ? 0.5 : 0.5 * (1 - (t - 0.55) / 0.45);
+    r.material.opacity = Math.max(0, fade);
   }
 }
 
@@ -3099,11 +3105,16 @@ function doCoreDetach() {
 }
 
 function checkSuccess() {
-  if (altitude > 105000 && velocity > 2450 && !isSuccess) {
+  // Success once near edge of space after a solid climb — not stuck for minutes
+  const reachedSpace = altitude >= 100000;
+  const coastOk = engineCutoff && altitude >= 92000;
+  if ((reachedSpace || coastOk) && !isSuccess) {
     isSuccess = true;
     phase = 'orbit';
-    // Vacuum engine shuts down at orbital insertion: clean MECO in space
+    isFlying = false;
     cutoffEngines('SECO · engines off in orbit');
+    killEngineFX();
+    clearMaxQRings();
     document.getElementById('hudPhase').textContent = 'ORBITAL INSERTION SUCCESS';
     document.getElementById('hudPhase').style.color = '#188038';
     const b = document.getElementById('banner');
@@ -3113,16 +3124,27 @@ function checkSuccess() {
     const explanation = 'Mission success. Main engine cutoff in orbit. Your vehicle reached a peak thrust-to-weight of ' + peakTwr.toFixed(2) + '.';
     speak(explanation, 0.88);
     scene.background.set(0x010108);
-    scene.fog.density = 0.00015;
-    if (starField) starField.visible = true;
+    scene.fog.density = 0.00008;
+    if (starField) {
+      starField.visible = true;
+      if (starField.material) starField.material.opacity = 0.9;
+    }
     if (earthMesh) {
       earthMesh.visible = true;
       const info = PLANETS[currentPlanet] || PLANETS.earth;
-      earthMesh.position.set(0, rocketGroup.position.y - (info.size * 1.6), 0);
+      const dist = info.size * 1.15;
+      earthMesh.position.set(
+        rocketGroup.position.x - dist * 0.15,
+        rocketGroup.position.y - dist * 0.7,
+        rocketGroup.position.z - dist * 0.2
+      );
     }
+    if (window.sunMesh) window.sunMesh.visible = true;
     if (terrainMesh) terrainMesh.visible = false;
     if (oceanMesh) oceanMesh.visible = false;
     if (oceanFar) oceanFar.visible = false;
+    if (window.padMesh) window.padMesh.visible = false;
+    if (window.fssMesh) window.fssMesh.visible = false;
     isLaunching = false;
     document.getElementById('btnLaunch').disabled = false;
     document.getElementById('btnAbort').disabled = true;
@@ -3390,10 +3412,15 @@ function animate() {
     camera.lookAt(rp.x, rp.y + lookUp, rp.z);
   } else if (isSuccess) {
     const rp = rocketGroup.position;
-    camera.position.lerp(new THREE.Vector3(rp.x + 120, rp.y + 70, rp.z + 150), 0.025);
-    camera.lookAt(rp.x, rp.y + 20, rp.z);
+    // orbital success: rocket in frame with Earth as backdrop
+    camera.position.lerp(new THREE.Vector3(rp.x + 95, rp.y + 45, rp.z + 110), 0.04);
+    camera.lookAt(rp.x, rp.y + 12, rp.z);
     if (earthMesh) earthMesh.visible = true;
     if (window.sunMesh) window.sunMesh.visible = true;
+    if (starField) {
+      starField.visible = true;
+      starField.position.copy(camera.position);
+    }
   } else if (isExploded) {
     camera.position.lerp(new THREE.Vector3(75, 48, 105), 0.03);
     camera.lookAt(0, 28, 0);
@@ -3472,18 +3499,23 @@ function animate() {
 
     let accel = verticalAccel;
 
-    if (altitude > 90000) {
-      accel *= 0.22;
-      velocity *= (1 - 0.012 * dt);
+    if (altitude > 90000 && !engineCutoff) {
+      accel *= 0.35;
     }
-    if (altitude > 120000) {
+    // after MECO: gentle coast — keep climbing so mission ends in real time, not minutes
+    if (engineCutoff) {
       accel = 0;
-      velocity *= (1 - 0.025 * dt);
+      // residual vertical rate from velocity before cutoff
+      if (altitude < 110000) {
+        altitude += Math.max(40, velocity * 0.15) * dt;
+      }
+    } else {
+      velocity += accel * dt;
+      if (velocity < 0) velocity = 0;
+      // near space, still climb even when pitched (don't wait forever)
+      const climbFactor = altitude > 70000 ? Math.max(0.35, cosP) : cosP;
+      altitude += velocity * dt * climbFactor;
     }
-
-    velocity += accel * dt;
-    if (velocity < 0) velocity = 0;
-    altitude += velocity * dt * cosP;
     if (altitude > maxAlt) maxAlt = altitude;
     if (velocity > maxVel) maxVel = velocity;
 
