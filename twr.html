@@ -2793,11 +2793,11 @@ function noseTipY() {
 }
 function spawnMaxQRing() {
   if (!rocketGroup) return;
-  const geo = new THREE.TorusGeometry(0.7, 0.09, 8, 40);
+  const geo = new THREE.TorusGeometry(0.6, 0.09, 8, 40);
   const mat = new THREE.MeshBasicMaterial({
     color: 0xbdd7ff,
     transparent: true,
-    opacity: 0.6,
+    opacity: 0.75,
     depthWrite: false,
     side: THREE.DoubleSide
   });
@@ -2805,7 +2805,9 @@ function spawnMaxQRing() {
   const startY = noseTipY();
   ring.position.set(0, startY, 0);
   ring.rotation.x = Math.PI / 2;
-  ring.userData = { age: 0, maxAge: 2.2, startY: startY };
+  /* Short life: ring stays near the nose, fades before it slides far
+     down the body — tight stack at the tip, never near the boosters. */
+  ring.userData = { age: 0, maxAge: 1.25, startY: startY, slide: isSmallRocket ? 12 : 22 };
   rocketGroup.add(ring);
   maxQRings.push(ring);
 }
@@ -2813,7 +2815,7 @@ function updateMaxQRings(dt) {
   const inWindow = isFlying && altitude > 9000 && altitude < 28000 && !engineCutoff;
   if (inWindow) {
     maxQRingTimer += dt;
-    if (maxQRingTimer > 0.28) {
+    if (maxQRingTimer > 0.34) {
       maxQRingTimer = 0;
       spawnMaxQRing();
     }
@@ -2829,12 +2831,12 @@ function updateMaxQRings(dt) {
       maxQRings.splice(i, 1);
       continue;
     }
-    // ease-out: fast growth at the nose, then slows as it fades down the body
+    // ease-out: fast growth right at the nose tip, then it fades fast
     const ease = 1 - Math.pow(1 - t, 2);
-    const scale = 1 + ease * 13;
+    const scale = 1 + ease * 9;
     r.scale.set(scale, scale, scale);
-    r.position.y = r.userData.startY - ease * (isSmallRocket ? 30 : 60);
-    r.material.opacity = 0.6 * (1 - t) * (1 - t);
+    r.position.y = r.userData.startY - ease * r.userData.slide;
+    r.material.opacity = 0.75 * (1 - t) * (1 - t);
   }
 }
 
@@ -3145,21 +3147,17 @@ function checkSuccess() {
 }
 
 /* Position the planet so it frames like a REAL orbital photo:
-   the horizon curves behind the spacecraft, the planet fills the
-   lower half of the view, the nose is silhouetted against space.
-   The rocket is tiny compared to the planet, so from a few km away
-   from the "camera" the planet's limb dominates the frame. */
+   the planet is anchored in FRONT of the camera, center below the view
+   axis, so its curved limb always fills the lower half of the frame
+   while the spacecraft sits silhouetted in space above it. */
 function positionPlanetForView(info) {
-  const rp = rocketGroup.position;
-  /* Planet center sits far in front-below; the cameraNormal direction keeps
-     the limb visible from the chase camera. Distance ≈ 1.15× radius means
-     the camera sits just above the surface — exactly the "ISS shot" look. */
-  const d = info.size * 1.18;
-  earthMesh.position.set(
-    rp.x + d * 0.55,
-    rp.y - d * 0.72,
-    rp.z - d * 0.42
-  );
+  const dir = new THREE.Vector3();
+  camera.getWorldDirection(dir);
+  /* sit the planet well ahead of the camera along the view direction,
+     then drop it so its limb rises into the lower part of the frame */
+  const dist = info.size * 1.5;
+  earthMesh.position.copy(camera.position).addScaledVector(dir, dist);
+  earthMesh.position.y -= info.size * 0.58;
 }
 
 function spawnConfetti() {
@@ -3382,16 +3380,11 @@ function animate() {
     camera.position.lerp(new THREE.Vector3(tx, ty, tz), 0.1);
     camera.lookAt(rp.x, rp.y + lookUp, rp.z);
   } else if (isSuccess) {
-    /* Orbit camera: craft in the foreground, the curved planet limb
-       behind and below — a real orbital-insertion shot. */
+    /* Orbit camera: craft in the foreground, then positionPlanetForView()
+       anchors the curved planet limb in the lower half of the frame. */
     const rp = rocketGroup.position;
     camera.position.lerp(new THREE.Vector3(rp.x + 90, rp.y + 34, rp.z + 110), 0.03);
-    const midpoint = new THREE.Vector3(
-      rp.x * 0.75 + earthMesh.position.x * 0.25,
-      rp.y * 0.55 + earthMesh.position.y * 0.45 + 40,
-      rp.z * 0.75 + earthMesh.position.z * 0.25
-    );
-    camera.lookAt(midpoint);
+    camera.lookAt(rp.x, rp.y + 6, rp.z);
     if (earthMesh) {
       const info = PLANETS[currentPlanet] || PLANETS.earth;
       positionPlanetForView(info);
@@ -3562,14 +3555,16 @@ function animate() {
          big orbital framing at mission success (positionPlanetForView). */
       if (earthMesh) {
         if (k > 0.55 && !isSuccess) {
+          /* Late ascent: the planet is anchored in front-below of the camera
+             and glides closer as the rocket climbs — clearly visible in the
+             lower frame, never swallowing the rocket. */
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
-          const dist = info.size * (2.6 + (1 - k) * 1.2);
-          earthMesh.position.set(
-            rocketGroup.position.x * 0.15 - dist * 0.25,
-            rocketGroup.position.y - dist * 1.05,
-            rocketGroup.position.z - dist * 0.35
-          );
+          const dir = new THREE.Vector3();
+          camera.getWorldDirection(dir);
+          const dist = info.size * (2.8 - k * 1.1);
+          earthMesh.position.copy(camera.position).addScaledVector(dir, dist);
+          earthMesh.position.y -= info.size * 0.85;
           if (window.sunMesh) window.sunMesh.visible = true;
           earthMesh.rotation.y += dt * 0.012;
         } else if (!isSuccess) {
