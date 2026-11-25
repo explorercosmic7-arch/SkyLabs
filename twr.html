@@ -1703,12 +1703,17 @@ const PAYLOADS = {
 };
 
 const PLANETS = {
-  earth:   { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/earthmap1k.jpg',   texFb: 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg', size: 2200, name: 'Earth',   color: 0x2244aa, atmoColor: 0x6eb5ff },
-  moon:    { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/moonmap1k.jpg',    texFb: 'https://threejs.org/examples/textures/planets/moon_1024.jpg',       size: 900,  name: 'Moon',    color: 0x888888, atmoColor: null },
-  mars:    { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',    texFb: 'https://threejs.org/examples/textures/planets/mars_1024.jpg',       size: 1400, name: 'Mars',    color: 0xaa4422, atmoColor: 0xc45a2a },
-  jupiter: { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',   texFb: null,                                                                 size: 3800, name: 'Jupiter', color: 0xccaa66, atmoColor: 0xddbb77 },
-  saturn:  { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',    texFb: 'https://www.solarsystemscope.com/textures/download/2k_saturn.jpg',  size: 3200, name: 'Saturn',  color: 0xddbb77, atmoColor: 0xeecc99 }
+  // g = surface gravity m/s² (real values) — TWR and climb use local g
+  earth:   { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/earthmap1k.jpg',   texFb: 'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg', size: 2600, name: 'Earth',   color: 0x2244aa, atmoColor: 0x6eb5ff, g: 9.81 },
+  moon:    { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/moonmap1k.jpg',    texFb: 'https://threejs.org/examples/textures/planets/moon_1024.jpg',       size: 1100, name: 'Moon',    color: 0x888888, atmoColor: null,     g: 1.62 },
+  mars:    { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/marsmap1k.jpg',    texFb: 'https://threejs.org/examples/textures/planets/mars_1024.jpg',       size: 1700, name: 'Mars',    color: 0xaa4422, atmoColor: 0xc45a2a, g: 3.71 },
+  jupiter: { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/jupitermap.jpg',   texFb: null,                                                                 size: 4200, name: 'Jupiter', color: 0xccaa66, atmoColor: 0xddbb77, g: 24.79 },
+  saturn:  { tex: 'https://cdn.jsdelivr.net/gh/jeromeetienne/threex.planets@master/images/saturnmap.jpg',    texFb: 'https://www.solarsystemscope.com/textures/download/2k_saturn.jpg',  size: 3600, name: 'Saturn',  color: 0xddbb77, atmoColor: 0xeecc99, g: 10.44 }
 };
+function localG() {
+  const p = PLANETS[currentPlanet] || PLANETS.earth;
+  return (p && p.g) ? p.g : G0;
+}
 
 const FLAGS = [
   { c: 'US', code: 'us', name: 'United States', col: ['#3c3b6e','#fff','#b22234'] },
@@ -2020,9 +2025,10 @@ function calc() {
   const m0 = dry + fuel, mf = dry;
   if (mf <= 0 || m0 <= mf) { toast('Invalid mass'); return; }
   const ratio = m0 / mf;
-  const dv = isp * G0 * Math.log(ratio);
-  const tWr = (th * 1000) / (m0 * G0);
-  const tWrFinal = (th * 1000) / (mf * G0);
+  const gLocal = localG();
+  const dv = isp * G0 * Math.log(ratio); // Isp uses standard g0 by definition
+  const tWr = (th * 1000) / (m0 * gLocal);
+  const tWrFinal = (th * 1000) / (mf * gLocal);
   achDv = dv; tw = tWr;
   dryMassVal = dry;
   initialMass = m0;
@@ -2782,30 +2788,29 @@ function clearMaxQRings() {
 }
 function spawnMaxQRing() {
   if (!rocketGroup) return;
-  const geo = new THREE.TorusGeometry(1.6, 0.08, 10, 40);
+  // shock ring locked at nose tip only (air compression look)
+  const geo = new THREE.TorusGeometry(2.5, 0.07, 8, 48);
   const mat = new THREE.MeshBasicMaterial({
-    color: 0xb8d4ff,
+    color: 0xe8f2ff,
     transparent: true,
-    opacity: 0.5,
+    opacity: 0.6,
     depthWrite: false,
     side: THREE.DoubleSide
   });
   const ring = new THREE.Mesh(geo, mat);
-  const startY = isSmallRocket ? 44 : 83;
-  ring.position.set(0, startY, 0);
+  const noseY = isSmallRocket ? 46 : 84;
+  ring.position.set(0, noseY, 0);
   ring.rotation.x = Math.PI / 2;
-  ring.scale.set(0.35, 0.35, 0.35);
-  // longer life = slow smooth small→big→fade down the body
-  ring.userData = { age: 0, maxAge: 2.8, startY: startY };
+  ring.scale.set(0.22, 0.22, 0.22);
+  ring.userData = { age: 0, maxAge: 1.5, noseY: noseY };
   rocketGroup.add(ring);
   maxQRings.push(ring);
 }
 function updateMaxQRings(dt) {
-  const inWindow = isFlying && altitude > 9000 && altitude < 26000 && !engineCutoff;
+  const inWindow = isFlying && altitude > 9000 && altitude < 25000 && !engineCutoff;
   if (inWindow) {
     maxQRingTimer += dt;
-    // fewer rings, spaced out for smooth wave not spam
-    if (maxQRingTimer > 0.85) {
+    if (maxQRingTimer > 0.5) {
       maxQRingTimer = 0;
       spawnMaxQRing();
     }
@@ -2821,14 +2826,12 @@ function updateMaxQRings(dt) {
       maxQRings.splice(i, 1);
       continue;
     }
-    // ease: small at nose → large mid-body → soft fade
-    const ease = t * t * (3 - 2 * t); // smoothstep
-    const scale = 0.35 + ease * 3.2;
+    // nose only: expand outward + soft fade (barely move down)
+    const ease = t * t * (3 - 2 * t);
+    const scale = 0.22 + ease * 2.6;
     r.scale.set(scale, scale, scale);
-    r.position.y = r.userData.startY - ease * (isSmallRocket ? 32 : 60);
-    // fade mostly in last third
-    const fade = t < 0.55 ? 0.5 : 0.5 * (1 - (t - 0.55) / 0.45);
-    r.material.opacity = Math.max(0, fade);
+    r.position.y = r.userData.noseY - ease * 5;
+    r.material.opacity = 0.6 * (1 - ease) * (1 - ease);
   }
 }
 
@@ -3434,7 +3437,8 @@ function animate() {
       fuelRemaining = Math.max(0, 1 - el / 175);
     }
     const currentMass = dryMassVal + (initialMass - dryMassVal) * fuelRemaining;
-    const currentTwr = engineCutoff ? 0 : thrustN / (currentMass * G0);
+    const gNow = localG();
+    const currentTwr = engineCutoff ? 0 : thrustN / (currentMass * gNow);
     if (!engineCutoff && currentTwr > peakTwr) peakTwr = currentTwr;
     /* targets for smooth HUD (actual numbers still drive physics) */
     const targetTwr = currentTwr;
@@ -3472,7 +3476,7 @@ function animate() {
 
     const dens = Math.exp(-altitude / 8500);
     const drag = 0.5 * dens * (velocity * velocity) * 0.0005;
-    let rawAccel = engineCutoff ? 0 : Math.max(0, (currentTwr - 1) * G0 * 1.3 - drag);
+    let rawAccel = engineCutoff ? 0 : Math.max(0, (currentTwr - 1) * gNow * 1.3 - drag);
 
     /* ==========================================================
        NEW: REAL GRAVITY TURN (like actual launches)
@@ -3492,7 +3496,7 @@ function animate() {
 
     const cosP = Math.cos(pitchAngle);
     const sinP = Math.sin(pitchAngle);
-    const verticalAccel = Math.max(0, rawAccel * cosP - G0 * 0.25);
+    const verticalAccel = Math.max(0, rawAccel * cosP - gNow * 0.25);
     // horizontal acceleration from the tilted thrust vector
     hVelocity += rawAccel * sinP * dt;
     downrange += hVelocity * dt;
@@ -3525,32 +3529,34 @@ function animate() {
 
     /* Atmosphere fade + space reveal */
     {
-      /* Smooth atmosphere → space fade (never sudden black) */
-      const k = Math.min(1, altitude / 105000);
+      /* Atmosphere → black space (must be black before planet, not blue) */
+      const k = Math.min(1, altitude / 90000);
       let base;
       if (timeOfDay === 'night') base = [2, 2, 12];
       else if (timeOfDay === 'evening') base = [255, 140, 66];
       else if (timeOfDay === 'dawn') base = [255, 183, 77];
       else base = [135, 206, 235];
-      // continuous lerp to near-black space
+      // go fully black earlier
       const r = Math.round(base[0] * (1 - k) + 1 * k);
-      const g = Math.round(base[1] * (1 - k) + 2 * k);
-      const b = Math.round(base[2] * (1 - k) + 8 * k);
+      const g = Math.round(base[1] * (1 - k) + 1 * k);
+      const b = Math.round(base[2] * (1 - k) + 4 * k);
       scene.background.setRGB(r / 255, g / 255, b / 255);
       scene.fog.color.copy(scene.background);
-      scene.fog.density = 0.0015 * (1 - k * 0.97);
-      if (k > 0.85) {
-        renderer.toneMappingExposure = 0.30;
-        scene.fog.density = 0.00005;
-      } else if (k > 0.5) {
-        renderer.toneMappingExposure = 1.1 - k * 0.7;
+      scene.fog.density = 0.0014 * (1 - k * 0.98);
+      // keep rocket visible in space (not pitch-black)
+      if (k > 0.75) {
+        renderer.toneMappingExposure = 0.72;
+        scene.fog.density = 0.00004;
+        scene.background.setRGB(0.008, 0.008, 0.018);
+      } else if (k > 0.45) {
+        renderer.toneMappingExposure = 1.05 - k * 0.4;
       }
 
-      /* Stars fade in gradually as sky darkens — never over bright atmosphere / Earth */
+      /* Stars once sky is dark */
       if (starField) {
-        if (k > 0.48) {
+        if (k > 0.40) {
           starField.visible = true;
-          starField.material.opacity = Math.min(0.8, (k - 0.48) * 2.2);
+          starField.material.opacity = Math.min(0.95, (k - 0.40) * 2.0);
         } else {
           starField.visible = false;
         }
@@ -3569,16 +3575,16 @@ function animate() {
         padLights.forEach(p => { if (p && p.l) p.l.intensity = 0; });
       }
 
-      /* Planet closer & larger so orbital view looks realistic (not a tiny distant marble) */
+      /* Planet large & visible once space is black */
       if (earthMesh) {
-        if (k > 0.50) {
+        if (k > 0.55) {
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
-          const dist = info.size * (1.05 + k * 0.25);
+          const dist = info.size * (0.72 + k * 0.15); // larger on screen
           earthMesh.position.set(
-            rocketGroup.position.x * 0.1 - dist * 0.08,
-            rocketGroup.position.y - dist * 0.72,
-            rocketGroup.position.z - dist * 0.15
+            rocketGroup.position.x * 0.08 - dist * 0.05,
+            rocketGroup.position.y - dist * 0.55,
+            rocketGroup.position.z - dist * 0.1
           );
           if (window.sunMesh) window.sunMesh.visible = true;
           earthMesh.rotation.y += dt * 0.012;
