@@ -2250,16 +2250,7 @@ function buildRocket() {
   stripe.position.y = 42;
   coreGroup.add(stripe);
 
-  for (let i = 0; i < 4; i++) {
-    const a = (i / 4) * Math.PI * 2;
-    const fin = new THREE.Mesh(
-      new THREE.BoxGeometry(0.12, 2.8, 3.2),
-      new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.7 })
-    );
-    fin.position.set(Math.cos(a) * 3.85, 52, Math.sin(a) * 3.85);
-    fin.rotation.y = a;
-    coreGroup.add(fin);
-  }
+  /* Black body plates removed — clean tank skin */
 
   for (let i = 0; i < 9; i++) {
     const ang = (i / 9) * Math.PI * 2;
@@ -2329,6 +2320,7 @@ function buildRocket() {
 
   rocketGroup.position.y = 6;
   scene.add(rocketGroup);
+  buildMaxQCloud();
   updName();
 }
 
@@ -2761,62 +2753,204 @@ function killEngineFX() {
   if (plume) plume.children.forEach(c => { c.visible = false; });
 }
 
-/* Max-Q shock rings — spawn at nose, expand down the body, slow + fade, loop */
-let maxQRings = [];
-let maxQRingTimer = 0;
-function clearMaxQRings() {
-  maxQRings.forEach(r => {
-    if (r.parent) r.parent.remove(r);
-    if (r.geometry) r.geometry.dispose();
-    if (r.material) r.material.dispose();
-  });
-  maxQRings = [];
-  maxQRingTimer = 0;
+/* Max-Q vapor — one continuous shock cloud. A soft wave scrolls aft.
+   Not separate rings. */
+let maxQCloud = null;
+let maxQMats = [];
+let maxQTime = 0;
+let maxQFade = 0;
+
+function vaporNoiseGlsl() {
+  return ''
+    + 'float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}'
+    + 'float noise(vec2 p){'
+    + 'vec2 i=floor(p);vec2 f=fract(p);f=f*f*(3.0-2.0*f);'
+    + 'float a=hash(i);float b=hash(i+vec2(1.0,0.0));'
+    + 'float c=hash(i+vec2(0.0,1.0));float d=hash(i+vec2(1.0,1.0));'
+    + 'return mix(mix(a,b,f.x),mix(c,d,f.x),f.y);}'
+    ;
 }
-function spawnMaxQRing() {
-  if (!rocketGroup) return;
-  const geo = new THREE.TorusGeometry(2.2, 0.12, 8, 32);
-  const mat = new THREE.MeshBasicMaterial({
-    color: 0xaaccff,
+
+function makeVaporMat(amp, fill, colorHex) {
+  const vert = vaporNoiseGlsl()
+    + 'varying float vAlong;varying float vAround;varying vec3 vN;varying vec3 vW;'
+    + 'uniform float uTime;uniform float uAmp;'
+    + 'void main(){'
+    + 'vAround=uv.x;'
+    + 'vAlong=clamp((position.y-46.0)/38.8,0.0,1.0);'
+    + 'vec3 n=normalize(normal);'
+    + 'float n1=noise(vec2(uv.x*2.2,vAlong*1.5-uTime*0.16));'
+    + 'float billow=sin(vAlong*4.6-uTime*0.72)*0.5+0.5;'
+    + 'float disp=(n1*0.62+billow*0.38)*uAmp;'
+    + 'vec3 pos=position+n*disp;'
+    + 'vN=normalize(normalMatrix*n);'
+    + 'vec4 wp=modelMatrix*vec4(pos,1.0);'
+    + 'vW=wp.xyz;'
+    + 'gl_Position=projectionMatrix*viewMatrix*wp;'
+    + '}';
+  const frag = vaporNoiseGlsl()
+    + 'varying float vAlong;varying float vAround;varying vec3 vN;varying vec3 vW;'
+    + 'uniform float uTime;uniform float uOpacity;uniform float uFill;uniform vec3 uColor;'
+    + 'void main(){'
+    + 'float along=vAlong;'
+    + 'float n1=noise(vec2(vAround*3.0,along*1.6-uTime*0.2));'
+    + 'float n2=noise(vec2(vAround*6.4+3.1,along*2.8-uTime*0.42));'
+    + 'float w1=0.5+0.5*sin((1.0-along)*6.283-uTime*0.95);'
+    + 'float w2=0.5+0.5*sin((1.0-along)*3.2+1.4-uTime*0.38);'
+    + 'float wave=smoothstep(0.06,0.94,mix(w1,w2,0.42));'
+    + 'float cloud=mix(0.7,1.0,n1*0.6+n2*0.4);'
+    + 'cloud*=mix(0.82,1.0,wave);'
+    + 'vec3 V=normalize(cameraPosition-vW);'
+    + 'float fres=pow(1.0-clamp(abs(dot(normalize(vN),V)),0.0,1.0),1.2);'
+    + 'float env=smoothstep(0.0,0.16,along)*smoothstep(1.0,0.88,along);'
+    + 'float nose=smoothstep(0.38,0.96,along);'
+    + 'float body=mix(uFill,uFill+0.46,nose);'
+    + 'float alpha=(body+fres*0.34)*cloud*env*uOpacity;'
+    + 'vec3 col=mix(uColor,vec3(1.0),fres*0.4);'
+    + 'gl_FragColor=vec4(col,clamp(alpha,0.0,0.7));'
+    + '}';
+  const mat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uOpacity: { value: 0 },
+      uAmp: { value: amp },
+      uFill: { value: fill },
+      uColor: { value: new THREE.Color(colorHex) }
+    },
+    vertexShader: vert,
+    fragmentShader: frag,
     transparent: true,
-    opacity: 0.55,
+    depthWrite: false,
+    depthTest: true,
+    side: THREE.DoubleSide
+  });
+  mat.toneMapped = false;
+  return mat;
+}
+
+function makeVaporGeo(scale) {
+  const samples = [
+    [46.0, 5.2],
+    [54.0, 4.5],
+    [62.0, 4.1],
+    [69.0, 3.55],
+    [74.0, 3.05],
+    [78.0, 2.4],
+    [81.2, 1.8],
+    [83.4, 1.2],
+    [84.8, 0.7]
+  ];
+  const pts = samples.map(function (s) {
+    return new THREE.Vector2(s[1] * scale, s[0]);
+  });
+  return new THREE.LatheGeometry(pts, IS_MOBILE ? 20 : 40);
+}
+
+function buildMaxQCloud() {
+  if (!rocketGroup) return;
+  if (maxQCloud && maxQCloud.parent) maxQCloud.parent.remove(maxQCloud);
+  maxQMats = [];
+  maxQCloud = new THREE.Group();
+  maxQCloud.renderOrder = 3;
+  maxQCloud.frustumCulled = false;
+
+  const innerMat = makeVaporMat(0.38, 0.18, 0xf6f8ff);
+  const outerMat = makeVaporMat(0.9, 0.08, 0xe4edf8);
+  maxQMats.push(innerMat, outerMat);
+
+  const inner = new THREE.Mesh(makeVaporGeo(1), innerMat);
+  const outer = new THREE.Mesh(makeVaporGeo(1.38), outerMat);
+  inner.renderOrder = 3;
+  outer.renderOrder = 2;
+  inner.frustumCulled = false;
+  outer.frustumCulled = false;
+
+  const capVert = ''
+    + 'varying vec3 vLocal;varying vec3 vN;varying vec3 vW;'
+    + 'void main(){'
+    + 'vLocal=position;'
+    + 'vN=normalize(normalMatrix*normal);'
+    + 'vec4 wp=modelMatrix*vec4(position,1.0);'
+    + 'vW=wp.xyz;'
+    + 'gl_Position=projectionMatrix*viewMatrix*wp;'
+    + '}';
+  const capFrag = vaporNoiseGlsl()
+    + 'varying vec3 vLocal;varying vec3 vN;varying vec3 vW;'
+    + 'uniform float uTime;uniform float uOpacity;uniform vec3 uColor;'
+    + 'void main(){'
+    + 'float r=length(vLocal);'
+    + 'float soft=1.0-smoothstep(0.85,2.2,r);'
+    + 'float n1=noise(vec2(vLocal.x*0.65+uTime*0.12,vLocal.y*0.5-uTime*0.32));'
+    + 'vec3 V=normalize(cameraPosition-vW);'
+    + 'float fres=pow(1.0-clamp(abs(dot(normalize(vN),V)),0.0,1.0),1.35);'
+    + 'float front=smoothstep(-0.8,1.15,vLocal.y);'
+    + 'float alpha=soft*front*(0.34+0.48*fres)*(0.78+0.22*n1)*uOpacity;'
+    + 'gl_FragColor=vec4(uColor,clamp(alpha,0.0,0.78));'
+    + '}';
+  const capMat = new THREE.ShaderMaterial({
+    uniforms: {
+      uTime: { value: 0 },
+      uOpacity: { value: 0 },
+      uColor: { value: new THREE.Color(0xffffff) }
+    },
+    vertexShader: capVert,
+    fragmentShader: capFrag,
+    transparent: true,
     depthWrite: false,
     side: THREE.DoubleSide
   });
-  const ring = new THREE.Mesh(geo, mat);
-  // nose tip local Y (upper stage tip ~82)
-  ring.position.set(0, isSmallRocket ? 42 : 82, 0);
-  ring.rotation.x = Math.PI / 2;
-  ring.userData = { age: 0, maxAge: 1.8, startY: isSmallRocket ? 42 : 82 };
-  rocketGroup.add(ring);
-  maxQRings.push(ring);
+  capMat.toneMapped = false;
+  maxQMats.push(capMat);
+  const cap = new THREE.Mesh(
+    new THREE.SphereGeometry(2.05, IS_MOBILE ? 12 : 18, IS_MOBILE ? 10 : 14),
+    capMat
+  );
+  cap.position.y = 82.7;
+  cap.scale.set(1.2, 1.65, 1.2);
+  cap.renderOrder = 4;
+  cap.frustumCulled = false;
+
+  maxQCloud.add(outer);
+  maxQCloud.add(inner);
+  maxQCloud.add(cap);
+  maxQCloud.visible = false;
+  rocketGroup.add(maxQCloud);
 }
+
+function clearMaxQRings() {
+  maxQFade = 0;
+  maxQTime = 0;
+  if (maxQCloud) maxQCloud.visible = false;
+  maxQMats.forEach(m => {
+    if (m.uniforms && m.uniforms.uOpacity) m.uniforms.uOpacity.value = 0;
+  });
+}
+
 function updateMaxQRings(dt) {
-  const inWindow = isFlying && altitude > 9000 && altitude < 28000 && !engineCutoff;
-  if (inWindow) {
-    maxQRingTimer += dt;
-    if (maxQRingTimer > 0.45) {
-      maxQRingTimer = 0;
-      spawnMaxQRing();
+  if (!maxQCloud) return;
+  maxQTime += dt;
+  let target = 0;
+  if (isFlying && !engineCutoff && !isExploded && !isSuccess) {
+    if (altitude >= 8000 && altitude <= 32000) {
+      if (altitude < 12000) target = (altitude - 8000) / 4000;
+      else if (altitude < 20000) target = 1;
+      else target = 1 - (altitude - 20000) / 12000;
     }
   }
-  for (let i = maxQRings.length - 1; i >= 0; i--) {
-    const r = maxQRings[i];
-    r.userData.age += dt;
-    const t = r.userData.age / r.userData.maxAge;
-    if (t >= 1) {
-      if (r.parent) r.parent.remove(r);
-      if (r.geometry) r.geometry.dispose();
-      if (r.material) r.material.dispose();
-      maxQRings.splice(i, 1);
-      continue;
-    }
-    // expand + drift aft (down the body) + fade
-    const scale = 1 + t * 3.5;
-    r.scale.set(scale, scale, scale);
-    r.position.y = r.userData.startY - t * (isSmallRocket ? 28 : 55);
-    r.material.opacity = 0.55 * (1 - t) * (1 - t);
-  }
+  target = Math.max(0, Math.min(1, target));
+  maxQFade += (target - maxQFade) * Math.min(1, dt * 1.35);
+  const show = maxQFade > 0.015;
+  maxQCloud.visible = show;
+  if (!show) return;
+  const breathe = 0.93 + 0.07 * Math.sin(maxQTime * 1.45);
+  maxQMats.forEach((m, i) => {
+    if (m.uniforms.uTime) m.uniforms.uTime.value = maxQTime * (i === 1 ? 0.8 : 1);
+    const layer = i === 2 ? 1.12 : (i === 1 ? 0.82 : 1);
+    m.uniforms.uOpacity.value = maxQFade * breathe * layer;
+  });
+  if (maxQCloud.children[0]) maxQCloud.children[0].rotation.y += dt * 0.1;
+  const s = 1 + Math.sin(maxQTime * 1.05) * 0.02;
+  maxQCloud.scale.set(s, 1, s);
 }
 
 function setTime(m) {
