@@ -1656,10 +1656,32 @@ body.fs-sim-only .meters-stack { top: 14px; }
 const G0 = 9.80665;
 const IS_MOBILE = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) || window.innerWidth < 768;
 
+/* Soft circular particle texture — eliminates ugly square/boxy point sprites */
+function makeSoftParticleTexture(size = 64) {
+  const c = document.createElement('canvas');
+  c.width = c.height = size;
+  const ctx = c.getContext('2d');
+  const g = ctx.createRadialGradient(size/2, size/2, 0, size/2, size/2, size/2);
+  g.addColorStop(0.0, 'rgba(255,255,255,1)');
+  g.addColorStop(0.22, 'rgba(255,255,255,0.9)');
+  g.addColorStop(0.5, 'rgba(255,255,255,0.35)');
+  g.addColorStop(1.0, 'rgba(255,255,255,0)');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, size, size);
+  const tex = new THREE.CanvasTexture(c);
+  tex.needsUpdate = true;
+  return tex;
+}
+const SOFT_PARTICLE_TEX = makeSoftParticleTexture(64);
+const SOFT_SMOKE_TEX = makeSoftParticleTexture(48);
+
 let scene, camera, renderer, clock;
 let rocketGroup, coreGroup, boosterL, boosterR, upperStage, earthMesh, saturnRings = [];
 let umbilicals = [], plume, fireP, smokeP, steamP, expP;
 let flagMesh, flagPole, padLights = [], starField, nameMesh;
+let highCloudGroup = null;
+let highCloudMats = [];
+let highGroundMesh = null;
 let isLaunching = false, isFlying = false, isExploded = false, isSuccess = false;
 let stageSeparated = false, fairingGone = false, maxQPassed = false, coreDetached = false;
 let launchTime = 0, altitude = 0, velocity = 0, phase = 'standby';
@@ -1978,6 +2000,12 @@ function rebuildVis(k) {
   rocketGroup.scale.set(s, h * s, s);
   if (boosterL) boosterL.visible = boost;
   if (boosterR) boosterR.visible = boost;
+  // Hide side exhaust flames when the vehicle has no boosters (e.g. Starship)
+  if (plume) {
+    plume.children.forEach(c => {
+      if (c.userData && c.userData.isBoosterFlame) c.visible = boost;
+    });
+  }
   const col = k === 'artemis' ? 0xe87820
             : k === 'starship' ? 0xc8c8c8
             : k === 'saturn' ? 0xf5f5f5
@@ -2591,90 +2619,259 @@ function buildStars() {
   const sunGlow = new THREE.PointLight(0xfff0c0, 2.0, 12000, 2);
   sunGlow.position.copy(window.sunMesh.position);
   scene.add(sunGlow);
+
+  buildHighAltEnv();
+}
+
+/* Realistic high-altitude wispy clouds (FBM noise on soft billboards) + faint curved Earth surface */
+function buildHighAltEnv() {
+  highCloudGroup = new THREE.Group();
+  highCloudGroup.visible = false;
+  highCloudMats = [];
+
+  const fbmVert = `
+    varying vec2 vUv;
+    varying vec3 vWorld;
+    void main() {
+      vUv = uv;
+      vec4 wp = modelMatrix * vec4(position, 1.0);
+      vWorld = wp.xyz;
+      gl_Position = projectionMatrix * viewMatrix * wp;
+    }
+  `;
+  const fbmFrag = `
+    uniform float uTime;
+    uniform float uOpacity;
+    uniform vec3 uColor;
+    varying vec2 vUv;
+    varying vec3 vWorld;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){
+      vec2 i = floor(p); vec2 f = fract(p); f = f*f*(3.0-2.0*f);
+      float a = hash(i); float b = hash(i+vec2(1.0,0.0));
+      float c = hash(i+vec2(0.0,1.0)); float d = hash(i+vec2(1.0,1.0));
+      return mix(mix(a,b,f.x), mix(c,d,f.x), f.y);
+    }
+    float fbm(vec2 p){
+      float v = 0.0; float a = 0.5;
+      mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+      for(int i=0; i<5; i++){
+        v += a * noise(p);
+        p = m * p;
+        a *= 0.5;
+      }
+      return v;
+    }
+    void main(){
+      vec2 uv = vUv * 2.0 - 1.0;
+      float dist = length(uv);
+      float soft = 1.0 - smoothstep(0.35, 1.05, dist);
+      float n = fbm(vUv * 3.8 + vec2(uTime * 0.018, -uTime * 0.011));
+      float n2 = fbm(vUv * 7.2 - vec2(uTime * 0.025, uTime * 0.016) + 3.7);
+      float dens = smoothstep(0.28, 0.72, n * 0.65 + n2 * 0.35);
+      dens *= soft;
+      dens = pow(dens, 1.35);
+      float alpha = dens * uOpacity * (0.55 + 0.45 * soft);
+      if(alpha < 0.01) discard;
+      vec3 col = mix(uColor * 0.75, uColor, dens);
+      gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.78));
+    }
+  `;
+
+  const cloudCount = IS_MOBILE ? 5 : 8;
+  for (let i = 0; i < cloudCount; i++) {
+    const size = 380 + i * 90 + Math.random() * 120;
+    const geo = new THREE.PlaneGeometry(size, size * (0.55 + Math.random() * 0.3), 1, 1);
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uTime: { value: 0 },
+        uOpacity: { value: 0.55 },
+        uColor: { value: new THREE.Color(0xffffff) }
+      },
+      vertexShader: fbmVert,
+      fragmentShader: fbmFrag,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide,
+      blending: THREE.NormalBlending
+    });
+    mat.toneMapped = false;
+    highCloudMats.push(mat);
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = -Math.PI / 2 + (Math.random() - 0.5) * 0.25;
+    mesh.position.set(
+      (Math.random() - 0.5) * 900,
+      -180 - i * 55 - Math.random() * 40,
+      (Math.random() - 0.5) * 700 - 200
+    );
+    mesh.renderOrder = -5;
+    mesh.frustumCulled = false;
+    highCloudGroup.add(mesh);
+  }
+  scene.add(highCloudGroup);
+
+  /* Faint curved distant ground / horizon band (green land + blue ocean haze) */
+  const groundVert = `
+    varying vec2 vUv;
+    varying float vY;
+    void main(){
+      vUv = uv;
+      vY = position.y;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    }
+  `;
+  const groundFrag = `
+    uniform float uOpacity;
+    varying vec2 vUv;
+    varying float vY;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(12.9898,78.233))) * 43758.5453); }
+    float n2(vec2 p){
+      vec2 i=floor(p); vec2 f=fract(p); f=f*f*(3.0-2.0*f);
+      return mix(mix(hash(i),hash(i+vec2(1,0)),f.x), mix(hash(i+vec2(0,1)),hash(i+vec2(1,1)),f.x), f.y);
+    }
+    void main(){
+      float land = smoothstep(0.35, 0.65, n2(vUv * 4.5));
+      land = mix(land, smoothstep(0.4, 0.7, n2(vUv * 9.0 + 2.3)), 0.4);
+      vec3 ocean = vec3(0.06, 0.18, 0.38);
+      vec3 green = vec3(0.12, 0.28, 0.14);
+      vec3 col = mix(ocean, green, land * 0.85);
+      float haze = smoothstep(0.0, 0.6, vUv.y) * (1.0 - smoothstep(0.7, 1.0, vUv.y));
+      float edge = 1.0 - smoothstep(0.82, 1.0, abs(vUv.x * 2.0 - 1.0));
+      float alpha = uOpacity * haze * edge * 0.75;
+      gl_FragColor = vec4(col, alpha);
+    }
+  `;
+  highGroundMesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(4200, 1600, 32, 12),
+    new THREE.ShaderMaterial({
+      uniforms: { uOpacity: { value: 0.55 } },
+      vertexShader: groundVert,
+      fragmentShader: groundFrag,
+      transparent: true,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    })
+  );
+  highGroundMesh.rotation.x = -Math.PI / 2.4;
+  highGroundMesh.position.set(0, -420, -600);
+  highGroundMesh.visible = false;
+  highGroundMesh.renderOrder = -8;
+  scene.add(highGroundMesh);
 }
 
 function buildFX() {
+  /* Realistic exhaust: tight bright core + long tapered stream BEHIND the rocket */
   plume = new THREE.Group();
-  const glowCols = [0xffffff, 0xffee88, 0xffaa33, 0xff6600, 0xff3300];
-  const plumeCount = IS_MOBILE ? 4 : 6;
+  const glowCols = [0xffffff, 0xfff5c0, 0xffcc55, 0xff9922, 0xff6600, 0xee4400, 0xcc2200];
+  const plumeCount = IS_MOBILE ? 6 : 9;
   for (let i = 0; i < plumeCount; i++) {
+    const radius = 1.1 + i * 0.85;
     const g = new THREE.Mesh(
-      new THREE.SphereGeometry(3.6 + i * 2.2, 12, 12),
+      new THREE.SphereGeometry(radius, 12, 12),
       new THREE.MeshBasicMaterial({
-        color: glowCols[Math.min(i, 4)], transparent: true, opacity: 0.4 - i * 0.05,
-        depthWrite: false, blending: THREE.AdditiveBlending
+        color: glowCols[Math.min(i, 6)],
+        transparent: true,
+        opacity: 0.72 - i * 0.065,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
       })
     );
-    g.position.y = -5 - i * 7.5;
+    g.position.y = -3.5 - i * 5.8;
+    const stretch = 2.4 + i * 0.55;
+    g.scale.set(1, stretch, 1);
     g.visible = false;
+    g.userData.baseScaleY = stretch;
+    g.userData.baseRadius = radius;
+    g.userData.layer = i;
     plume.add(g);
   }
-  [-6.1, 6.1].forEach(sx => {
+  /* Side engine glows — only when boosters exist */
+  [-6.1, 6.1].forEach((sx, idx) => {
     const g = new THREE.Mesh(
-      new THREE.SphereGeometry(3.0, 10, 10),
+      new THREE.SphereGeometry(1.4, 10, 10),
       new THREE.MeshBasicMaterial({
-        color: 0xffaa44, transparent: true, opacity: 0.45,
+        color: 0xffaa33, transparent: true, opacity: 0.55,
         depthWrite: false, blending: THREE.AdditiveBlending
       })
     );
-    g.position.set(sx, -5, 0);
+    g.position.set(sx, -3.8, 0);
+    g.scale.set(1, 2.1, 1);
     g.visible = false;
+    g.userData.isBoosterFlame = true;
+    g.userData.side = idx;
     plume.add(g);
   });
   plume.position.y = 5;
   rocketGroup.add(plume);
 
-  const fc = IS_MOBILE ? 6000 : 16000;
+  /* Dense soft fire particles — stream backward near nozzle axis */
+  const fc = IS_MOBILE ? 4500 : 11000;
   const fg = new THREE.BufferGeometry();
   const fp = new Float32Array(fc * 3);
   const fv = [];
   for (let i = 0; i < fc; i++) {
     const engine = i % 3;
     const ox = engine === 1 ? -6.1 : engine === 2 ? 6.1 : 0;
-    fp[i * 3] = ox + (Math.random() - 0.5) * 4;
-    fp[i * 3 + 1] = -Math.random() * 60;
-    fp[i * 3 + 2] = (Math.random() - 0.5) * 4;
+    fp[i * 3] = ox + (Math.random() - 0.5) * 1.6;
+    fp[i * 3 + 1] = -1.5 - Math.random() * 28;
+    fp[i * 3 + 2] = (Math.random() - 0.5) * 1.6;
     fv.push({
-      x: (Math.random() - 0.5) * 2.4,
+      x: (Math.random() - 0.5) * 0.9,
       eng: engine,
-      y: -(10 + Math.random() * 20),
-      z: (Math.random() - 0.5) * 2.4,
+      y: -(14 + Math.random() * 22),
+      z: (Math.random() - 0.5) * 0.9,
       life: Math.random()
     });
   }
   fg.setAttribute('position', new THREE.BufferAttribute(fp, 3));
   fireP = new THREE.Points(fg, new THREE.PointsMaterial({
-    color: 0xffaa33, size: IS_MOBILE ? 4.2 : 5.2, transparent: true, opacity: 0.95,
-    depthWrite: false, blending: THREE.AdditiveBlending, sizeAttenuation: true
+    map: SOFT_PARTICLE_TEX,
+    color: 0xffcc44,
+    size: IS_MOBILE ? 4.2 : 5.8,
+    transparent: true,
+    opacity: 0.95,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true,
+    alphaTest: 0.01
   }));
   fireP.userData.v = fv;
   fireP.visible = false;
   rocketGroup.add(fireP);
 
-  const sc = IS_MOBILE ? 1800 : 4800;
+  /* Soft smoke trail */
+  const sc = IS_MOBILE ? 1400 : 3800;
   const sg = new THREE.BufferGeometry();
   const sp = new Float32Array(sc * 3);
   const sv = [];
   for (let i = 0; i < sc; i++) {
-    sp[i * 3] = (Math.random() - 0.5) * 12;
-    sp[i * 3 + 1] = Math.random() * 5;
-    sp[i * 3 + 2] = (Math.random() - 0.5) * 12;
+    sp[i * 3] = (Math.random() - 0.5) * 6;
+    sp[i * 3 + 1] = -Math.random() * 8;
+    sp[i * 3 + 2] = (Math.random() - 0.5) * 6;
     sv.push({
-      x: (Math.random() - 0.5) * 1.8,
-      y: 0.35 + Math.random() * 1.4,
-      z: (Math.random() - 0.5) * 1.8,
+      x: (Math.random() - 0.5) * 1.1,
+      y: 0.25 + Math.random() * 1.0,
+      z: (Math.random() - 0.5) * 1.1,
       life: Math.random()
     });
   }
   sg.setAttribute('position', new THREE.BufferAttribute(sp, 3));
   smokeP = new THREE.Points(sg, new THREE.PointsMaterial({
-    color: 0x888888, size: IS_MOBILE ? 8 : 11, transparent: true, opacity: 0.48, depthWrite: false
+    map: SOFT_SMOKE_TEX,
+    color: 0xaaaaaa,
+    size: IS_MOBILE ? 7 : 10,
+    transparent: true,
+    opacity: 0.38,
+    depthWrite: false,
+    sizeAttenuation: true,
+    alphaTest: 0.02
   }));
   smokeP.userData.v = sv;
   smokeP.visible = false;
   scene.add(smokeP);
 
-  const tc = IS_MOBILE ? 120 : 240;
+  /* Steam / pad vapor */
+  const tc = IS_MOBILE ? 100 : 200;
   const tg = new THREE.BufferGeometry();
   const tp = new Float32Array(tc * 3);
   const tv = [];
@@ -2691,13 +2888,20 @@ function buildFX() {
   }
   tg.setAttribute('position', new THREE.BufferAttribute(tp, 3));
   steamP = new THREE.Points(tg, new THREE.PointsMaterial({
-    color: 0xeeeeee, size: 5.8, transparent: true, opacity: 0.36, depthWrite: false
+    map: SOFT_SMOKE_TEX,
+    color: 0xeeeeee,
+    size: 7.5,
+    transparent: true,
+    opacity: 0.38,
+    depthWrite: false,
+    sizeAttenuation: true
   }));
   steamP.userData.v = tv;
   steamP.visible = false;
   scene.add(steamP);
 
-  const ec = IS_MOBILE ? 180 : 360;
+  /* Explosion particles */
+  const ec = IS_MOBILE ? 160 : 320;
   const eg = new THREE.BufferGeometry();
   const ep = new Float32Array(ec * 3);
   const ev = [];
@@ -2712,8 +2916,14 @@ function buildFX() {
   }
   eg.setAttribute('position', new THREE.BufferAttribute(ep, 3));
   expP = new THREE.Points(eg, new THREE.PointsMaterial({
-    color: 0xff4400, size: 4.2, transparent: true, opacity: 0.9,
-    depthWrite: false, blending: THREE.AdditiveBlending
+    map: SOFT_PARTICLE_TEX,
+    color: 0xff4400,
+    size: 5.5,
+    transparent: true,
+    opacity: 0.9,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: true
   }));
   expP.userData.v = ev;
   expP.visible = false;
@@ -3116,7 +3326,11 @@ function ignite() {
   phase = 'ignition';
   document.getElementById('hudPhase').textContent = 'IGNITION · ENGINES LIT';
   document.getElementById('hudPhase').style.color = '#b06000';
-  plume.children.forEach(c => c.visible = true);
+  const hasBoost = !!(boosterL && boosterL.visible);
+  plume.children.forEach(c => {
+    if (c.userData && c.userData.isBoosterFlame) c.visible = hasBoost;
+    else c.visible = true;
+  });
   fireP.visible = true;
   smokeP.visible = true;
   steamP.visible = true;
@@ -3180,7 +3394,9 @@ function doStageSep() {
     b.userData.vy = -0.12 - Math.random() * 0.08;
     b.userData.vz = (Math.random() - 0.5) * 0.15;
   });
-  plume.children.forEach((c, i) => { if (i >= 4) c.visible = false; });
+  plume.children.forEach(c => {
+    if (c.userData && c.userData.isBoosterFlame) c.visible = false;
+  });
   document.getElementById('hudPhase').textContent = 'STAGE SEPARATION';
   speak('Stage separation confirmed. Boosters shutting down and separating cleanly.', 0.95);
   toast('Boosters separating');
@@ -3203,9 +3419,15 @@ function doCoreDetach() {
     coreGroup.userData.vz = 0.05;
   }
   if (nameMesh) nameMesh.visible = false;
+  // Keep only the first couple of core plume layers for upper stage
   plume.children.forEach((c, i) => {
-    c.visible = (i === 0 || i === 1);
-    if (c.visible) c.scale.set(0.55, 0.8, 0.55);
+    if (c.userData && c.userData.isBoosterFlame) {
+      c.visible = false;
+    } else {
+      const layer = c.userData.layer != null ? c.userData.layer : i;
+      c.visible = layer <= 2;
+      if (c.visible) c.scale.set(0.7, 1.1, 0.7);
+    }
   });
   document.getElementById('hudPhase').textContent = 'CORE STAGE DONE · UPPER STAGE';
   document.getElementById('hudStage').textContent = 'UPPER · SPACECRAFT';
@@ -3620,9 +3842,40 @@ function animate() {
         }
       }
 
-      if (terrainMesh) terrainMesh.visible = k < 0.32;
-      if (oceanMesh) oceanMesh.visible = k < 0.32;
-      if (oceanFar) oceanFar.visible = k < 0.32;
+      if (terrainMesh) terrainMesh.visible = k < 0.28;
+      if (oceanMesh) oceanMesh.visible = k < 0.28;
+      if (oceanFar) oceanFar.visible = k < 0.28;
+
+      /* High-altitude clouds + faint ground: visible roughly 28–75 km while camera is still in upper atmosphere */
+      const highAltShow = altitude > 28000 && altitude < 78000 && k < 0.72;
+      if (highCloudGroup) {
+        highCloudGroup.visible = highAltShow;
+        if (highAltShow) {
+          highCloudGroup.position.set(
+            rocketGroup.position.x * 0.35,
+            rocketGroup.position.y - 220 - (altitude - 30000) * 0.004,
+            rocketGroup.position.z - 180
+          );
+          highCloudMats.forEach((m, i) => {
+            if (m.uniforms.uTime) m.uniforms.uTime.value = t * (0.7 + i * 0.08);
+            const fadeIn = Math.min(1, (altitude - 28000) / 8000);
+            const fadeOut = altitude > 62000 ? 1 - (altitude - 62000) / 16000 : 1;
+            m.uniforms.uOpacity.value = 0.48 * fadeIn * Math.max(0, fadeOut);
+          });
+        }
+      }
+      if (highGroundMesh) {
+        highGroundMesh.visible = highAltShow && altitude > 32000;
+        if (highGroundMesh.visible) {
+          highGroundMesh.position.set(
+            rocketGroup.position.x * 0.2,
+            rocketGroup.position.y - 480 - (altitude - 35000) * 0.006,
+            rocketGroup.position.z - 900
+          );
+          const gf = Math.min(1, (altitude - 32000) / 10000) * (altitude > 65000 ? Math.max(0, 1 - (altitude - 65000) / 13000) : 1);
+          highGroundMesh.material.uniforms.uOpacity.value = 0.5 * gf;
+        }
+      }
 
       /* Planet only after atmosphere is mostly gone — kept far so it never looks like a blob on the rocket */
       if (earthMesh) {
@@ -3729,34 +3982,62 @@ function animate() {
       teleTwr.push(currentTwr);
     }
 
+    /* Conservative altitude expansion — stays a trailing stream, never a giant disk */
+    // Low alt: tight. High alt: modest widen + longer stream (real vacuum plume behavior)
+    const expand = altitude < 12000 ? 1.0 :
+                   altitude < 30000 ? 1.0 + (altitude - 12000) / 18000 * 0.9 :
+                   altitude < 60000 ? 1.9 + (altitude - 30000) / 30000 * 1.1 :
+                   3.0 + Math.min(1.6, (altitude - 60000) / 50000);
+    const expandLat = expand;           // lateral widen (keep modest)
+    const expandLen = 1.0 + (expand - 1.0) * 1.35; // stretch more along axis
+
     if (!engineCutoff) {
       plume.children.forEach((c, i) => {
         if (!c.visible) return;
-        const s = 1 + Math.sin(t * 18 + i) * 0.28;
-        c.scale.set(s, s, s);
-        c.material.opacity = 0.26 + Math.sin(t * 12 + i) * 0.1;
+        // Skip booster flames if boosters already separated
+        if (c.userData.isBoosterFlame && stageSeparated) {
+          c.visible = false;
+          return;
+        }
+        const pulse = 1 + Math.sin(t * 14 + i) * 0.12;
+        const baseY = c.userData.baseScaleY || 2.0;
+        const layer = c.userData.layer != null ? c.userData.layer : i;
+        // Lateral growth is gentle; length grows more
+        const lat = pulse * (1.0 + (expandLat - 1.0) * (0.55 + layer * 0.08));
+        const len = pulse * baseY * expandLen;
+        c.scale.set(lat, len, lat);
+        // Stay bright near nozzle, fade further back; high-alt becomes slightly more translucent
+        const highFade = Math.min(1, Math.max(0, (altitude - 25000) / 50000));
+        const baseOp = 0.68 - layer * 0.055;
+        c.material.opacity = baseOp * (1 - highFade * 0.35) + 0.18 * highFade;
       });
     }
 
     if (fireP.visible) {
       const pos = fireP.geometry.attributes.position.array;
       const vel = fireP.userData.v;
+      // Keep particles reasonably sized so they stay visible but don't become huge blobs
+      fireP.material.size = (IS_MOBILE ? 4.2 : 5.8) * (0.95 + expandLat * 0.12);
       for (let i = 0; i < vel.length; i++) {
         if (stageSeparated && vel[i].eng !== 0) {
           pos[i * 3 + 1] = -999;
           continue;
         }
-        pos[i * 3] += vel[i].x * dt * 10;
-        pos[i * 3 + 1] += vel[i].y * dt * 36;
-        pos[i * 3 + 2] += (vel[i].z || 0) * dt * 10;
-        vel[i].life -= dt * 0.18;
+        // Mostly backward motion + slight lateral drift that grows with altitude
+        pos[i * 3] += vel[i].x * dt * 7 * expandLat;
+        pos[i * 3 + 1] += vel[i].y * dt * 38;
+        pos[i * 3 + 2] += (vel[i].z || 0) * dt * 7 * expandLat;
+        vel[i].life -= dt * 0.17;
         if (vel[i].life <= 0) {
           const eng = vel[i].eng || 0;
           const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
-          pos[i * 3] = ox + (Math.random() - 0.5) * 3.2;
-          pos[i * 3 + 1] = -0.8 - Math.random() * 5;
-          pos[i * 3 + 2] = (Math.random() - 0.5) * 3.2;
-          vel[i].y = -(12 + Math.random() * 20);
+          const spread = 1.15 * Math.min(expandLat, 2.4);
+          pos[i * 3] = ox + (Math.random() - 0.5) * spread;
+          pos[i * 3 + 1] = -0.8 - Math.random() * 3.5;
+          pos[i * 3 + 2] = (Math.random() - 0.5) * spread;
+          vel[i].x = (Math.random() - 0.5) * 0.95 * expandLat;
+          vel[i].z = (Math.random() - 0.5) * 0.95 * expandLat;
+          vel[i].y = -(14 + Math.random() * 22);
           vel[i].life = 1;
         }
       }
@@ -3766,15 +4047,20 @@ function animate() {
     if (smokeP.visible) {
       const pos = smokeP.geometry.attributes.position.array;
       const vel = smokeP.userData.v;
+      smokeP.material.size = (IS_MOBILE ? 7 : 10) * (0.9 + expandLat * 0.2);
+      smokeP.material.opacity = altitude > 35000 ? 0.2 : 0.38;
       for (let i = 0; i < vel.length; i++) {
-        pos[i * 3] += vel[i].x * dt * 9;
-        pos[i * 3 + 1] += vel[i].y * dt * 8;
-        pos[i * 3 + 2] += vel[i].z * dt * 9;
-        vel[i].life -= dt * 0.09;
+        pos[i * 3] += vel[i].x * dt * 6 * expandLat;
+        pos[i * 3 + 1] += vel[i].y * dt * 7;
+        pos[i * 3 + 2] += vel[i].z * dt * 6 * expandLat;
+        vel[i].life -= dt * 0.075;
         if (vel[i].life <= 0) {
-          pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * 9;
+          const spread = 3.5 * Math.min(expandLat, 2.2);
+          pos[i * 3] = rocketGroup.position.x + (Math.random() - 0.5) * spread;
           pos[i * 3 + 1] = rocketGroup.position.y - 5;
-          pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * 9;
+          pos[i * 3 + 2] = rocketGroup.position.z + (Math.random() - 0.5) * spread;
+          vel[i].x = (Math.random() - 0.5) * 1.0 * expandLat;
+          vel[i].z = (Math.random() - 0.5) * 1.0 * expandLat;
           vel[i].life = 1;
         }
       }
