@@ -172,7 +172,16 @@ header {
   gap: 10px;
   flex-wrap: nowrap;
   padding: 0 12px;
+  /* Never clip pills silently: the nav scrolls (scrollbar hidden) when
+     content outgrows the bar, and JS steps the badges down compact → mini */
+  overflow-x: auto;
+  scrollbar-width: none;
 }
+.header-nav::-webkit-scrollbar { display: none; }
+/* Adaptive levels, applied by fitHeaderNav() only when pills overflow */
+header.nav-compact .header-nav { gap: 6px; padding: 0 6px; }
+header.nav-compact .hud-badge { font-size: 12.5px; padding: 6px 10px; min-height: 30px; }
+header.nav-mini .hud-badge { font-size: 11.5px; padding: 5px 8px; min-height: 28px; max-width: 150px; }
 .header-nav .hud-badge {
   pointer-events: none;
   font-size: 14.5px;
@@ -1306,13 +1315,26 @@ body.fs-sim-only .meters-stack { top: 14px; }
 .color-panel .color-custom { width: 30px; height: 30px; padding: 0; border: 1.5px solid #000000; border-radius: 6px; cursor: pointer; background: none; flex-shrink: 0; }
 
 /* ── Mission Control speed buttons (autopilot style) ── */
-/* ── Simulation speed dropdown (blue theme) ── */
-.speed-dd-wrap { position: relative; margin-top: 8px; }
-.speed-select {
+/* ── Cloud-pierce flash: rocket enters the deck like a pen through snow ── */
+#cloudFlash {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 90;
+  opacity: 0;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,0.95) 0%, rgba(240,246,255,0.75) 45%, rgba(230,240,255,0) 78%);
+  transition: opacity 0.12s linear;
+}
+
+/* ── Google-design speed dropdown ── */
+.gdd { position: relative; margin-top: 8px; }
+.gdd-btn {
   width: 100%;
-  appearance: none;
-  -webkit-appearance: none;
-  padding: 12px 42px 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px;
   font-size: 15px;
   font-family: inherit;
   color: #202124;
@@ -1320,19 +1342,37 @@ body.fs-sim-only .meters-stack { top: 14px; }
   border: 1.5px solid #000000;
   border-radius: 10px;
   cursor: pointer;
-  outline: none;
   transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
 }
-.speed-select:hover { border-color: #1a73e8; background: #f4f8ff; }
-.speed-select:focus { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.22); }
-.speed-dd-arrow {
+.gdd-btn:hover { border-color: #1a73e8; background: #f8fbff; }
+.gdd.open .gdd-btn { border-color: #1a73e8; box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.22); }
+.gdd-caret { color: #1a73e8; font-size: 22px; transition: transform 0.2s; }
+.gdd.open .gdd-caret { transform: rotate(180deg); }
+.gdd-menu {
+  display: none;
   position: absolute;
-  right: 12px; top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #1a73e8;
-  font-size: 22px;
+  left: 0; right: 0; top: calc(100% + 6px);
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 10px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  z-index: 40;
 }
+.gdd.open .gdd-menu { display: block; }
+.gdd-opt {
+  padding: 12px 14px;
+  font-size: 14.5px;
+  color: #202124;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: background 0.15s;
+}
+.gdd-opt:hover { background: #f1f3f4; }
+.gdd-opt.active { color: #1a73e8; font-weight: 500; background: #e8f0fe; }
+.gdd-opt.active::after { content: 'check'; font-family: 'Material Symbols Outlined'; font-size: 18px; }
 .color-panel .color-custom::-webkit-color-swatch-wrapper { padding: 0; }
 
 #mobileLagNotice {
@@ -1383,6 +1423,7 @@ body.fs-sim-only .meters-stack { top: 14px; }
     <span class="hud-badge hud-mach" id="hudMach">MACH 0.0</span>
     <span class="hud-badge hud-twr" id="hudTwr">TWR 1.20</span>
     <span class="hud-badge hud-main" id="hudFuel" style="border-color:#f9ab00">FUEL 100%</span>
+    <span class="hud-badge hud-main" id="hudMass" style="border-color:#a142f4">MASS 402.0 t</span>
     <span class="hud-badge hud-mach" id="hudStage" style="background:#e6f4ea">STAGE 1</span>
     <span class="hud-badge hud-status" id="hudPhase">STANDBY</span>
     <span class="hud-badge hud-maxq" id="hudMaxQ">MAX-Q</span>
@@ -1562,13 +1603,16 @@ body.fs-sim-only .meters-stack { top: 14px; }
       </div>
       <div style="margin-top:14px">
         <label>Simulation Speed</label>
-        <div class="speed-dd-wrap">
-          <select id="speedSelect" class="speed-select" aria-label="Simulation speed">
-            <option value="0.5">0.5× · Slow motion</option>
-            <option value="2.5" selected>1× · Normal</option>
-            <option value="6">3× · Ultra fast</option>
-          </select>
-          <span class="material-symbols-outlined speed-dd-arrow">expand_more</span>
+        <div class="gdd" id="speedDD">
+          <button type="button" class="gdd-btn" id="speedDDBtn" aria-haspopup="listbox">
+            <span id="speedDDLabel">1× · Normal</span>
+            <span class="material-symbols-outlined gdd-caret">expand_more</span>
+          </button>
+          <div class="gdd-menu" id="speedDDMenu" role="listbox">
+            <div class="gdd-opt" data-v="0.8" role="option">0.5× · Slow motion</div>
+            <div class="gdd-opt active" data-v="3.2" role="option">1× · Normal</div>
+            <div class="gdd-opt" data-v="7.5" role="option">3× · Ultra fast</div>
+          </div>
         </div>
       </div>
       <hr class="thin" style="margin: 12px -16px;">
@@ -1652,6 +1696,7 @@ body.fs-sim-only .meters-stack { top: 14px; }
 </div>
 
 <div id="confettiBox"></div>
+<div id="cloudFlash"></div>
 <div class="toast" id="toast"></div>
 
 <div class="graph-modal" id="graphModal">
@@ -1721,7 +1766,7 @@ const SOFT_SMOKE_TEX = makeSoftParticleTexture(48);
 
 let scene, camera, renderer, clock;
 let rocketGroup, coreGroup, boosterL, boosterR, upperStage, earthMesh, saturnRings = [];
-let umbilicals = [], plume, fireP, smokeP, steamP, expP;
+let umbilicals = [], plume, fireP, smokeP, steamP, expP, spaceFill;
 let flagMesh, flagPole, padLights = [], starField, nameMesh;
 let highCloudGroup = null;
 let highCloudMats = [];
@@ -1734,6 +1779,9 @@ let cdTimer = null, soundOn = true, timeOfDay = 'day';
 let achDv = 0, tw = 1.2, maxAlt = 0, maxVel = 0, flightT = 0, peakTwr = 1.2;
 let teleAlt = [], teleVel = [], teleT = [], teleTwr = [], chart = null;
 let camMode = 0, camTimer = 0;
+let frameTick = 0;   // for cheap every-other-frame work
+let liveMass = 0;    // real vehicle mass, kg
+let noseLedMatRef = null, noseLightRef = null, nameNeon = false;
 let currentRocketKey = 'f9';
 let currentPlanet = 'earth';
 let isSmallRocket = false;
@@ -1746,7 +1794,7 @@ let thrustN = 7600000;
 let pitchAngle = 0;        // 0 = straight up, ~80 deg = orbital
 let hVelocity = 0;         // horizontal velocity (m/s)
 let downrange = 0;         // horizontal distance travelled (m)
-let simSpeed = 2.5;        // time scale: 0.5x, 2.5x (1×), 6x (3×)
+let simSpeed = 3.2;        // time scale: 0.8x, 3.2x (1×), 7.5x (3×)
 let engineCutoff = false;  // MECO: engines cut in space / at orbit
 let dispAlt = 0, dispVel = 0, dispTwr = 1.2, dispFuel = 100; // smooth HUD displays
 
@@ -1800,6 +1848,31 @@ function flagIconUrl(code) {
 }
 let selFlag = 'US', selPayload = 'starlink';
 
+/* Header pill auto-fit: measures the nav strip and steps it down through
+   levels only when pills actually overflow — compact spacing first, then
+   smaller badges, then abbreviated long labels. Full text is kept in
+   data-full so labels restore when the window grows again. */
+function fitHeaderNav() {
+  const nav = document.getElementById('headerNav');
+  if (!nav) return;
+  const hdr = nav.closest('header');
+  if (!hdr) return;
+  const badges = Array.from(nav.querySelectorAll('.hud-badge'));
+  badges.forEach(b => { if (b.dataset.full === undefined) b.dataset.full = b.textContent; });
+  const overflow = () => nav.scrollWidth > nav.clientWidth + 2;
+  hdr.classList.remove('nav-compact', 'nav-mini');
+  if (overflow()) hdr.classList.add('nav-compact');
+  if (overflow()) {
+    hdr.classList.add('nav-mini');
+    badges.forEach(b => {
+      const f = b.dataset.full;
+      b.textContent = f.length > 15 ? f.slice(0, 13).trim() + '…' : f;
+    });
+  } else {
+    badges.forEach(b => { b.textContent = b.dataset.full; });
+  }
+}
+window.addEventListener('resize', fitHeaderNav);
 function toast(m) {
   const t = document.getElementById('toast');
   t.textContent = m;
@@ -1981,7 +2054,13 @@ function loadPlanetTex(key, cb) {
   (function tryLoad(i) {
     if (i >= urls.length) { cb(null); return; }
     loader.load(urls[i],
-      (tex) => { tex.encoding = THREE.sRGBEncoding; planetTexCache[key] = tex; cb(tex); },
+      (tex) => {
+        tex.encoding = THREE.sRGBEncoding;
+        // Sharper planet surface at distance — kills the blurry look
+        try { tex.anisotropy = renderer.capabilities.getMaxAnisotropy(); } catch (e) {}
+        tex.minFilter = THREE.LinearMipmapLinearFilter;
+        planetTexCache[key] = tex; cb(tex);
+      },
       undefined,
       () => tryLoad(i + 1));
   })(0);
@@ -2017,7 +2096,7 @@ function applyPlanet(pl) {
       earthMesh.material.needsUpdate = true;
     });
     earthMesh.geometry.dispose();
-    earthMesh.geometry = new THREE.SphereGeometry(info.size, IS_MOBILE ? 48 : 96, IS_MOBILE ? 48 : 96);
+    earthMesh.geometry = new THREE.SphereGeometry(info.size, IS_MOBILE ? 64 : 128, IS_MOBILE ? 64 : 128);
     applyPlanetAtmosphere(pl);
 
     clearSaturnRings();
@@ -2379,6 +2458,8 @@ function buildRocket() {
   const noseLight = new THREE.PointLight(0xff2200, 1.2, 16, 2);
   noseLight.position.y = 83.2;
   upperStage.add(noseLight);
+  noseLedMatRef = noseLedMat;
+  noseLightRef = noseLight;
 
   /* LED side strips removed — clean body per design request */
 
@@ -2421,9 +2502,17 @@ function updName() {
   const ctx = c.getContext('2d');
   ctx.clearRect(0, 0, 512, 64);
   ctx.font = 'bold 34px "Google Sans", Helvetica, Arial, sans-serif';
-  ctx.fillStyle = '#111111';
   ctx.textAlign = 'center';
+  if (nameNeon) {
+    /* Space / night mode: white neon glow marking */
+    ctx.shadowColor = '#9be8ff';
+    ctx.shadowBlur = 16;
+    ctx.fillStyle = '#eafcff';
+  } else {
+    ctx.fillStyle = '#111111';
+  }
   ctx.fillText(name, 256, 44);
+  ctx.shadowBlur = 0;
   const tex = new THREE.CanvasTexture(c);
   const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
   const geo = new THREE.CylinderGeometry(3.74, 3.74, 1.5, 32, 1, true, 0, Math.PI * 0.75);
@@ -2651,7 +2740,7 @@ function buildStars() {
 
   const info = PLANETS.earth;
   earthMesh = new THREE.Mesh(
-    new THREE.SphereGeometry(info.size, IS_MOBILE ? 48 : 96, IS_MOBILE ? 48 : 96),
+    new THREE.SphereGeometry(info.size, IS_MOBILE ? 64 : 128, IS_MOBILE ? 64 : 128),
     new THREE.MeshStandardMaterial({
       color: 0xffffff,
       roughness: 0.85,
@@ -2905,6 +2994,8 @@ function buildFX() {
   }));
   fireP.userData.v = fv;
   fireP.userData.cols = fcols;
+  fireP.userData.count = fc;
+  fireP.geometry.setDrawRange(0, fc);
   fireP.visible = false;
   rocketGroup.add(fireP);
 
@@ -2938,6 +3029,12 @@ function buildFX() {
   smokeP.userData.v = sv;
   smokeP.visible = false;
   scene.add(smokeP);
+
+  /* Subtle space fill light: a gentle whisper of light so the vehicle never
+     goes fully invisible in vacuum — soft cool fill, never a big spotlight */
+  spaceFill = new THREE.PointLight(0xcfe0ff, 0, 340, 2);
+  spaceFill.position.set(40, 70, 55);
+  rocketGroup.add(spaceFill);
 
   /* Steam / pad vapor */
   const tc = IS_MOBILE ? 120 : 240;
@@ -3661,11 +3758,15 @@ function checkSuccess() {
     if (farCloudMesh) farCloudMesh.visible = false;
     if (highCloudGroup) highCloudGroup.visible = false;
     if (highGroundMesh) highGroundMesh.visible = false;
-    /* Sun close & bright in the success view */
+    /* Sun: small bright disc, far away */
     if (window.sunMesh) {
       window.sunMesh.visible = true;
-      window.sunMesh.position.set(rocketGroup.position.x + 1400, rocketGroup.position.y + 750, rocketGroup.position.z - 1800);
-      window.sunMesh.scale.setScalar(5);
+      window.sunMesh.position.set(
+        rocketGroup.position.x + 4200,
+        rocketGroup.position.y + 2300,
+        rocketGroup.position.z - 6200
+      );
+      window.sunMesh.scale.setScalar(1.6);
     }
     /* Brighter exposure in orbit so the planet & stars read well */
     renderer.toneMappingExposure = 0.62;
@@ -3793,6 +3894,9 @@ function reset() {
   if (ams) ams.textContent = 'Pad · 0 km';
   const hf = document.getElementById('hudFuel');
   if (hf) hf.textContent = 'FUEL 100%';
+  liveMass = initialMass;
+  const hms = document.getElementById('hudMass');
+  if (hms) hms.textContent = 'MASS ' + (initialMass / 1000).toFixed(1) + ' t';
   const hs = document.getElementById('hudStage');
   if (hs) hs.textContent = 'STAGE 1';
   document.getElementById('hudVel').textContent = 'VEL 000 m/s';
@@ -3810,6 +3914,8 @@ function reset() {
   if (oceanMesh) oceanMesh.visible = true;
   if (oceanFar) oceanFar.visible = true;
   if (farCloudMesh) { farCloudMesh.visible = false; farCloudMesh.material.opacity = 0; }
+  const cfEl = document.getElementById('cloudFlash');
+  if (cfEl) cfEl.style.opacity = '0';
   if (umbilicals) umbilicals.forEach(u => { if (u) u.visible = true; });
   if (flagMesh) flagMesh.visible = true;
   if (flagPole) flagPole.visible = true;
@@ -3833,6 +3939,40 @@ function animate() {
   try {
   const dt = Math.min(clock.getDelta(), 0.05) * (simSpeed || 1);
   const t = clock.getElapsedTime();
+
+  /* Watchdog: on the pad nothing may ever go missing — restores any
+     vehicle / flag / tower that a glitch or race left hidden */
+  if (phase === 'standby' && !isExploded && rocketGroup) {
+    if (!rocketGroup.visible) rocketGroup.visible = true;
+    if (coreGroup && !coreGroup.visible) coreGroup.visible = true;
+    [boosterL, boosterR].forEach(b => {
+      if (b && !b.visible && !stageSeparated) b.visible = true;
+    });
+    if (nameMesh && !nameMesh.visible) nameMesh.visible = true;
+    if (flagPole && !flagPole.visible) flagPole.visible = true;
+    if (flagMesh && !flagMesh.visible) flagMesh.visible = true;
+    if (terrainMesh && !terrainMesh.visible) terrainMesh.visible = true;
+    if (oceanMesh && !oceanMesh.visible) oceanMesh.visible = true;
+    if (oceanFar && !oceanFar.visible) oceanFar.visible = true;
+    if (umbilicals && umbilicals.length) umbilicals.forEach(u => { if (u && !u.visible) u.visible = true; });
+  }
+
+  /* Night & space mode: red beacon on the nose + white neon name marking */
+  {
+    const darkNow = timeOfDay === 'night' ||
+      (isFlying && Math.min(1, Math.max(0, (altitude - 40000) / 20000)) > 0.5);
+    if (darkNow !== nameNeon) {
+      nameNeon = darkNow;
+      updName();
+    }
+    if (noseLedMatRef) {
+      noseLedMatRef.emissiveIntensity = darkNow ? 3.4 : 1.8;
+    }
+    if (noseLightRef) {
+      noseLightRef.intensity = darkNow ? 3.6 : 1.2;
+      noseLightRef.distance = darkNow ? 45 : 16;
+    }
+  }
 
   if (flagMesh && flagMesh.geometry && !IS_MOBILE) {
     const pos = flagMesh.geometry.attributes.position;
@@ -3869,6 +4009,13 @@ function animate() {
   }
 
   camTimer += dt;
+  frameTick++;
+  /* Re-fit header pills occasionally — badge text grows mid-flight
+     (stage transitions, phase changes), so re-measure ~every 1.5 s */
+  if (frameTick % 90 === 0 && window.fitHeaderNav) window.fitHeaderNav();
+  /* Gentle fill light ramps in with altitude — rocket stays softly visible
+     in space (a bit of light, not a big spotlight) */
+  if (spaceFill) spaceFill.intensity = 0.35 + Math.min(1, altitude / 55000) * 0.8;
   if (camTimer > 6) { camMode = (camMode + 1) % 6; camTimer = 0; }
 
   if (phase === 'standby' || phase === 'countdown') {
@@ -3907,14 +4054,20 @@ function animate() {
        planet held in frame below as space arrives. */
     const spaceK = Math.min(1, Math.max(0, (altitude - 50000) / 30000));
     if (spaceK > 0.02) {
-      const dist = (isSmallRocket ? 115 : 165) * (1 + spaceK * 0.45);
-      const yaw = t * 0.035;
+      /* Real-scale space tracking shot (like the reference photo):
+         the camera pulls WAY back as the planet appears, so the vehicle
+         reads tiny against the planet curve, with the planet sweeping
+         below the rocket — never a giant rocket in front of a small planet. */
+      const dist = (isSmallRocket ? 170 : 250) * (1 + spaceK * 1.4);
+      /* Orbit slows as it climbs — no fast sweep, no traffic feel */
+      const yaw = t * (0.035 - spaceK * 0.022);
       camera.position.lerp(new THREE.Vector3(
         rp.x + Math.sin(yaw) * dist,
-        midY + 24 + Math.sin(t * 0.05) * 5,
+        midY + 30 + spaceK * 110,
         rp.z + Math.cos(yaw) * dist
-      ), 0.035);
-      camera.lookAt(rp.x, midY + (isSmallRocket ? 15 : 40) - spaceK * 90, rp.z);
+      ), 0.02);
+      /* Aim below the rocket: planet stays in frame under the vehicle */
+      camera.lookAt(rp.x, midY + (isSmallRocket ? 15 : 40) - spaceK * 340, rp.z);
     } else {
       camera.position.lerp(new THREE.Vector3(
         rp.x + ox,
@@ -3928,13 +4081,13 @@ function animate() {
        planet below and the starfield sweep past, like the reentry lab view. */
     const rp = rocketGroup.position;
     const a = t * 0.05;
-    const R = isSmallRocket ? 240 : 320;
+    const R = isSmallRocket ? 340 : 470;
     camera.position.lerp(new THREE.Vector3(
       rp.x + Math.cos(a) * R,
-      rp.y + 55 + Math.sin(t * 0.11) * 30,
+      rp.y + 75,
       rp.z + Math.sin(a) * R
-    ), 0.02);
-    camera.lookAt(rp.x, rp.y - 55, rp.z);
+    ), 0.015);
+    camera.lookAt(rp.x, rp.y - 110, rp.z);
     if (earthMesh) earthMesh.visible = true;
     if (window.sunMesh) window.sunMesh.visible = true;
   } else if (isExploded) {
@@ -3946,11 +4099,25 @@ function animate() {
     const el = t - launchTime;
     flightT = el;
 
-    if (!engineCutoff) {
-      fuelRemaining = Math.max(0, 1 - el / 175);
-    }
-    const currentMass = dryMassVal + (initialMass - dryMassVal) * fuelRemaining;
-    const currentTwr = engineCutoff ? 0 : thrustN / (currentMass * G0);
+    /* ── REAL rocket physics ──
+       Fuel burn: mdot = F / (Isp · g₀)   (the actual Tsiolkovsky burn rate)
+       Mass: m(t) = dry + fuel(t)
+       Gravity: g(h) = g₀ · (R / (R + h))²
+       Drag: D = ½ · ρ(h) · v² · Cd · A
+       Thrust: T constant per throttle → a = (T − D) / m − g            */
+    const ispS = parseFloat(document.getElementById('isp').value) || 282;
+    const fuelKg = Math.max(1, initialMass - dryMassVal);
+    const mdot = thrustN / (ispS * G0);                       // kg/s
+    if (!engineCutoff) fuelRemaining = Math.max(0, 1 - (mdot * el) / fuelKg);
+    const currentMass = dryMassVal + fuelKg * fuelRemaining;
+    liveMass = currentMass;
+    /* Planet-correct gravity: surface g and radius of the selected target
+       (Earth 9.81 · Moon 1.62 · Mars 3.71 · Jupiter 24.79 · Saturn 10.44),
+       weakening with altitude: g(h) = g_surface · (R / (R + h))²            */
+    const PG = { earth: [9.80665, 6371000], moon: [1.62, 1737000], mars: [3.71, 3389000], jupiter: [24.79, 69911000], saturn: [10.44, 58232000] };
+    const pg = PG[currentPlanet] || PG.earth;
+    const gNow = pg[0] * Math.pow(pg[1] / (pg[1] + altitude), 2);
+    const currentTwr = engineCutoff ? 0 : thrustN / (currentMass * gNow);
     if (!engineCutoff && currentTwr > peakTwr) peakTwr = currentTwr;
     /* targets for smooth HUD (actual numbers still drive physics) */
     const targetTwr = currentTwr;
@@ -3988,9 +4155,13 @@ function animate() {
       if (engineFade <= 0) killEngineFX();
     }
 
-    const dens = Math.exp(-altitude / 8500);
-    const drag = 0.5 * dens * (velocity * velocity) * 0.0005;
-    let rawAccel = engineCutoff ? 0 : Math.max(0, (currentTwr - 1) * G0 * 1.3 - drag);
+    /* Real atmospheric density + aerodynamic drag (Cd·A of a 3.7 m rocket) */
+    const dens = 1.225 * Math.exp(-altitude / 8500);   // kg/m³
+    const dragArea = 10.5;                              // m² cross-section
+    const dragCd = 0.35;
+    const dragN = 0.5 * dens * velocity * velocity * dragCd * dragArea; // N
+    let rawAccel = engineCutoff ? -gNow
+      : ((thrustN - dragN) / currentMass - gNow) * 1.25; // 1.25 = sim pacing, physics real
 
     /* ==========================================================
        NEW: REAL GRAVITY TURN (like actual launches)
@@ -4010,7 +4181,7 @@ function animate() {
 
     const cosP = Math.cos(pitchAngle);
     const sinP = Math.sin(pitchAngle);
-    const verticalAccel = Math.max(0, rawAccel * cosP - G0 * 0.25);
+    const verticalAccel = Math.max(0, rawAccel * cosP);
     // horizontal acceleration from the tilted thrust vector
     hVelocity += rawAccel * sinP * dt;
     downrange += hVelocity * dt;
@@ -4143,23 +4314,37 @@ function animate() {
         }
       }
 
+      /* Pen-through-snow: soft white flash while piercing the cloud deck */
+      {
+        const cf = document.getElementById('cloudFlash');
+        if (cf) {
+          const pierce = Math.max(0, 1 - Math.abs(altitude - 9800) / 2600);
+          cf.style.opacity = (pierce * 0.75).toFixed(3);
+        }
+      }
+
       /* Planet: larger visual presence, closer & higher so it fills the view more */
       if (earthMesh) {
         if (k > 0.42) {
           earthMesh.visible = true;
           const info = PLANETS[currentPlanet] || PLANETS.earth;
-          // Closer distance so planet appears giant
-          const dist = info.size * (1.15 + k * 0.35);
+          /* Planet farther out + lower: correct real scale, the rocket is a
+             tiny speck against it (reference-photo framing) */
+          const dist = info.size * (1.95 + k * 0.35);
           earthMesh.position.set(
             rocketGroup.position.x * 0.12 - dist * 0.18,
-            rocketGroup.position.y - dist * 0.72,
+            rocketGroup.position.y - dist * 0.78,
             rocketGroup.position.z - dist * 0.28
           );
           if (window.sunMesh) {
-            // Keep the sun close & big enough to actually see in space
+            // Small yellow disc, far away — real scale, never a giant blob
             window.sunMesh.visible = true;
-            window.sunMesh.position.set(rocketGroup.position.x + 1400, rocketGroup.position.y + 750, rocketGroup.position.z - 1800);
-            window.sunMesh.scale.setScalar(5);
+            window.sunMesh.position.set(
+              rocketGroup.position.x + 4200,
+              rocketGroup.position.y + 2300,
+              rocketGroup.position.z - 6200
+            );
+            window.sunMesh.scale.setScalar(1.6);
           }
           earthMesh.rotation.y += dt * 0.012;
         } else {
@@ -4212,6 +4397,8 @@ function animate() {
     const fuelPct = Math.max(0, dispFuel);
     const hf = document.getElementById('hudFuel');
     if (hf) hf.textContent = 'FUEL ' + Math.round(fuelPct) + '%';
+    const hm2 = document.getElementById('hudMass');
+    if (hm2) hm2.textContent = 'MASS ' + (liveMass / 1000).toFixed(1) + ' t';
     const hs = document.getElementById('hudStage');
     if (hs) {
       if (!stageSeparated) hs.textContent = 'STAGE 1 · BOOSTERS';
@@ -4233,6 +4420,8 @@ function animate() {
 
     if (!maxQPassed && altitude > 11000 && altitude < 16000) {
       maxQPassed = true;
+      /* After Max-Q: long glow/particle tails OFF — only the engine flame stays */
+      plume.children.forEach(c => { c.visible = false; });
       document.getElementById('hudMaxQ').style.display = 'inline-flex';
       document.getElementById('hudPhase').textContent = 'MAX-Q';
       toast('Max-Q passed');
@@ -4292,14 +4481,16 @@ function animate() {
       const pos = fireP.geometry.attributes.position.array;
       const col = fireP.geometry.attributes.color.array;
       const base = fireP.userData.cols;
+      /* Vacuum plume blend factor: 0 below 45 km → 1 by 70 km */
+      const hiK = Math.min(1, Math.max(0, (altitude - 45000) / 25000));
       const vel = fireP.userData.v;
       // Thick particles; slightly smaller at extreme altitude
       fireP.material.size = (IS_MOBILE ? 8.5 : 11.5) * (0.95 + expandLat * 0.08) * (0.85 + 0.15 * lenFactor);
       // Continuous dense column: particles distributed along the whole tail
       const lifeDrain = 0.05 + (1.0 - lenFactor) * 0.035;
       const speedY = 24 + lenFactor * 8;
-      // Visible tail length (long at low alt, slowly shorter high up)
-      const tailLen = 60 + lenFactor * 60;
+      // Visible tail: full column low, engine-only flame after Max-Q
+      const tailLen = maxQPassed ? 11 : (60 + lenFactor * 60);
       // Pad/ground surface in rocket-local coords (rocket sits at y≈6 on the pad)
       const groundLocal = -rocketGroup.position.y + 1.2;
       const yEnd = -0.5 - tailLen * 1.3;
@@ -4326,9 +4517,21 @@ function animate() {
         }
         // Per-particle fade with age → soft taper at the tail tip, no sharp cut
         const fade = Math.max(0.05, Math.min(1, v.life * 1.5));
-        col[i * 3] = base[i * 3] * fade;
-        col[i * 3 + 1] = base[i * 3 + 1] * fade * fade;
-        col[i * 3 + 2] = base[i * 3 + 2] * fade * fade;
+        let cr = base[i * 3] * fade;
+        let cg = base[i * 3 + 1] * fade * fade;
+        let cb = base[i * 3 + 2] * fade * fade;
+        /* High altitude (≈55 km+): plume reads as flame, not dark smoke —
+           aged particles lift toward warm white / pale gold with a soft
+           blue-cool edge, like a real vacuum plume (reference photo) */
+        if (hiK > 0) {
+          const w = hiK * fade;
+          cr += (1.0 - cr) * w * 0.92;
+          cg += (0.88 - cg) * w * 0.92;
+          cb += (0.66 - cb) * w * 0.92;
+        }
+        col[i * 3] = cr;
+        col[i * 3 + 1] = cg;
+        col[i * 3 + 2] = cb;
         if (v.life <= 0 || pos[i * 3 + 1] < yEnd) {
           const eng = v.eng || 0;
           const ox = eng === 1 ? -6.1 : eng === 2 ? 6.1 : 0;
@@ -4345,14 +4548,21 @@ function animate() {
         }
       }
       fireP.geometry.attributes.position.needsUpdate = true;
-      fireP.geometry.attributes.color.needsUpdate = true;
+      /* Perf: colour buffer every 2nd frame — halves CPU cost, looks identical.
+         After Max-Q only a quarter of particles render (engine flame only). */
+      if (frameTick % 2 === 0) fireP.geometry.attributes.color.needsUpdate = true;
+      fireP.geometry.setDrawRange(0, maxQPassed ? Math.floor(fireP.userData.count * 0.25) : fireP.userData.count);
     }
 
     if (smokeP.visible) {
       const pos = smokeP.geometry.attributes.position.array;
       const vel = smokeP.userData.v;
       smokeP.material.size = (IS_MOBILE ? 8 : 11) * (0.9 + expandLat * 0.18);
-      smokeP.material.opacity = altitude > 35000 ? 0.22 : 0.4;
+      /* Trail goes from gray smoke low → warm pale-gold glow up high,
+         and fades more so it never reads as a dark smear in space */
+      const sk = Math.min(1, Math.max(0, (altitude - 40000) / 25000));
+      smokeP.material.color.setRGB(0.6 + 0.4 * sk, 0.6 + 0.3 * sk, 0.6 + 0.1 * sk);
+      smokeP.material.opacity = altitude > 35000 ? 0.22 - sk * 0.12 : 0.4;
       for (let i = 0; i < vel.length; i++) {
         pos[i * 3] += vel[i].x * dt * 5.5 * expandLat;
         pos[i * 3 + 1] += vel[i].y * dt * 7;
@@ -4429,19 +4639,35 @@ function animate() {
 
 /* ===== Events ===== */
 document.getElementById('btnCalc').onclick = () => { calc(); try{ savePrefs(); }catch(e){} };
-/* ── Speed control (0.5× / 1× / 3×) — dropdown, blue theme ── */
+/* ── Speed control (0.5× / 1× / 3×) — Google-design dropdown ── */
 function applySimSpeed(v) {
   simSpeed = v;
-  const sel = document.getElementById('speedSelect');
-  if (sel) sel.value = String(v);
-  const label = v <= 0.5 ? '0.5×' : v <= 2.5 ? '1×' : '3×';
-  toast('Sim speed: ' + label);
+  const dd = document.getElementById('speedDD');
+  if (dd) dd.classList.remove('open');
+  document.querySelectorAll('#speedDDMenu .gdd-opt').forEach(o => {
+    o.classList.toggle('active', parseFloat(o.dataset.v) === v);
+  });
+  const label = v <= 0.8 ? '0.5× · Slow motion' : v <= 3.2 ? '1× · Normal' : '3× · Ultra fast';
+  const lab = document.getElementById('speedDDLabel');
+  if (lab) lab.textContent = label;
+  toast('Sim speed: ' + label.split(' · ')[0]);
 }
-applySimSpeed(simSpeed);
-const speedSel = document.getElementById('speedSelect');
-if (speedSel) {
-  speedSel.addEventListener('change', () => applySimSpeed(parseFloat(speedSel.value) || 1));
-}
+(function () {
+  const dd = document.getElementById('speedDD');
+  const btn = document.getElementById('speedDDBtn');
+  if (!dd || !btn) return;
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dd.classList.toggle('open');
+  });
+  document.querySelectorAll('#speedDDMenu .gdd-opt').forEach(o => {
+    o.addEventListener('click', () => applySimSpeed(parseFloat(o.dataset.v) || 1));
+  });
+  document.addEventListener('click', () => dd.classList.remove('open'));
+  // initial sync, silent
+  document.querySelectorAll('#speedDDMenu .gdd-opt').forEach(o =>
+    o.classList.toggle('active', parseFloat(o.dataset.v) === simSpeed));
+})();
 
 /* ── Autopilot: smoothly drives Isp & Thrust to optimal values, keeps
    re-adjusting (with animated slider movement) while it stays on.
@@ -4838,19 +5064,23 @@ function loadPrefs() {
     const raw = localStorage.getItem('twr_lab_prefs');
     if (!raw) return;
     const p = JSON.parse(raw);
-    if (p.name) document.getElementById('rocketName').value = p.name;
-    if (p.body) { document.getElementById('colBody').value = p.body; applyBodyColor(p.body); }
-    if (p.boost) { document.getElementById('colBoost').value = p.boost; applyBoostColor(p.boost); }
-    if (p.flag) { selFlag = p.flag; document.querySelectorAll('.flag-btn').forEach(b => b.classList.toggle('active', b.title === p.flag)); updFlag(); }
-    if (p.time) setTime(p.time);
+    // Order matters: rebuild vehicle FIRST, then paint it, then values.
+    // (Colors applied before the rebuild were being wiped — the "missing
+    // body / lights / flags after a moment" bug.)
     if (p.rocket) applyRocket(p.rocket);
     if (p.payload) applyPayload(p.payload);
     if (p.planet) applyPlanet(p.planet);
+    if (p.time) setTime(p.time);
+    if (p.flag) { selFlag = p.flag; document.querySelectorAll('.flag-btn').forEach(b => b.classList.toggle('active', b.title === p.flag)); updFlag(); }
+    if (p.name) document.getElementById('rocketName').value = p.name;
+    if (p.body) { document.getElementById('colBody').value = p.body; applyBodyColor(p.body); }
+    if (p.boost) { document.getElementById('colBoost').value = p.boost; applyBoostColor(p.boost); }
     if (p.dry) document.getElementById('dryMass').value = p.dry;
     if (p.fuel) document.getElementById('fuelMass').value = p.fuel;
     if (p.isp) { document.getElementById('isp').value = p.isp; document.getElementById('ispVal').textContent = p.isp; }
     if (p.thrust) { document.getElementById('thrust').value = p.thrust; document.getElementById('thrustVal').textContent = p.thrust; }
     if (p.target) document.getElementById('targetDv').value = p.target;
+    updName();
     calc();
   } catch (e) {}
 }
@@ -5239,11 +5469,11 @@ aiInput.addEventListener('keypress', e => {
      while slower values roll instantly like before. */
   var FAST_METER = {
     altMeterVal: 1, liveTwrVal: 1,
-    hudAlt: 1, hudVel: 1, hudMach: 1, hudTwr: 1, hudFuel: 1
+    hudAlt: 1, hudVel: 1, hudMach: 1, hudTwr: 1, hudFuel: 1, hudMass: 1
   };
   var FAST_THROTTLE = 100;
   var WATCH = ['altMeterVal', 'liveTwrVal',
-    'hudAlt', 'hudVel', 'hudMach', 'hudTwr', 'hudFuel', 'hudStage', 'hudPhase',
+    'hudAlt', 'hudVel', 'hudMach', 'hudTwr', 'hudFuel', 'hudMass', 'hudStage', 'hudPhase',
     'massRatio', 'twRatio', 'twFinal', 'achievedDv', 'dvMargin', 'missionStatus',
     'ispVal', 'thrustVal', 'rAlt', 'rVel', 'rTime', 'rTwr', 'rDv', 'rOut'];
   WATCH.forEach(function (id) {
